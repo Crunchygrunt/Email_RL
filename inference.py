@@ -573,6 +573,7 @@ TASKS (3 tasks, each with its own grader, all rewards in [0.0, 1.0]):
 All per-step rewards are normalized to [0.0, 1.0] by the client-side graders.
 Ground truth is read from obs.metadata (embedded by the server in every observation).
 """
+
 from dotenv import load_dotenv
 load_dotenv()
 import asyncio
@@ -586,7 +587,6 @@ import httpx
 from dataclasses import dataclass as _dataclass
 from openai import OpenAI
 
-# Import models directly (avoids relative import chain through client.py)
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -606,11 +606,8 @@ class _StepResult:
 
 class EmailTriageEnv:
     """
-    Lightweight HTTP-only client for the Email Triage environment.
-
-    Uses plain HTTP POST instead of WebSockets so it works correctly
-    against HuggingFace Spaces which do not support persistent WS connections
-    on the standard public URL.
+    HTTP client for the Email Triage environment.
+    Works against both a local server and a HuggingFace Space.
     """
 
     def __init__(self, base_url: str) -> None:
@@ -623,11 +620,9 @@ class EmailTriageEnv:
         return self._parse(resp.json())
 
     async def step(self, action: EmailTriageAction) -> _StepResult:
-        payload = {
-            "priority": action.priority,
-            "category": action.category,
-            "route":    action.route,
-        }
+        payload = {"priority": action.priority,
+                   "category": action.category,
+                   "route":    action.route}
         resp = await self._client.post(f"{self._base_url}/step", json=payload)
         resp.raise_for_status()
         return self._parse(resp.json())
@@ -668,7 +663,7 @@ IMAGE_NAME   = os.getenv("IMAGE_NAME")                              # Docker ima
 API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
-SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "https://crunchygrunt-algorithm-architects-email-rl.hf.space")
+SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")
 
 BENCHMARK  = "Email_RL"
 MAX_STEPS  = 10     # matches EmailTriageEnvironment.EPISODE_LENGTH
@@ -1091,10 +1086,7 @@ async def run_task(
            This reward is always in [0.0, 1.0].
         5. Log the task-specific reward (not the server's shaped reward).
     """
-    if IMAGE_NAME:
-        env = await EmailTriageEnv.from_docker_image(IMAGE_NAME)
-    else:
-        env = EmailTriageEnv(base_url=SERVER_URL)
+    env = EmailTriageEnv(base_url=SERVER_URL)
 
     history:     List[str]   = []
     rewards:     List[float] = []
