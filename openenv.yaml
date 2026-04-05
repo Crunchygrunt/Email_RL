@@ -1,0 +1,20 @@
+# spec_version: 1
+# name: Algorithm_Architects_Email_RL
+# type: space
+# runtime: fastapi
+# app: server.app:app
+# port: 8000
+
+
+spec_version: 1
+name: Algorithm_Architects_Email_RL
+type: space
+runtime: fastapi
+app: server.app:app
+port: 8000
+
+tasks:
+  - spam-detection
+  - priority-classification
+  - full-triage
+  - critical-escalation
