@@ -583,7 +583,13 @@ from typing import Callable, Dict, List, Optional
 
 from openai import OpenAI
 
-from Email_RL import EmailTriageAction, EmailTriageEnv
+try:
+    # When run as a standalone script from inside the Email_RL folder
+    from client import EmailTriageEnv
+    from models import EmailTriageAction
+except ModuleNotFoundError:
+    # When Email_RL is installed as a package (e.g. from parent directory)
+    from Email_RL import EmailTriageAction, EmailTriageEnv
 
 # ── Environment variables (mandatory) ─────────────────────────────────────
 IMAGE_NAME   = os.getenv("IMAGE_NAME")                              # Docker image (optional)
