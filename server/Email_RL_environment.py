@@ -684,8 +684,11 @@ class EmailTriageEnvironment(Environment):
         self._email_queue: List[Dict[str, Any]] = []
         self._current_idx: int = 0
         self._streak:      int = 0
-        # Feedback carried from the previous step (None until first step)
         self._last_grade:  Optional[GradeResult] = None
+        # Set to True when step() is called without a prior reset() on this
+        # instance (stateless HTTP mode). In this mode each step() is a
+        # self-contained single-email episode and returns done=True.
+        self._stateless_http_mode: bool = False
 
     # ── OpenEnv interface ─────────────────────────────────────────────────
 
@@ -708,12 +711,25 @@ class EmailTriageEnvironment(Environment):
         """
         Grade the agent's triage decision and advance to the next email.
 
+        In stateless HTTP mode (OpenEnv creates a fresh env instance per
+        request, so _email_queue is empty when step() is first called):
+          - auto-resets to populate a fresh email queue
+          - returns done=True after the first email so the client episode
+            terminates cleanly
+          - embeds the just-graded email's ground truth under 'graded_true_*'
+            keys in metadata so inference.py graders always have the right labels
+
         Args:
             action: EmailTriageAction with priority / category / route fields.
 
         Returns:
             EmailTriageObservation with the next email (or terminal obs if done).
         """
+        # ── Stateless HTTP guard ──────────────────────────────────────────
+        if not self._email_queue:
+            self.reset()
+            self._stateless_http_mode = True
+
         current_email = self._email_queue[self._current_idx]
         self._state.step_count += 1
 
@@ -749,15 +765,20 @@ class EmailTriageEnvironment(Environment):
 
         # ── Advance to next email ─────────────────────────────────────────
         self._current_idx += 1
-        done = self._current_idx >= len(self._email_queue)
+        # In stateless HTTP mode each step is a complete single-email episode
+        done = self._stateless_http_mode or (self._current_idx >= len(self._email_queue))
 
         if done:
-            # Terminal observation — reuse last email fields, signal done
             next_email = current_email
         else:
             next_email = self._email_queue[self._current_idx]
 
-        return self._make_observation(next_email, reward=shaped_reward, done=done)
+        return self._make_observation(
+            next_email,
+            reward=shaped_reward,
+            done=done,
+            graded_email=current_email,   # ground truth for the email just graded
+        )
 
     @property
     def state(self) -> State:
@@ -805,9 +826,32 @@ class EmailTriageEnvironment(Environment):
         email: Dict[str, Any],
         reward: float,
         done: bool,
+        graded_email: Optional[Dict[str, Any]] = None,
     ) -> EmailTriageObservation:
-        """Construct an EmailTriageObservation from an email dict."""
+        """
+        Construct an EmailTriageObservation from an email dict.
+
+        Args:
+            email:        The NEXT email to show the agent (or current if done).
+            reward:       Shaped reward for the action just taken.
+            done:         Whether the episode has ended.
+            graded_email: The email that was JUST graded (current_email in step).
+                          Its ground truth is embedded under 'graded_true_*' keys
+                          so inference.py graders always score the right labels,
+                          even in stateless HTTP mode where reset and step run on
+                          different env instances.
+        """
         emails_remaining = max(0, len(self._email_queue) - self._current_idx - 1)
+
+        # Ground truth for the email just graded (for client-side graders)
+        graded_meta: Dict[str, Any] = {}
+        if graded_email:
+            graded_meta = {
+                "graded_true_priority":      graded_email["priority"],
+                "graded_true_category":      graded_email["category"],
+                "graded_true_route":         graded_email["route"],
+                "graded_is_business_critical": graded_email.get("is_business_critical", False),
+            }
 
         return EmailTriageObservation(
             # Current email
@@ -829,10 +873,12 @@ class EmailTriageEnvironment(Environment):
                 "step":                self._state.step_count,
                 "episode_id":          self._state.episode_id,
                 "streak":              self._streak,
-                # Ground truth — used by all client-side graders in inference.py
+                # Ground truth for NEXT email (agent context)
                 "true_priority":       email["priority"],
                 "true_category":       email["category"],
                 "true_route":          email["route"],
                 "is_business_critical": email.get("is_business_critical", False),
+                # Ground truth for JUST-GRADED email (for client-side graders)
+                **graded_meta,
             },
         )
