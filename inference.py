@@ -573,7 +573,8 @@ TASKS (3 tasks, each with its own grader, all rewards in [0.0, 1.0]):
 All per-step rewards are normalized to [0.0, 1.0] by the client-side graders.
 Ground truth is read from obs.metadata (embedded by the server in every observation).
 """
-
+from dotenv import load_dotenv
+load_dotenv()
 import asyncio
 import os
 import re
@@ -581,22 +582,93 @@ import textwrap
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Optional
 
+import httpx
+from dataclasses import dataclass as _dataclass
 from openai import OpenAI
 
+# Import models directly (avoids relative import chain through client.py)
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 try:
-    # When run as a standalone script from inside the Email_RL folder
-    from client import EmailTriageEnv
-    from models import EmailTriageAction
+    from models import EmailTriageAction, EmailTriageObservation
 except ModuleNotFoundError:
-    # When Email_RL is installed as a package (e.g. from parent directory)
-    from Email_RL import EmailTriageAction, EmailTriageEnv
+    from Email_RL.models import EmailTriageAction, EmailTriageObservation
+
+
+@_dataclass
+class _StepResult:
+    observation: EmailTriageObservation
+    reward:      float
+    done:        bool
+
+
+class EmailTriageEnv:
+    """
+    Lightweight HTTP-only client for the Email Triage environment.
+
+    Uses plain HTTP POST instead of WebSockets so it works correctly
+    against HuggingFace Spaces which do not support persistent WS connections
+    on the standard public URL.
+    """
+
+    def __init__(self, base_url: str) -> None:
+        self._base_url = base_url.rstrip("/")
+        self._client   = httpx.AsyncClient(timeout=30.0)
+
+    async def reset(self) -> _StepResult:
+        resp = await self._client.post(f"{self._base_url}/reset")
+        resp.raise_for_status()
+        return self._parse(resp.json())
+
+    async def step(self, action: EmailTriageAction) -> _StepResult:
+        payload = {
+            "priority": action.priority,
+            "category": action.category,
+            "route":    action.route,
+        }
+        resp = await self._client.post(f"{self._base_url}/step", json=payload)
+        resp.raise_for_status()
+        return self._parse(resp.json())
+
+    async def close(self) -> None:
+        await self._client.aclose()
+
+    async def __aenter__(self) -> "EmailTriageEnv":
+        return self
+
+    async def __aexit__(self, *args) -> None:
+        await self.close()
+
+    def _parse(self, payload: dict) -> _StepResult:
+        obs_data = payload.get("observation", {})
+        observation = EmailTriageObservation(
+            email_id             = obs_data.get("email_id", ""),
+            email_subject        = obs_data.get("email_subject", ""),
+            email_sender         = obs_data.get("email_sender", ""),
+            email_body           = obs_data.get("email_body", ""),
+            last_priority_correct= obs_data.get("last_priority_correct"),
+            last_category_correct= obs_data.get("last_category_correct"),
+            last_route_correct   = obs_data.get("last_route_correct"),
+            emails_remaining     = obs_data.get("emails_remaining", 0),
+            current_streak       = obs_data.get("current_streak", 0),
+            done                 = payload.get("done", False),
+            reward               = payload.get("reward"),
+            metadata             = obs_data.get("metadata", {}),
+        )
+        return _StepResult(
+            observation = observation,
+            reward      = payload.get("reward") or 0.0,
+            done        = payload.get("done", False),
+        )
 
 # ── Environment variables (mandatory) ─────────────────────────────────────
 IMAGE_NAME   = os.getenv("IMAGE_NAME")                              # Docker image (optional)
 API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
-API_BASE_URL = os.getenv("API_BASE_URL", "https://huggingface.co/spaces/Crunchygrunt/Algorithm_Architects_Email_RL")  # LLM endpoint
+API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
-SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")
+SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "https://crunchygrunt-algorithm-architects-email-rl.hf.space")
 
 BENCHMARK  = "Email_RL"
 MAX_STEPS  = 10     # matches EmailTriageEnvironment.EPISODE_LENGTH
