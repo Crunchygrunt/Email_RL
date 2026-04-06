@@ -1,3 +1,4 @@
+
 """
 inference.py — Email Triage RL Environment
 ==========================================
@@ -23,7 +24,6 @@ TASKS (3 tasks, each with its own grader, all rewards in [0.0, 1.0]):
 All per-step rewards are normalized to [0.0, 1.0] by the client-side graders.
 Ground truth is read from obs.metadata (embedded by the server in every observation).
 """
-
 from dotenv import load_dotenv
 load_dotenv()
 import asyncio
@@ -69,43 +69,31 @@ class EmailTriageEnv:
         resp = await self._client.post(f"{self._base_url}/reset")
         resp.raise_for_status()
         payload = resp.json()
-        print(f"[DEBUG] /reset response keys: {list(payload.keys())}", flush=True)
         self._session_id = payload.get("session_id") or payload.get("episode_id")
         return self._parse(payload)
 
     async def step(self, action: EmailTriageAction) -> _StepResult:
-        # Try all three payload formats OpenEnv servers use
         action_data = {"priority": action.priority,
                        "category": action.category,
                        "route":    action.route}
-
-        # Format 1: action wrapped + session_id
+        # Format 1: action wrapped (what the server expects when session exists)
         payload: dict = {"action": action_data}
         if self._session_id:
             payload["session_id"] = self._session_id
-
         resp = await self._client.post(f"{self._base_url}/step", json=payload)
 
-        # Format 2: flat fields + session_id (fallback)
+        # Fallback: flat fields (stateless HTTP mode)
         if resp.status_code == 422:
-            print(f"[DEBUG] Format 1 failed (422), trying flat fields", flush=True)
             payload = dict(action_data)
             if self._session_id:
                 payload["session_id"] = self._session_id
             resp = await self._client.post(f"{self._base_url}/step", json=payload)
 
-        # Format 3: action wrapped, no session_id (fallback)
+        # Fallback: wrapped, no session
         if resp.status_code == 422:
-            print(f"[DEBUG] Format 2 failed (422), trying action-wrapped no session", flush=True)
             resp = await self._client.post(
                 f"{self._base_url}/step", json={"action": action_data}
             )
-
-        if resp.status_code == 422:
-            print(f"[DEBUG] 422 detail: {resp.text}", flush=True)
-
-        if resp.status_code == 500:
-            print(f"[DEBUG] 500 detail: {resp.text[:1000]}", flush=True)
 
         resp.raise_for_status()
         return self._parse(resp.json())
@@ -145,7 +133,7 @@ class EmailTriageEnv:
 IMAGE_NAME   = os.getenv("IMAGE_NAME")                              # Docker image (optional)
 API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
+MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-1.5B-Instruct")
 SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")
 
 BENCHMARK  = "Email_RL"
@@ -541,7 +529,6 @@ def _call_llm(
         )
         return (completion.choices[0].message.content or "").strip()
     except Exception as exc:
-        print(f"[DEBUG] LLM request failed: {exc}", flush=True)
         return ""
 
 
@@ -580,14 +567,15 @@ async def run_task(
     log_start(task=task.name, env=BENCHMARK, model=MODEL_NAME)
 
     try:
-        result = await env.reset()
-        obs    = result.observation
-
         for step in range(1, MAX_STEPS + 1):
-            if result.done:
-                break
 
-            # ── LLM decision ───────────────────────────────────────────
+            # ── Reset to get a fresh email ──────────────────────────────
+            # In stateless HTTP mode the server creates a new env instance
+            # per request, so we reset before every step to get a new email.
+            result = await env.reset()
+            obs    = result.observation
+
+            # ── LLM decision ────────────────────────────────────────────
             raw_text = _call_llm(client, task.system_prompt, obs, step, history)
             action   = _parse_action(raw_text)
             action_str = (
@@ -596,42 +584,36 @@ async def run_task(
                 f"route={action.route}"
             )
 
-            # ── Environment step ────────────────────────────────────────
+            # ── Environment step ─────────────────────────────────────────
             result = await env.step(action)
             obs    = result.observation
             done   = result.done
             error: Optional[str] = None
 
-            # ── Ground truth for the email just graded ──────────────────
-            # In stateless HTTP mode the server embeds 'graded_true_*' keys
-            # in the step response metadata — these always refer to the email
-            # that was just evaluated, regardless of mode (HTTP or WebSocket).
+            # ── Ground truth for the email just graded ───────────────────
             step_metadata = obs.metadata or {}
             graded_metadata = {
-                "true_priority":       step_metadata.get("graded_true_priority",
-                                       step_metadata.get("true_priority", "")),
-                "true_category":       step_metadata.get("graded_true_category",
-                                       step_metadata.get("true_category", "")),
-                "true_route":          step_metadata.get("graded_true_route",
-                                       step_metadata.get("true_route", "")),
+                "true_priority":        step_metadata.get("graded_true_priority",
+                                        step_metadata.get("true_priority", "")),
+                "true_category":        step_metadata.get("graded_true_category",
+                                        step_metadata.get("true_category", "")),
+                "true_route":           step_metadata.get("graded_true_route",
+                                        step_metadata.get("true_route", "")),
                 "is_business_critical": step_metadata.get("graded_is_business_critical",
                                         step_metadata.get("is_business_critical", False)),
             }
 
-            # ── Task-specific reward (always in [0.0, 1.0]) ─────────────
+            # ── Task-specific reward (always in [0.0, 1.0]) ──────────────
             task_reward = task.grader(action, graded_metadata)
 
             rewards.append(task_reward)
             steps_taken = step
 
-            log_step(step=step, action=action_str, reward=task_reward, done=done, error=error)
+            log_step(step=step, action=action_str, reward=task_reward, done=(step == MAX_STEPS), error=error)
 
             history.append(
                 f"Step {step}: {action_str} → reward={task_reward:.2f}"
             )
-
-            if done:
-                break
 
         # Episode score = mean per-step reward, already in [0.0, 1.0]
         score   = sum(rewards) / len(rewards) if rewards else 0.0
@@ -639,13 +621,14 @@ async def run_task(
         success = score >= task.success_threshold
 
     except Exception as exc:
-        print(f"[DEBUG] Task {task.name!r} error: {exc}", flush=True)
+        log_end(success=False, steps=steps_taken, score=0.0, rewards=rewards)
+        return
 
     finally:
         try:
             await env.close()
-        except Exception as exc:
-            print(f"[DEBUG] env.close() error: {exc}", flush=True)
+        except Exception:
+            pass
 
         log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
 
