@@ -1,15 +1,15 @@
-# Email Triage RL — OpenEnv Environment
+# Email Triage RL  OpenEnv Environment
 
 An OpenEnv environment where AI agents learn to **prioritize, categorize, and route business emails** for a fictional B2B SaaS company. This simulates a genuine daily task performed by support teams, operations staff, and account managers at every company.
 
 ## Motivation
 
-Email triage is one of the most universal knowledge-work bottlenecks — and among the hardest to automate well. It demands multi-dimensional reasoning: urgency assessment, business context, sender relationships, security threat detection, and organizational routing. This environment tests whether LLM agents can develop the nuanced judgment needed to handle a realistic corporate inbox, including edge cases that trip up even experienced humans.
+Email triage is one of the most universal knowledge-work bottlenecks  and among the hardest to automate well. It demands multi-dimensional reasoning: urgency assessment, business context, sender relationships, security threat detection, and organizational routing. This environment tests whether LLM agents can develop the nuanced judgment needed to handle a realistic corporate inbox, including edge cases that trip up even experienced humans.
 
 **Why this matters for the RL/agent community:**
 
-- Genuine, high-frequency business task — not a toy problem
-- Multi-dimensional decision space (priority × category × route) with meaningful interactions
+- Genuine, high-frequency business task  not a toy problem
+- Multi-dimensional decision space (priority  category  route) with meaningful interactions
 - Natural difficulty progression from pattern matching to strategic reasoning
 - Rich partial-credit reward signal enables meaningful gradient for training (GRPO-compatible)
 - Novel mechanics: phishing detection, cross-email dependencies, and escalation consequences
@@ -20,9 +20,9 @@ Email triage is one of the most universal knowledge-work bottlenecks — and amo
 
 The agent manages the inbox for Nexora Technologies, a B2B SaaS project management company. Each episode presents 10 emails drawn from a balanced pool of 7 categories, including business-critical emails requiring human sign-off, phishing attempts disguised as legitimate messages, and linked incident chains. The agent must decide three things for each email:
 
-1. **Priority** — how urgently should this be handled?
-2. **Category** — what type of email is this?
-3. **Route** — which team or queue should receive it?
+1. **Priority**  how urgently should this be handled?
+2. **Category**  what type of email is this?
+3. **Route**  which team or queue should receive it?
 
 ---
 
@@ -32,9 +32,9 @@ The agent outputs three string fields per email:
 
 | Field      | Values                                                                                    |
 |------------|-------------------------------------------------------------------------------------------|
-| `priority` | `low` · `medium` · `high` · `urgent`                                                     |
-| `category` | `spam` · `newsletter` · `support` · `sales` · `internal` · `billing` · `security`        |
-| `route`    | `inbox` · `archive` · `support_team` · `sales_team` · `security_team` · `billing_team` · `trash` · `human_review` |
+| `priority` | `low`  `medium`  `high`  `urgent`                                                     |
+| `category` | `spam`  `newsletter`  `support`  `sales`  `internal`  `billing`  `security`        |
+| `route`    | `inbox`  `archive`  `support_team`  `sales_team`  `security_team`  `billing_team`  `trash`  `human_review` |
 
 The agent responds using XML tags:
 
@@ -69,11 +69,11 @@ Each observation provides:
 
 ### Task 1: Spam Detection (Easy)
 
-Binary classification — is this spam/phishing or legitimate? Includes obvious spam (lottery scams, fake prizes) and sophisticated phishing (CEO impersonation, spoofed invoices). Score: 1.0 for correct, 0.0 for incorrect. Success threshold: 0.6.
+Binary classification  is this spam/phishing or legitimate? Includes obvious spam (lottery scams, fake prizes) and sophisticated phishing (CEO impersonation, spoofed invoices). Score: 1.0 for correct, 0.0 for incorrect. Success threshold: 0.6.
 
 ### Task 2: Priority Classification (Medium)
 
-Assign the exact urgency level. Requires understanding business context — a production outage is urgent, a newsletter is low, but a phishing email impersonating the CEO is also urgent because it's an active security threat. Score: 1.0 for exact match, 0.0 otherwise. Success threshold: 0.5.
+Assign the exact urgency level. Requires understanding business context  a production outage is urgent, a newsletter is low, but a phishing email impersonating the CEO is also urgent because it's an active security threat. Score: 1.0 for exact match, 0.0 otherwise. Success threshold: 0.5.
 
 ### Task 3: Full Triage (Hard)
 
@@ -81,7 +81,7 @@ Weighted score across all three dimensions. Includes all environment features: p
 
 ### Task 4: Critical Escalation (Hard)
 
-Identify business-critical emails (legal disputes, GDPR compliance, large contracts, insurance claims, policy changes) and route to `human_review`. Penalizes both missed escalations AND over-escalation equally — the agent must learn the boundary between routine and critical. Score: 1.0 for correct routing decision, 0.0 otherwise. Success threshold: 0.6.
+Identify business-critical emails (legal disputes, GDPR compliance, large contracts, insurance claims, policy changes) and route to `human_review`. Penalizes both missed escalations AND over-escalation equally  the agent must learn the boundary between routine and critical. Score: 1.0 for correct routing decision, 0.0 otherwise. Success threshold: 0.6.
 
 ---
 
@@ -94,7 +94,7 @@ Identify business-critical emails (legal disputes, GDPR compliance, large contra
 | Priority correct | +1.0   | Most important signal                            |
 | Category correct | +0.5   | Email type identification                        |
 | Route correct    | +0.3   | Correct team/queue assignment                    |
-| Format bonus     | +0.1   | Priority correct AND ≥1 other field correct      |
+| Format bonus     | +0.1   | Priority correct AND 1 other field correct      |
 | Perfect bonus    | +0.2   | All three fields correct                         |
 | **Max base**     | **2.1** |                                                  |
 
@@ -102,11 +102,11 @@ Identify business-critical emails (legal disputes, GDPR compliance, large contra
 
 | Modifier                | Value   | Trigger                                               |
 |-------------------------|---------|-------------------------------------------------------|
-| Urgency multiplier      | ×0.8–2.0 | Scales base score by true email urgency              |
+| Urgency multiplier      | 0.82.0 | Scales base score by true email urgency              |
 | Streak bonus            | +0.3    | 3+ consecutive perfect triage decisions               |
 | Dependency bonus        | +0.4    | Linked emails routed to the same team consistently    |
-| Overload penalty        | −0.5    | Urgent/high email misclassified as low/medium         |
-| Escalation multiplier   | ÷1.5    | Reduced reward on injected angry follow-up emails     |
+| Overload penalty        | 0.5    | Urgent/high email misclassified as low/medium         |
+| Escalation multiplier   | 1.5    | Reduced reward on injected angry follow-up emails     |
 
 ### Anti-Exploit Protections
 
@@ -128,7 +128,7 @@ Three dependency clusters (security incident chain, client churn risk chain, com
 
 ### 3. Escalation Consequences
 
-When the agent misclassifies an urgent/high email as low/medium, an angry follow-up email is dynamically injected 2 positions ahead in the queue. These escalation emails carry a 1.5× penalty multiplier, meaning mistakes on them cost more. This mirrors real-world dynamics where missed urgent emails generate increasingly heated follow-ups.
+When the agent misclassifies an urgent/high email as low/medium, an angry follow-up email is dynamically injected 2 positions ahead in the queue. These escalation emails carry a 1.5 penalty multiplier, meaning mistakes on them cost more. This mirrors real-world dynamics where missed urgent emails generate increasingly heated follow-ups.
 
 ---
 
@@ -203,20 +203,20 @@ Deployed as a Docker Space tagged with `openenv`. Responds to all OpenEnv API en
 
 ```
 Email_RL/
-├── server/
-│   ├── __init__.py
-│   ├── app.py                      # FastAPI server (OpenEnv HTTP + WS)
-│   └── Email_RL_environment.py     # Core environment logic + reward shaping
-├── __init__.py                     # Package exports
-├── models.py                       # Pydantic typed models (Action, Observation)
-├── client.py                       # WebSocket client for programmatic use
-├── inference.py                    # Baseline inference script (4 tasks)
-├── train.py                        # GRPO training script (optional)
-├── openenv.yaml                    # OpenEnv metadata spec
-├── Dockerfile                      # Container definition
-├── pyproject.toml                  # Package config + dependencies
-├── .env.example                    # Environment variable template
-└── README.md                       # This file
+ server/
+    __init__.py
+    app.py                      # FastAPI server (OpenEnv HTTP + WS)
+    Email_RL_environment.py     # Core environment logic + reward shaping
+ __init__.py                     # Package exports
+ models.py                       # Pydantic typed models (Action, Observation)
+ client.py                       # WebSocket client for programmatic use
+ inference.py                    # Baseline inference script (4 tasks)
+ train.py                        # GRPO training script (optional)
+ openenv.yaml                    # OpenEnv metadata spec
+ Dockerfile                      # Container definition
+ pyproject.toml                  # Package config + dependencies
+ .env.example                    # Environment variable template
+ README.md                       # This file
 ```
 
 ## Validation

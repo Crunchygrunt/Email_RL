@@ -89,7 +89,7 @@ tasks:
     name: Spam Detection
     difficulty: easy
     description: >
-      Binary classification — identify spam vs legitimate email.
+      Binary classification  identify spam vs legitimate email.
       Includes sophisticated phishing emails that mimic real senders.
       Score: 1.0 if correctly detected, 0.0 otherwise.
 

@@ -128,7 +128,7 @@ class EmailTriageEnv(
     enabling low-latency multi-step interactions.  Each client instance has
     its own dedicated environment session on the server.
 
-    Example — connect to a running server::
+    Example  connect to a running server::
 
         with EmailTriageEnv(base_url="http://localhost:8000") as client:
             result = client.reset()
@@ -143,7 +143,7 @@ class EmailTriageEnv(
             result = client.step(action)
             print(result.reward)         # shaped reward for that decision
 
-    Example — start container automatically then connect::
+    Example  start container automatically then connect::
 
         client = EmailTriageEnv.from_docker_image("email_rl-env:latest")
         try:

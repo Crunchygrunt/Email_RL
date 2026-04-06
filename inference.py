@@ -1,21 +1,21 @@
 """
-inference.py — Email Triage RL Environment
+inference.py  Email Triage RL Environment
 ==========================================
 MANDATORY ENVIRONMENT VARIABLES
     API_BASE_URL   The API endpoint for the LLM.
     MODEL_NAME     The model identifier to use for inference.
     HF_TOKEN       Your Hugging Face / API key.
 
-STDOUT FORMAT — strictly followed, no deviation:
+STDOUT FORMAT  strictly followed, no deviation:
     [START] task=<task_name> env=<benchmark> model=<model_name>
     [STEP]  step=<n> action=<action_str> reward=<0.00> done=<true|false> error=<msg|null>
     [END]   success=<true|false> steps=<n> score=<0.000> rewards=<r1,r2,...,rn>
 
 TASKS (4 tasks, each with its own grader, all rewards in [0.0, 1.0]):
-    spam-detection           (easy)   — binary spam vs legitimate
-    priority-classification  (medium) — exact urgency level match
-    full-triage              (hard)   — weighted score across all 3 fields
-    critical-escalation      (hard)   — business-critical → human_review detection
+    spam-detection           (easy)    binary spam vs legitimate
+    priority-classification  (medium)  exact urgency level match
+    full-triage              (hard)    weighted score across all 3 fields
+    critical-escalation      (hard)    business-critical  human_review detection
 
 FIX LOG (v2):
     - Runs FULL EPISODES (reset once, step N times) instead of reset-per-step
@@ -45,9 +45,9 @@ except ModuleNotFoundError:
     from Email_RL.models import EmailTriageAction, EmailTriageObservation
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # HTTP client for the environment
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 @dataclass
 class _StepResult:
@@ -131,7 +131,7 @@ class EmailTriageEnv:
         )
 
 
-# ── Environment variables ─────────────────────────────────────────────────
+#  Environment variables 
 API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY") or os.getenv("OPENAI_API_KEY")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
@@ -142,7 +142,7 @@ MAX_STEPS   = 10
 TEMPERATURE = 0.3
 MAX_TOKENS  = 120
 
-# ── Domain constants ──────────────────────────────────────────────────────
+#  Domain constants 
 VALID_PRIORITIES = {"low", "medium", "high", "urgent"}
 VALID_CATEGORIES = {"spam", "newsletter", "support", "sales",
                     "internal", "billing", "security"}
@@ -150,10 +150,10 @@ VALID_ROUTES     = {"inbox", "archive", "support_team", "sales_team",
                     "security_team", "billing_team", "trash", "human_review"}
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Client-side graders — each returns a float in [0.0, 1.0]
+# 
+# Client-side graders  each returns a float in [0.0, 1.0]
 # Ground truth is read from obs.metadata GRADED keys (post-action, no leakage)
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 def _extract_graded_truth(metadata: Dict) -> Dict:
     """
@@ -213,7 +213,7 @@ def _grade_full_triage(action: EmailTriageAction, metadata: Dict) -> float:
 
 
 def _grade_critical_escalation(action: EmailTriageAction, metadata: Dict) -> float:
-    """Binary: business-critical → human_review detection."""
+    """Binary: business-critical  human_review detection."""
     truth = _extract_graded_truth(metadata)
     is_critical  = bool(truth["is_business_critical"])
     routed_human = action.route.strip().lower() == "human_review"
@@ -225,9 +225,9 @@ def _grade_critical_escalation(action: EmailTriageAction, metadata: Dict) -> flo
     return 0.0
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # Task definitions
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 @dataclass
 class TaskConfig:
@@ -253,7 +253,7 @@ TASKS: List[TaskConfig] = [
 
             BEWARE OF PHISHING: Some emails impersonate executives (CEO wire transfer
             requests), fake IT password resets, or spoofed invoices with changed bank
-            details. These are NOT legitimate — classify as "security" and route to
+            details. These are NOT legitimate  classify as "security" and route to
             "security_team".
 
             You must output all three fields, but focus on getting `category` right.
@@ -280,11 +280,11 @@ TASKS: List[TaskConfig] = [
             Assign the correct PRIORITY LEVEL to each email.
 
             PRIORITY LEVELS:
-                low    — no time pressure (spam, newsletters, FYI, optional reads)
-                medium — handle within 1-2 days (routine support, billing, standard sales, reminders)
-                high   — handle today (escalated support, large sales, overdue payments,
+                low     no time pressure (spam, newsletters, FYI, optional reads)
+                medium  handle within 1-2 days (routine support, billing, standard sales, reminders)
+                high    handle today (escalated support, large sales, overdue payments,
                          access reviews, security audits, sophisticated phishing attempts)
-                urgent — act immediately (production outages, data breaches, critical CVEs,
+                urgent  act immediately (production outages, data breaches, critical CVEs,
                          severely overdue invoices, suspicious logins, CEO fraud attempts)
 
             BEWARE: Phishing emails that impersonate executives or fake urgent IT requests
@@ -318,11 +318,11 @@ TASKS: List[TaskConfig] = [
                        security_team | billing_team | trash | human_review
 
             ROUTING GUIDE:
-                spam       → trash           newsletter → archive
-                support    → support_team    sales      → sales_team
-                internal   → inbox           billing    → billing_team
-                security   → security_team
-                BUSINESS CRITICAL (legal/compliance/large contracts/claims) → human_review
+                spam        trash           newsletter  archive
+                support     support_team    sales       sales_team
+                internal    inbox           billing     billing_team
+                security    security_team
+                BUSINESS CRITICAL (legal/compliance/large contracts/claims)  human_review
 
             PHISHING DETECTION:
                 Watch for these red flags and route to security_team:
@@ -362,10 +362,10 @@ TASKS: List[TaskConfig] = [
                 - Any email where an automated decision could create legal liability
 
             Route to the STANDARD queue for everything else:
-                spam       → trash           newsletter → archive
-                support    → support_team    sales      → sales_team
-                internal   → inbox           billing    → billing_team
-                security   → security_team
+                spam        trash           newsletter  archive
+                support     support_team    sales       sales_team
+                internal    inbox           billing     billing_team
+                security    security_team
 
             IMPORTANT: Do NOT over-escalate. Phishing emails should go to
             security_team, NOT human_review. Only genuine legal/compliance/
@@ -385,9 +385,9 @@ TASKS: List[TaskConfig] = [
 ]
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # XML parser
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 _PRIORITY_RE = re.compile(r"<priority>\s*([^<]+?)\s*</priority>", re.IGNORECASE)
 _CATEGORY_RE = re.compile(r"<category>\s*([^<]+?)\s*</category>", re.IGNORECASE)
@@ -414,9 +414,9 @@ def _parse_action(text: str) -> EmailTriageAction:
     return EmailTriageAction(priority=priority, category=category, route=route)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Stdout logging — exact format, no deviation
-# ─────────────────────────────────────────────────────────────────────────────
+# 
+# Stdout logging  exact format, no deviation
+# 
 
 def log_start(task: str, env: str, model: str) -> None:
     print(f"[START] task={task} env={env} model={model}", flush=True)
@@ -440,9 +440,9 @@ def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> No
     )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # LLM call
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 def _call_llm(
     client: OpenAI,
@@ -455,9 +455,9 @@ def _call_llm(
     feedback = ""
     if obs.last_priority_correct is not None:
         parts = [
-            f"priority={'✓' if obs.last_priority_correct else '✗'}",
-            f"category={'✓' if obs.last_category_correct else '✗'}",
-            f"route={'✓'    if obs.last_route_correct    else '✗'}",
+            f"priority={'' if obs.last_priority_correct else ''}",
+            f"category={'' if obs.last_category_correct else ''}",
+            f"route={''    if obs.last_route_correct    else ''}",
         ]
         feedback = f"\nPrevious action feedback: {', '.join(parts)} | streak={obs.current_streak}"
 
@@ -468,7 +468,7 @@ def _call_llm(
     # Hint about linked incidents (from metadata, not an answer)
     linked_hint = ""
     if obs.metadata and obs.metadata.get("linked_incident"):
-        linked_hint = "\n⚠ This email may be related to another incident in this batch."
+        linked_hint = "\n This email may be related to another incident in this batch."
 
     user_prompt = textwrap.dedent(f"""
         Step {step} | Emails remaining after this: {obs.emails_remaining}
@@ -502,9 +502,9 @@ def _call_llm(
         return ""
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Episode runner — FULL EPISODES (reset once, step N times)
-# ─────────────────────────────────────────────────────────────────────────────
+# 
+# Episode runner  FULL EPISODES (reset once, step N times)
+# 
 
 async def run_task(client: OpenAI, task: TaskConfig) -> None:
     """
@@ -527,7 +527,7 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
     log_start(task=task.name, env=BENCHMARK, model=MODEL_NAME)
 
     try:
-        # ── Reset once to start the episode ───────────────────────────
+        #  Reset once to start the episode 
         result = await env.reset()
         obs    = result.observation
         done   = result.done
@@ -536,7 +536,7 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
         while not done and step < MAX_STEPS + 5:  # +5 buffer for injected escalations
             step += 1
 
-            # ── LLM decision ──────────────────────────────────────────
+            #  LLM decision 
             raw_text = _call_llm(client, task.system_prompt, obs, step, history)
             action   = _parse_action(raw_text)
             action_str = (
@@ -545,13 +545,13 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
                 f"route={action.route}"
             )
 
-            # ── Step the environment ──────────────────────────────────
+            #  Step the environment 
             result = await env.step(action)
             new_obs = result.observation
             done    = result.done
             error:  Optional[str] = None
 
-            # ── Grade using post-action metadata ──────────────────────
+            #  Grade using post-action metadata 
             step_metadata = new_obs.metadata or {}
             task_reward = task.grader(action, step_metadata)
 
@@ -566,7 +566,7 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
                 error=error,
             )
 
-            history.append(f"Step {step}: {action_str} → reward={task_reward:.2f}")
+            history.append(f"Step {step}: {action_str}  reward={task_reward:.2f}")
             obs = new_obs
 
         # Episode score = mean per-step reward
@@ -587,15 +587,15 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
         log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # Main
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 async def main() -> None:
     """
     Run all 4 tasks in sequence.
-    Each task produces [START] → [STEP]×N → [END].
-    Estimated runtime: 4 tasks × ~12 steps × ~2s/call ≈ 100s (well within 20min).
+    Each task produces [START]  [STEP]N  [END].
+    Estimated runtime: 4 tasks  ~12 steps  ~2s/call  100s (well within 20min).
     """
     client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
     for task in TASKS:

@@ -4,7 +4,7 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
-"""Email Triage RL Environment — server package."""
+"""Email Triage RL Environment  server package."""
 
 from .Email_RL_environment import (
     EmailTriageEnvironment,

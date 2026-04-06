@@ -17,7 +17,7 @@ from openenv.core.env_server.types import Action, Observation
 from pydantic import Field
 
 
-# ── Domain constants (single source of truth, shared with server package) ──
+#  Domain constants (single source of truth, shared with server package) 
 
 PRIORITIES = ("low", "medium", "high", "urgent")
 CATEGORIES = ("spam", "newsletter", "support", "sales", "internal", "billing", "security")
@@ -65,9 +65,9 @@ class EmailTriageAction(Action):
     Triage decision for a single email.
 
     The agent must classify the email along three orthogonal axes:
-      priority  — how urgently should this be handled?
-      category  — what type of email is this?
-      route     — which queue / team should receive it?
+      priority   how urgently should this be handled?
+      category   what type of email is this?
+      route      which queue / team should receive it?
 
     For business-critical emails (legal disputes, large contract negotiations,
     compliance violations, insurance claims, policy changes) the correct route
@@ -112,13 +112,13 @@ class EmailTriageObservation(Observation):
     without leaking answers to the agent.
     """
 
-    # ── Current email to triage ────────────────────────────────────────────
+    #  Current email to triage 
     email_id: str = Field(default="", description="Opaque unique ID for this email")
     email_subject: str = Field(default="", description="Subject line of the email")
     email_sender: str = Field(default="", description="Sender address")
     email_body: str = Field(default="", description="Full body text of the email")
 
-    # ── Feedback about the immediately preceding action (None on first obs) ─
+    #  Feedback about the immediately preceding action (None on first obs) 
     last_priority_correct: Optional[bool] = Field(
         default=None,
         description="Was the priority field correct in the previous action?",
@@ -132,7 +132,7 @@ class EmailTriageObservation(Observation):
         description="Was the route field correct in the previous action?",
     )
 
-    # ── Episode bookkeeping ────────────────────────────────────────────────
+    #  Episode bookkeeping 
     emails_remaining: int = Field(
         default=0,
         description="Emails left to process after this one (0 = this is the last)",

@@ -1,5 +1,5 @@
 """
-train.py — GRPO training for the Email Triage RL Environment
+train.py  GRPO training for the Email Triage RL Environment
 =============================================================
 Connects the EmailTriageEnv reward signal to TRL's GRPOTrainer.
 
@@ -25,7 +25,7 @@ from trl.trainer.grpo_config import GRPOConfig
 from Email_RL import EmailTriageAction, EmailTriageEnv
 from Email_RL.models import CATEGORIES, PRIORITIES, ROUTES
 
-# ── CLI args ───────────────────────────────────────────────────────────────
+#  CLI args 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model",    default="Qwen/Qwen2.5-1.5B-Instruct")
 parser.add_argument("--server",   default="http://localhost:8000")
@@ -40,7 +40,7 @@ SERVER_URL  = args.server
 MAX_STEPS   = args.steps
 BATCH_SIZE  = args.batch
 
-# ── Prompts (identical to Inference.py) ───────────────────────────────────
+#  Prompts (identical to Inference.py) 
 SYSTEM_PROMPT = textwrap.dedent("""
     You are an expert email triage assistant for a B2B software company.
     You will be shown a business email and must classify it.
@@ -51,10 +51,10 @@ SYSTEM_PROMPT = textwrap.dedent("""
                security_team | billing_team | trash
 
     REWARD STRUCTURE:
-        Correct priority  → +1.0   Correct category → +0.5   Correct route → +0.3
-        All correct       → +0.2 bonus
-        Urgent/high misclassified as low/medium → −0.5 penalty
-        3+ consecutive perfect → +0.3 streak bonus
+        Correct priority   +1.0   Correct category  +0.5   Correct route  +0.3
+        All correct        +0.2 bonus
+        Urgent/high misclassified as low/medium  0.5 penalty
+        3+ consecutive perfect  +0.3 streak bonus
 
     Reply ONLY with these three XML tags:
         <priority>VALUE</priority>
@@ -72,7 +72,7 @@ def build_prompt(subject: str, sender: str, body: str) -> str:
     )
 
 
-# ── XML parser ─────────────────────────────────────────────────────────────
+#  XML parser 
 _P = re.compile(r"<priority>\s*([^<]+?)\s*</priority>", re.I)
 _C = re.compile(r"<category>\s*([^<]+?)\s*</category>", re.I)
 _R = re.compile(r"<route>\s*([^<]+?)\s*</route>",       re.I)
@@ -89,7 +89,7 @@ def parse_action(text: str) -> EmailTriageAction:
     )
 
 
-# ── Dataset ────────────────────────────────────────────────────────────────
+#  Dataset 
 # GRPOTrainer requires a HuggingFace Dataset with a "prompt" column.
 # We generate a large pool of prompts by running resets against the server.
 
@@ -116,12 +116,12 @@ async def _collect_prompts(n: int) -> List[Dict]:
 
 
 def build_dataset(n_prompts: int = 500) -> Dataset:
-    print(f"Collecting {n_prompts} prompts from {SERVER_URL} …")
+    print(f"Collecting {n_prompts} prompts from {SERVER_URL} ")
     rows = asyncio.run(_collect_prompts(n_prompts))
     return Dataset.from_list(rows)
 
 
-# ── Reward function ────────────────────────────────────────────────────────
+#  Reward function 
 # GRPOTrainer calls this with a batch of completions.
 # We reconstruct the shaped reward locally using the same formula as the env
 # so we don't need a live async call per completion during training.
@@ -145,7 +145,7 @@ def triage_reward(
     Reward function for GRPOTrainer.
 
     Mirrors the shaped reward in EmailTriageEnvironment.step() exactly:
-        base_score × urgency_multiplier − overload_penalty
+        base_score  urgency_multiplier  overload_penalty
     (streak bonus is omitted here since GRPO samples are i.i.d.)
     """
     rewards = []
@@ -170,9 +170,9 @@ def triage_reward(
     return rewards
 
 
-# ── Model + LoRA ───────────────────────────────────────────────────────────
+#  Model + LoRA 
 def load_model_and_tokenizer():
-    print(f"Loading {MODEL_NAME} …")
+    print(f"Loading {MODEL_NAME} ")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
@@ -196,7 +196,7 @@ LORA_CONFIG = LoraConfig(
 )
 
 
-# ── GRPO training config ───────────────────────────────────────────────────
+#  GRPO training config 
 GRPO_CONFIG = GRPOConfig(
     output_dir              = args.output,
     num_train_epochs        = 1,
@@ -216,7 +216,7 @@ GRPO_CONFIG = GRPOConfig(
 )
 
 
-# ── Main ───────────────────────────────────────────────────────────────────
+#  Main 
 if __name__ == "__main__":
     dataset           = build_dataset(n_prompts=max(500, MAX_STEPS * BATCH_SIZE))
     model, tokenizer  = load_model_and_tokenizer()
@@ -233,7 +233,7 @@ if __name__ == "__main__":
     print("\n=== Starting GRPO training ===")
     print(f"  Model   : {MODEL_NAME}")
     print(f"  Steps   : {MAX_STEPS}")
-    print(f"  Batch   : {BATCH_SIZE} × 4 generations = {BATCH_SIZE * 4} completions/step")
+    print(f"  Batch   : {BATCH_SIZE}  4 generations = {BATCH_SIZE * 4} completions/step")
     print(f"  Output  : {args.output}\n")
 
     trainer.train()

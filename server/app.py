@@ -100,11 +100,11 @@ This module creates an HTTP server that exposes the EmailTriageEnvironment
 over HTTP and WebSocket endpoints, compatible with EnvClient.
 
 Endpoints:
-    POST /reset    — Reset the environment and receive the first email
-    POST /step     — Submit a triage action and receive the next email + reward
-    GET  /state    — Get current environment state (episode_id, step_count)
-    GET  /schema   — Get action / observation JSON schemas
-    WS   /ws       — WebSocket endpoint for persistent sessions
+    POST /reset     Reset the environment and receive the first email
+    POST /step      Submit a triage action and receive the next email + reward
+    GET  /state     Get current environment state (episode_id, step_count)
+    GET  /schema    Get action / observation JSON schemas
+    WS   /ws        WebSocket endpoint for persistent sessions
 
 Usage:
     # Development (auto-reload):
