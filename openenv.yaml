@@ -1,11 +1,3 @@
-# spec_version: 1
-# name: Algorithm_Architects_Email_RL
-# type: space
-# runtime: fastapi
-# app: server.app:app
-# port: 8000
-
-
 spec_version: 1
 name: Algorithm_Architects_Email_RL
 type: space
@@ -13,8 +5,116 @@ runtime: fastapi
 app: server.app:app
 port: 8000
 
+description: >
+  A real-world email triage environment where AI agents learn to prioritize,
+  categorize, and route business emails for a B2B SaaS company.
+  Features phishing detection, cross-email dependency tracking,
+  and dynamic escalation consequences for missed urgent emails.
+  Agents must handle customer support, billing, security alerts,
+  legal/compliance, sales, and social engineering attacks.
+
+tags:
+  - openenv
+  - email-triage
+  - classification
+  - routing
+  - phishing-detection
+  - real-world
+
+observation:
+  type: object
+  description: >
+    The current email to triage plus feedback from the previous action.
+    Metadata contains graded ground truth for the PREVIOUSLY acted-on email
+    (not the current one) to prevent answer leakage.
+  fields:
+    email_id:
+      type: string
+      description: Opaque unique ID for this email
+    email_subject:
+      type: string
+      description: Subject line
+    email_sender:
+      type: string
+      description: Sender address
+    email_body:
+      type: string
+      description: Full body text
+    last_priority_correct:
+      type: boolean
+      nullable: true
+      description: Was the priority correct in the previous action?
+    last_category_correct:
+      type: boolean
+      nullable: true
+      description: Was the category correct in the previous action?
+    last_route_correct:
+      type: boolean
+      nullable: true
+      description: Was the route correct in the previous action?
+    emails_remaining:
+      type: integer
+      description: Emails left after this one (0 = last)
+    current_streak:
+      type: integer
+      description: Consecutive perfect triage decisions
+
+action:
+  type: object
+  description: >
+    The agent's triage decision: priority, category, and routing destination.
+  fields:
+    priority:
+      type: string
+      enum: [low, medium, high, urgent]
+      description: Urgency level
+    category:
+      type: string
+      enum: [spam, newsletter, support, sales, internal, billing, security]
+      description: Email type classification
+    route:
+      type: string
+      enum: [inbox, archive, support_team, sales_team, security_team, billing_team, trash, human_review]
+      description: Destination queue or team
+
+reward:
+  description: >
+    Shaped reward combining weighted field correctness, urgency multiplier,
+    streak bonus, dependency bonus, overload penalty, and escalation multiplier.
+    Client-side task graders normalize to [0.0, 1.0].
+  range: [0.0, 1.0]
+
 tasks:
-  - spam-detection
-  - priority-classification
-  - full-triage
-  - critical-escalation
+  - id: spam-detection
+    name: Spam Detection
+    difficulty: easy
+    description: >
+      Binary classification — identify spam vs legitimate email.
+      Includes sophisticated phishing emails that mimic real senders.
+      Score: 1.0 if correctly detected, 0.0 otherwise.
+
+  - id: priority-classification
+    name: Priority Classification
+    difficulty: medium
+    description: >
+      Assign the exact correct urgency level (low/medium/high/urgent).
+      Requires understanding business context and threat severity.
+      Score: 1.0 for exact match, 0.0 otherwise.
+
+  - id: full-triage
+    name: Full Triage
+    difficulty: hard
+    description: >
+      Weighted score across all three fields (priority, category, route).
+      Includes phishing detection, cross-email dependencies, and
+      dynamic escalation consequences for mishandled urgent emails.
+      Score: normalized to [0.0, 1.0] from base score of 0-2.1.
+
+  - id: critical-escalation
+    name: Critical Escalation
+    difficulty: hard
+    description: >
+      Identify business-critical emails (legal, compliance, large contracts,
+      insurance claims, policy changes) and route to human_review.
+      Penalises both missed escalations AND over-escalation equally.
+      Score: 1.0 for correct routing decision, 0.0 otherwise.

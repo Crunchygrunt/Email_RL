@@ -1,35 +1,48 @@
-
 """
-Email Triage RL Environment Implementation.
+Email Triage RL Environment Implementation (v2 — audit-fixed).
 
-A real-world email classification environment where the agent triages
-synthetic business emails by assigning a priority, category, and route.
+Changes from v1
+----------------
+1. GROUND TRUTH LEAKAGE FIX — observation.metadata no longer contains
+   true_priority / true_category / true_route BEFORE the agent acts.
+   Ground truth is only returned AFTER the agent submits its action
+   (inside the step response, under graded_* keys).
 
-Reward Design (from email-triage notebook)
-------------------------------------------
+2. PHISHING DETECTION — sophisticated phishing emails mixed into every
+   episode that mimic legitimate senders (CEO impersonation, spoofed
+   domains, fake invoices).  Correct route = 'security_team' or 'trash'.
+
+3. CROSS-EMAIL DEPENDENCIES — linked email clusters (e.g. security alert
+   + internal engineer follow-up referencing the same incident).  Bonus
+   reward when the agent routes linked emails to the same team.
+
+4. ESCALATION CONSEQUENCES — when the agent misclassifies an urgent/high
+   email as low/medium, a follow-up "angry escalation" email is injected
+   later in the queue with a 1.5× penalty multiplier.
+
+5. FULL EPISODE SUPPORT — streak bonus now works correctly across a
+   multi-step episode (not just stateless single-step mode).
+
+Reward Design
+-------------
 Base score per email:
-    +1.0  correct priority   (most important signal)
+    +1.0  correct priority
     +0.5  correct category
     +0.3  correct route
-    +0.1  format bonus  (priority correct AND ≥ 1 other field parsed)
+    +0.1  format bonus  (priority correct AND ≥1 other field correct)
     +0.2  perfect bonus (all three correct)
     → max base score = 2.1 per email
 
-Shaped reward applied in step():
-    base_score × urgency_multiplier + streak_bonus - overload_penalty
-
-    urgency_multiplier: urgent=2.0, high=1.5, medium=1.0, low=0.8
-    streak_bonus      : +0.3 when current_streak ≥ 3 consecutive perfect
-    overload_penalty  : -0.5 when agent mislabels an urgent email as low/medium
+Shaped reward:
+    base_score × urgency_multiplier
+    + streak_bonus (+0.3 when streak ≥ 3)
+    + dependency_bonus (+0.4 when linked emails routed consistently)
+    − overload_penalty (−0.5 when urgent/high misclassified as low/medium)
+    − escalation_multiplier (1.5× penalty on injected angry follow-ups)
 
 Business-critical emails:
-    A subset of emails require human sign-off regardless of category —
-    legal disputes, large contract negotiations, GDPR/compliance violations,
-    insurance claims, and policy changes.  These are tagged with
-    is_business_critical=True in obs.metadata and have true_route='human_review'.
-    The critical-escalation grader in inference.py scores the agent on whether
-    it correctly routes these to 'human_review' while not over-escalating
-    normal emails.
+    Legal disputes, large contracts, GDPR/compliance, insurance claims,
+    and policy changes require route='human_review'.
 """
 
 from __future__ import annotations
@@ -66,11 +79,8 @@ except ImportError:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Synthetic email dataset
+# Synthetic email templates
 # ─────────────────────────────────────────────────────────────────────────────
-
-# Each entry: (subject_template, body_template, priority, category)
-# {amount}, {name}, {id}, {day}, {product}, {plan} are filled at generation time.
 
 _EMAIL_TEMPLATES: List[Tuple[str, str, str, str]] = [
     # ── spam ──────────────────────────────────────────────────────────────
@@ -269,12 +279,7 @@ _EMAIL_TEMPLATES: List[Tuple[str, str, str, str]] = [
 ]
 
 # ── Business-critical email templates ─────────────────────────────────────
-# These emails require human sign-off regardless of their category.
-# true_route is always 'human_review'.
-# Each entry: (subject_template, body_template, priority, category)
-
 _CRITICAL_EMAIL_TEMPLATES: List[Tuple[str, str, str, str]] = [
-    # ── legal ──────────────────────────────────────────────────────────────
     (
         "Legal notice: breach of contract — reference #{id}",
         "Dear Sir/Madam, our client contends that your company has materially breached "
@@ -296,7 +301,6 @@ _CRITICAL_EMAIL_TEMPLATES: List[Tuple[str, str, str, str]] = [
         "relevant records. A litigation hold notice is attached.",
         "urgent", "security",
     ),
-    # ── compliance / GDPR ──────────────────────────────────────────────────
     (
         "GDPR right to erasure request — customer #{id}",
         "Under Article 17 of the GDPR, I formally request erasure of all personal data "
@@ -311,7 +315,6 @@ _CRITICAL_EMAIL_TEMPLATES: List[Tuple[str, str, str, str]] = [
         "submitted by {day}. Non-compliance may result in fines up to ${amount}.",
         "urgent", "internal",
     ),
-    # ── large contract / pricing ────────────────────────────────────────────
     (
         "Enterprise contract negotiation — ${amount} annual deal",
         "Following our executive discussion, we are prepared to commit to a ${amount} "
@@ -334,7 +337,6 @@ _CRITICAL_EMAIL_TEMPLATES: List[Tuple[str, str, str, str]] = [
         "Escalation to VP of Legal and CEO required before {day} deadline.",
         "urgent", "sales",
     ),
-    # ── insurance / claims ─────────────────────────────────────────────────
     (
         "Insurance claim #{id} — ${amount} property damage",
         "We are filing an insurance claim (ref #{id}) for ${amount} in property damage "
@@ -349,7 +351,6 @@ _CRITICAL_EMAIL_TEMPLATES: List[Tuple[str, str, str, str]] = [
         "Documentation is attached. Please do not discuss the incident with {name} directly.",
         "urgent", "internal",
     ),
-    # ── policy change ──────────────────────────────────────────────────────
     (
         "Proposed change to employee data retention policy",
         "Following advice from external counsel, we are proposing to reduce employee "
@@ -366,43 +367,159 @@ _CRITICAL_EMAIL_TEMPLATES: List[Tuple[str, str, str, str]] = [
     ),
 ]
 
-# Fill-in pools for template variables
+# ── CREATIVITY #1: Phishing email templates ───────────────────────────────
+# These mimic legitimate emails but are actually social engineering attacks.
+# Correct category = 'spam' (or 'security'), correct route = 'security_team'
+_PHISHING_EMAIL_TEMPLATES: List[Tuple[str, str, str, str]] = [
+    (
+        "Re: Wire transfer needed — CEO request",
+        "Hi, I'm in a meeting and can't talk. I need you to process an urgent wire "
+        "transfer of ${amount} to a new vendor before end of day. Account details: "
+        "IBAN DE89370400440532013000. Don't loop in anyone else — this is confidential "
+        "until the deal closes. Thanks, {name} (CEO)",
+        "urgent", "security",
+    ),
+    (
+        "ACTION REQUIRED: Your account password expires today",
+        "Dear employee, your corporate password will expire at midnight tonight. "
+        "Click the link below to update your credentials immediately to avoid losing "
+        "access: https://hr-portal-update.{product}-corp.xyz/reset?user={name}\n\n"
+        "IT Department",
+        "high", "security",
+    ),
+    (
+        "Invoice #{id} — payment overdue — FINAL NOTICE",
+        "Dear Accounts Payable, this is a final notice for invoice #{id} amounting "
+        "to ${amount}. Our records show this payment is 45 days overdue. To avoid "
+        "legal action, please wire the payment to our UPDATED bank account: "
+        "Routing 021000021, Account 483726153. Previous bank details are no longer valid.",
+        "high", "security",
+    ),
+    (
+        "Shared document: Q{id} Financial Report — {name}",
+        "{name} has shared a document with you: 'Q{id} Financial Report.xlsx'\n\n"
+        "Click to view: https://docs.g00gle-drive.co/d/{id}/edit\n\n"
+        "This link will expire in 24 hours.",
+        "medium", "security",
+    ),
+    (
+        "IT Support: Unusual activity on your account — verify now",
+        "We have detected 3 failed login attempts on your account from IP 185.220.101.{id}. "
+        "As a security measure, please verify your identity by entering your credentials "
+        "at: https://security-verify.{product}-internal.net/auth\n\n"
+        "If you don't verify within 2 hours, your account will be locked.\n\n"
+        "Security Operations Center",
+        "high", "security",
+    ),
+    (
+        "Fwd: Contract signature needed — DocuSign",
+        "Hi, please review and sign the attached contract at your earliest convenience. "
+        "This DocuSign document requires your signature before {day}.\n\n"
+        "Review Document: https://docusign-secure.{product}sign.xyz/sign/{id}\n\n"
+        "Sent via DocuSign™ Electronic Signature",
+        "medium", "security",
+    ),
+]
+
+# ── CREATIVITY #2: Cross-email dependency clusters ────────────────────────
+# Each cluster is a list of related email templates.  When multiple cluster
+# members appear in an episode, the agent gets bonus reward for routing
+# them to the same department.
+# Format: list of (subject, body, priority, category, cluster_id)
+_DEPENDENCY_CLUSTERS: List[List[Tuple[str, str, str, str, str]]] = [
+    # Cluster A: security incident chain
+    [
+        (
+            "ALERT: Suspicious API calls detected on endpoint /admin/export",
+            "Our monitoring system flagged 200+ unusual API calls from service account "
+            "svc-export-01 to the /admin/users/export endpoint between 2–3 AM last night. "
+            "This endpoint returns full user profiles. Immediate investigation required.",
+            "urgent", "security", "cluster_security_incident",
+        ),
+        (
+            "Re: Suspicious API calls — I found something in the logs",
+            "I reviewed the audit logs for the svc-export-01 calls from last night. "
+            "The access pattern matches a known exfiltration technique. The service account's "
+            "API key was rotated 3 days ago by someone not in our DevOps team. "
+            "This is likely an active breach. Escalating to you.",
+            "urgent", "security", "cluster_security_incident",
+        ),
+    ],
+    # Cluster B: client churn risk chain
+    [
+        (
+            "Re: Ongoing reliability concerns — Globex Corp",
+            "Our production dashboard has gone down 3 times this month. I've escalated "
+            "internally. Our VP is now looking at alternatives. I need a concrete remediation "
+            "plan and SLA credits by end of week or we're likely switching.",
+            "urgent", "support", "cluster_churn_risk",
+        ),
+        (
+            "Renewal risk: Globex Corp — internal discussion needed",
+            "Heads up — Globex Corp ($500k ARR) is showing serious churn signals. "
+            "Their IT manager has filed 8 tickets in 3 months and their VP contacted "
+            "our sales team about 'evaluating alternatives.' We need an executive-level "
+            "retention strategy before their contract renews in 30 days.",
+            "urgent", "sales", "cluster_churn_risk",
+        ),
+    ],
+    # Cluster C: compliance chain
+    [
+        (
+            "GDPR data deletion request — customer #{id}",
+            "Under Article 17 of the GDPR, I formally request deletion of all personal "
+            "data associated with my account (ref #{id}). Please confirm within 72 hours.",
+            "urgent", "security", "cluster_compliance",
+        ),
+        (
+            "Fwd: GDPR deletion request — need engineering input",
+            "Forwarding a GDPR deletion request from a customer. Our current data pipeline "
+            "doesn't support targeted deletion in the analytics warehouse. Engineering "
+            "needs to assess the effort before we can commit to a timeline. "
+            "Legal deadline is 30 days from receipt.",
+            "high", "internal", "cluster_compliance",
+        ),
+    ],
+]
+
+# ── CREATIVITY #3: Escalation consequence templates ───────────────────────
+# Injected when the agent misclassifies an urgent/high email
+_ESCALATION_TEMPLATES: List[Tuple[str, str, str, str]] = [
+    (
+        "ESCALATION: No response to critical issue — ticket #{id}",
+        "I sent an URGENT email {day} ago and have received NO response. "
+        "This is unacceptable. I'm escalating to your management. If I don't hear back "
+        "within the hour, we will be contacting our legal team. "
+        "This is now a P0 incident.",
+        "urgent", "support",
+    ),
+    (
+        "Fwd: WHERE IS THE RESPONSE?? — {name} is furious",
+        "{name} (VP at the client) just called me directly. They say their original "
+        "urgent request was ignored. This is a $500k account at risk. "
+        "SOMEONE needs to respond in the next 30 minutes or this goes to the CEO.",
+        "urgent", "internal",
+    ),
+    (
+        "Management escalation: missed SLA on critical ticket #{id}",
+        "This ticket was flagged as urgent {day} ago but was incorrectly triaged. "
+        "The client has now missed their board deadline because of our non-response. "
+        "Post-mortem required. All hands on deck to recover this relationship.",
+        "urgent", "support",
+    ),
+]
+
+
+# Fill-in pools
 _NAMES    = ["Alex", "Jordan", "Sam", "Morgan", "Taylor", "Casey", "Riley", "Drew"]
 _PRODUCTS = ["Dashboard", "API Gateway", "Analytics Suite", "CRM", "DataPipeline", "Authenticator"]
 _PLANS    = ["Starter", "Professional", "Enterprise", "Team", "Business"]
 _DAYS     = ["Monday", "Tuesday", "Wednesday", "Friday", "next Friday", "March 31", "April 15"]
 _DOMAINS  = ["acme.com", "techcorp.io", "startup.co", "enterprise.net", "company.org"]
-_SENDERS  = [
-    "noreply@mailer.io", "newsletter@updates.co", "billing@payments.net",
-    "security@alerts.com", "support@helpdesk.io", "sales@leads.co",
-]
 
 
-def _generate_email(
-    template_idx: Optional[int] = None,
-    critical: bool = False,
-) -> Dict[str, Any]:
-    """
-    Instantiate one email template with randomised fill-in values.
-
-    Args:
-        template_idx: Index into the appropriate template list.
-                      None = random selection.
-        critical:     If True, draw from _CRITICAL_EMAIL_TEMPLATES and set
-                      route='human_review' and is_business_critical=True.
-
-    Returns a dict with keys:
-        email_id, subject, sender, body, priority, category,
-        route, is_business_critical
-    """
-    template_list = _CRITICAL_EMAIL_TEMPLATES if critical else _EMAIL_TEMPLATES
-
-    if template_idx is None:
-        template_idx = random.randrange(len(template_list))
-    template_idx = template_idx % len(template_list)
-
-    subject_tmpl, body_tmpl, priority, category = template_list[template_idx]
-
+def _fill_template(subject_tmpl: str, body_tmpl: str) -> Tuple[str, str, str]:
+    """Fill in template placeholders and generate a sender."""
     fills = {
         "name":    random.choice(_NAMES),
         "product": random.choice(_PRODUCTS),
@@ -411,41 +528,93 @@ def _generate_email(
         "amount":  str(random.randint(50, 9999)),
         "id":      str(random.randint(100, 9999)),
     }
-
     subject = subject_tmpl.format(**fills)
     body    = body_tmpl.format(**fills)
-    sender_name   = random.choice(_NAMES)
-    sender_domain = random.choice(_DOMAINS)
-    sender = f"{sender_name.lower()}@{sender_domain}"
+    sender  = f"{random.choice(_NAMES).lower()}@{random.choice(_DOMAINS)}"
+    return subject, body, sender
 
-    route = "human_review" if critical else ROUTE_MAP[category]
+
+def _generate_email(
+    template_idx: Optional[int] = None,
+    critical: bool = False,
+    phishing: bool = False,
+    cluster_id: Optional[str] = None,
+    escalation: bool = False,
+    escalation_multiplier: float = 1.0,
+) -> Dict[str, Any]:
+    """Instantiate one email from the appropriate template pool."""
+
+    if phishing:
+        tlist = _PHISHING_EMAIL_TEMPLATES
+    elif escalation:
+        tlist = _ESCALATION_TEMPLATES
+    elif critical:
+        tlist = _CRITICAL_EMAIL_TEMPLATES
+    else:
+        tlist = _EMAIL_TEMPLATES
+
+    if template_idx is None:
+        template_idx = random.randrange(len(tlist))
+    template_idx = template_idx % len(tlist)
+
+    subject_tmpl, body_tmpl, priority, category = tlist[template_idx][:4]
+    subject, body, sender = _fill_template(subject_tmpl, body_tmpl)
+
+    # Determine correct route
+    if critical:
+        route = "human_review"
+    elif phishing:
+        route = "security_team"
+    else:
+        route = ROUTE_MAP[category]
 
     return {
-        "email_id":            str(uuid4()),
-        "subject":             subject,
-        "sender":              sender,
-        "body":                body,
-        "priority":            priority,
-        "category":            category,
-        "route":               route,
+        "email_id":             str(uuid4()),
+        "subject":              subject,
+        "sender":               sender,
+        "body":                 body,
+        "priority":             priority,
+        "category":             "security" if phishing else category,
+        "route":                route,
         "is_business_critical": critical,
+        "is_phishing":          phishing,
+        "cluster_id":           cluster_id,
+        "is_escalation":        escalation,
+        "escalation_multiplier": escalation_multiplier if escalation else 1.0,
+    }
+
+
+def _generate_cluster_email(
+    cluster_entry: Tuple[str, str, str, str, str],
+) -> Dict[str, Any]:
+    """Generate an email from a dependency cluster template."""
+    subject_tmpl, body_tmpl, priority, category, cluster_id = cluster_entry
+    subject, body, sender = _fill_template(subject_tmpl, body_tmpl)
+    route = ROUTE_MAP[category]
+
+    return {
+        "email_id":             str(uuid4()),
+        "subject":              subject,
+        "sender":               sender,
+        "body":                 body,
+        "priority":             priority,
+        "category":             category,
+        "route":                route,
+        "is_business_critical": False,
+        "is_phishing":          False,
+        "cluster_id":           cluster_id,
+        "is_escalation":        False,
+        "escalation_multiplier": 1.0,
     }
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# GradeResult & TriageGrader (ported directly from notebook Cell 3)
+# GradeResult & TriageGrader
 # ─────────────────────────────────────────────────────────────────────────────
 
 @dataclass
 class GradeResult:
-    """
-    Raw correctness verdict for one triage action.
-
-    Contains NO urgency scaling, streak bonuses, or overload penalties —
-    those are reward-shaping concerns handled by the environment.
-    This object is independently testable without the environment.
-    """
-
+    """Raw correctness verdict for one triage action."""
     priority_ok: bool
     category_ok: bool
     route_ok:    bool
@@ -460,72 +629,34 @@ class GradeResult:
 
     @property
     def base_score(self) -> float:
-        """
-        Weighted additive correctness score — the canonical formula.
-
-        Weights: priority=1.0, category=0.5, route=0.3
-        Format bonus (+0.1): priority correct AND ≥1 other field correct
-        Perfect bonus (+0.2): all three correct
-        """
         score = (
             1.0 * self.priority_ok
             + 0.5 * self.category_ok
             + 0.3 * self.route_ok
         )
-        if self.priority_ok:
-            if self.category_ok or self.route_ok:
-                score += 0.1
+        if self.priority_ok and (self.category_ok or self.route_ok):
+            score += 0.1
         if self.is_perfect:
             score += 0.2
         return round(score, 4)
 
 
 class TriageGrader:
-    """
-    Grades one triage action against ground-truth email labels.
+    """Grades one triage action against ground-truth email labels."""
 
-    Standalone and independently testable:
+    def grade(self, action: Dict[str, str], email: Dict[str, str]) -> GradeResult:
+        pred_p = str(action.get("priority", "")).strip().lower()
+        pred_c = str(action.get("category", "")).strip().lower()
+        pred_r = str(action.get("route",    "")).strip().lower()
 
-        grader = TriageGrader()
-        result = grader.grade(
-            action={'priority': 'urgent', 'category': 'security', 'route': 'security_team'},
-            email ={'priority': 'urgent', 'category': 'security', 'route': 'security_team'},
-        )
-        print(result.base_score)   # → 2.1
-    """
-
-    def grade(
-        self,
-        action: Dict[str, str],
-        email: Dict[str, str],
-    ) -> GradeResult:
-        """
-        Compare agent action against email ground truth.
-
-        Args:
-            action: dict with keys 'priority', 'category', 'route'
-            email:  dict with keys 'priority', 'category', 'route'
-
-        Returns:
-            GradeResult with per-field correctness flags and base_score.
-        """
-        pred_priority = str(action.get("priority", "")).strip().lower()
-        pred_category = str(action.get("category", "")).strip().lower()
-        pred_route    = str(action.get("route", "")).strip().lower()
-
-        true_priority = str(email.get("priority", "")).strip().lower()
-        true_category = str(email.get("category", "")).strip().lower()
-        true_route    = str(email.get("route", "")).strip().lower()
-
-        # Validate predictions against allowed vocabularies
-        priority_ok = (pred_priority == true_priority) and (pred_priority in PRIORITIES)
-        category_ok = (pred_category == true_category) and (pred_category in CATEGORIES)
-        route_ok    = (pred_route    == true_route)    and (pred_route    in ROUTES)
+        true_p = str(email.get("priority", "")).strip().lower()
+        true_c = str(email.get("category", "")).strip().lower()
+        true_r = str(email.get("route",    "")).strip().lower()
 
         return GradeResult(
-            priority_ok=priority_ok,
-            category_ok=category_ok,
-            route_ok=route_ok,
+            priority_ok=(pred_p == true_p) and (pred_p in PRIORITIES),
+            category_ok=(pred_c == true_c) and (pred_c in CATEGORIES),
+            route_ok   =(pred_r == true_r) and (pred_r in ROUTES),
         )
 
 
@@ -535,38 +666,18 @@ class TriageGrader:
 
 class EmailTriageEnvironment(Environment):
     """
-    Email Triage RL Environment.
-
-    Each episode consists of EPISODE_LENGTH emails drawn from the synthetic
-    dataset.  The agent is shown one email per step and must return a triage
-    decision (priority / category / route).
-
-    Reward shaping (per step):
-        shaped_reward = base_score × urgency_multiplier
-                      + streak_bonus
-                      - overload_penalty
-
-        urgency_multiplier — scales reward by true email urgency so the model
-                             learns to prioritise urgent/high emails correctly.
-        streak_bonus       — +0.3 when current_streak >= STREAK_THRESHOLD,
-                             rewarding sustained accuracy.
-        overload_penalty   — -0.5 when the true priority is urgent/high but
-                             the agent classifies it as low/medium (missed
-                             urgent email costs extra).
-
-    Episode ends after EPISODE_LENGTH steps; done=True is returned on the
-    final step.
-
-    Supports concurrent WebSocket sessions (each call to __init__ creates
-    independent state).
+    Email Triage RL Environment with phishing detection, cross-email
+    dependencies, and escalation consequences.
     """
 
     SUPPORTS_CONCURRENT_SESSIONS: bool = True
 
-    EPISODE_LENGTH:    int   = 10    # emails per episode
-    STREAK_THRESHOLD:  int   = 3     # consecutive perfects needed for bonus
+    EPISODE_LENGTH:    int   = 10
+    STREAK_THRESHOLD:  int   = 3
     STREAK_BONUS:      float = 0.3
     OVERLOAD_PENALTY:  float = 0.5
+    DEPENDENCY_BONUS:  float = 0.4
+    ESCALATION_PENALTY_MULT: float = 1.5
 
     def __init__(self) -> None:
         self._state        = State(episode_id=str(uuid4()), step_count=0)
@@ -575,47 +686,28 @@ class EmailTriageEnvironment(Environment):
         self._current_idx: int = 0
         self._streak:      int = 0
         self._last_grade:  Optional[GradeResult] = None
-        # Set to True when step() is called without a prior reset() on this
-        # instance (stateless HTTP mode). In this mode each step() is a
-        # self-contained single-email episode and returns done=True.
+        self._cluster_routes: Dict[str, List[str]] = {}  # cluster_id → [routes chosen]
+        self._pending_escalations: List[Dict[str, Any]] = []  # injected angry follow-ups
         self._stateless_http_mode: bool = False
 
     # ── OpenEnv interface ─────────────────────────────────────────────────
 
     def reset(self) -> EmailTriageObservation:
-        """
-        Reset environment: generate a fresh email queue and return the first email.
-        """
-        self._state      = State(episode_id=str(uuid4()), step_count=0)
-        self._streak     = 0
-        self._last_grade = None
+        self._state       = State(episode_id=str(uuid4()), step_count=0)
+        self._streak      = 0
+        self._last_grade  = None
         self._current_idx = 0
+        self._cluster_routes = {}
+        self._pending_escalations = []
+        self._stateless_http_mode = False
 
-        # Sample EPISODE_LENGTH emails (spread across categories for variety)
         self._email_queue = self._sample_episode()
 
         first_email = self._email_queue[0]
         return self._make_observation(first_email, reward=0.0, done=False)
 
-    def step(self, action: EmailTriageAction) -> EmailTriageObservation:  # type: ignore[override]
-        """
-        Grade the agent's triage decision and advance to the next email.
-
-        In stateless HTTP mode (OpenEnv creates a fresh env instance per
-        request, so _email_queue is empty when step() is first called):
-          - auto-resets to populate a fresh email queue
-          - returns done=True after the first email so the client episode
-            terminates cleanly
-          - embeds the just-graded email's ground truth under 'graded_true_*'
-            keys in metadata so inference.py graders always have the right labels
-
-        Args:
-            action: EmailTriageAction with priority / category / route fields.
-
-        Returns:
-            EmailTriageObservation with the next email (or terminal obs if done).
-        """
-        # ── Stateless HTTP guard ──────────────────────────────────────────
+    def step(self, action: EmailTriageAction) -> EmailTriageObservation:
+        # ── Stateless HTTP guard ──────────────────────────────────────
         if not self._email_queue:
             self.reset()
             self._stateless_http_mode = True
@@ -623,7 +715,7 @@ class EmailTriageEnvironment(Environment):
         current_email = self._email_queue[self._current_idx]
         self._state.step_count += 1
 
-        # ── Grade current action ──────────────────────────────────────────
+        # ── Grade current action ──────────────────────────────────────
         grade = self._grader.grade(
             action={"priority": action.priority,
                     "category": action.category,
@@ -632,42 +724,65 @@ class EmailTriageEnvironment(Environment):
         )
         self._last_grade = grade
 
-        # ── Update streak ─────────────────────────────────────────────────
+        # ── Update streak ─────────────────────────────────────────────
         if grade.is_perfect:
             self._streak += 1
         else:
             self._streak = 0
 
-        # ── Shaped reward ─────────────────────────────────────────────────
-        true_priority  = current_email["priority"]
-        urgency_mult   = URGENCY_BONUS.get(true_priority, 1.0)
-        shaped_reward  = grade.base_score * urgency_mult
+        # ── Shaped reward ─────────────────────────────────────────────
+        true_priority = current_email["priority"]
+        urgency_mult  = URGENCY_BONUS.get(true_priority, 1.0)
+        shaped_reward = grade.base_score * urgency_mult
 
         # Streak bonus
         if self._streak >= self.STREAK_THRESHOLD:
             shaped_reward += self.STREAK_BONUS
 
-        # Overload penalty: missed urgent/high email
+        # Overload penalty
         if true_priority in ("urgent", "high") and action.priority in ("low", "medium"):
             shaped_reward -= self.OVERLOAD_PENALTY
 
+            # CREATIVITY #3: inject escalation consequence
+            if (self._current_idx + 2 < len(self._email_queue)
+                    and not current_email.get("is_escalation")):
+                esc_email = _generate_email(
+                    escalation=True,
+                    escalation_multiplier=self.ESCALATION_PENALTY_MULT,
+                )
+                # Insert 2 positions ahead so agent encounters it soon
+                insert_pos = min(self._current_idx + 2, len(self._email_queue))
+                self._email_queue.insert(insert_pos, esc_email)
+
+        # Escalation multiplier on penalty (injected angry emails cost more)
+        esc_mult = current_email.get("escalation_multiplier", 1.0)
+        if esc_mult > 1.0 and not grade.is_perfect:
+            shaped_reward *= (1.0 / esc_mult)  # reduce reward for mistakes on escalation emails
+
+        # CREATIVITY #2: Cross-email dependency bonus
+        cluster_id = current_email.get("cluster_id")
+        if cluster_id:
+            self._cluster_routes.setdefault(cluster_id, [])
+            self._cluster_routes[cluster_id].append(action.route.strip().lower())
+            # If 2+ emails in same cluster routed to same team → bonus
+            routes_in_cluster = self._cluster_routes[cluster_id]
+            if len(routes_in_cluster) >= 2:
+                if len(set(routes_in_cluster)) == 1:
+                    shaped_reward += self.DEPENDENCY_BONUS
+
         shaped_reward = round(shaped_reward, 4)
 
-        # ── Advance to next email ─────────────────────────────────────────
+        # ── Advance to next email ─────────────────────────────────────
         self._current_idx += 1
-        # In stateless HTTP mode each step is a complete single-email episode
         done = self._stateless_http_mode or (self._current_idx >= len(self._email_queue))
 
-        if done:
-            next_email = current_email
-        else:
-            next_email = self._email_queue[self._current_idx]
+        next_email = current_email if done else self._email_queue[self._current_idx]
 
         return self._make_observation(
             next_email,
             reward=shaped_reward,
             done=done,
-            graded_email=current_email,   # ground truth for the email just graded
+            graded_email=current_email,
         )
 
     @property
@@ -678,12 +793,14 @@ class EmailTriageEnvironment(Environment):
 
     def _sample_episode(self) -> List[Dict[str, Any]]:
         """
-        Build a balanced episode:
-          - At least one email from each of the 7 standard categories
-          - Exactly 2 business-critical emails (guarantees critical-escalation
-            grader always has signal to evaluate within every episode)
-          - Total padded to EPISODE_LENGTH with random standard emails
-          - Result shuffled so critical emails appear in unpredictable positions
+        Build a balanced episode with creativity features:
+          - 1 email from each of the 7 standard categories (7)
+          - 2 business-critical emails requiring human_review (2)
+          - 1 phishing email (tests social engineering detection)
+          - Cross-email dependency cluster (2 linked emails replace 2 of the above)
+
+        Total: EPISODE_LENGTH emails (default 10), shuffled.
+        Dependency cluster emails are placed at random positions.
         """
         by_category: Dict[str, List[int]] = {cat: [] for cat in CATEGORIES}
         for idx, (_, _, _, cat) in enumerate(_EMAIL_TEMPLATES):
@@ -691,25 +808,35 @@ class EmailTriageEnvironment(Environment):
 
         selected: List[Dict[str, Any]] = []
 
-        # One standard email from each category (7 emails)
+        # 1) One standard email from each of 7 categories
         for cat in CATEGORIES:
             idx = random.choice(by_category[cat])
             selected.append(_generate_email(template_idx=idx, critical=False))
 
-        # Exactly 2 business-critical emails
-        critical_indices = random.sample(
-            range(len(_CRITICAL_EMAIL_TEMPLATES)), k=2
-        )
-        for idx in critical_indices:
-            selected.append(_generate_email(template_idx=idx, critical=True))
+        # 2) 1 business-critical email
+        crit_idx = random.randrange(len(_CRITICAL_EMAIL_TEMPLATES))
+        selected.append(_generate_email(template_idx=crit_idx, critical=True))
 
-        # Pad to EPISODE_LENGTH with random standard emails (1 more needed for 10)
+        # 3) 1 phishing email
+        phish_idx = random.randrange(len(_PHISHING_EMAIL_TEMPLATES))
+        selected.append(_generate_email(template_idx=phish_idx, phishing=True))
+
+        # 4) 1 dependency cluster (replace last standard email with 2 linked ones)
+        cluster = random.choice(_DEPENDENCY_CLUSTERS)
+        cluster_emails = [_generate_cluster_email(entry) for entry in cluster]
+
+        # Remove 1 standard email to make room, then add cluster
+        if len(selected) > 0:
+            selected.pop()  # remove one to keep episode length manageable
+        selected.extend(cluster_emails)
+
+        # Trim or pad to EPISODE_LENGTH
         while len(selected) < self.EPISODE_LENGTH:
             selected.append(_generate_email(critical=False))
+        selected = selected[:self.EPISODE_LENGTH]
 
-        # Shuffle so critical emails don't always appear at the end
         random.shuffle(selected)
-        return selected[: self.EPISODE_LENGTH]
+        return selected
 
     def _make_observation(
         self,
@@ -719,56 +846,50 @@ class EmailTriageEnvironment(Environment):
         graded_email: Optional[Dict[str, Any]] = None,
     ) -> EmailTriageObservation:
         """
-        Construct an EmailTriageObservation from an email dict.
+        Construct observation.
 
-        Args:
-            email:        The NEXT email to show the agent (or current if done).
-            reward:       Shaped reward for the action just taken.
-            done:         Whether the episode has ended.
-            graded_email: The email that was JUST graded (current_email in step).
-                          Its ground truth is embedded under 'graded_true_*' keys
-                          so inference.py graders always score the right labels,
-                          even in stateless HTTP mode where reset and step run on
-                          different env instances.
+        SECURITY FIX: metadata does NOT contain ground truth for the
+        CURRENT email (that would leak the answer).  Ground truth is
+        only provided for the PREVIOUSLY GRADED email so that
+        client-side graders in inference.py can score correctly.
         """
         emails_remaining = max(0, len(self._email_queue) - self._current_idx - 1)
 
-        # Ground truth for the email just graded (for client-side graders)
-        graded_meta: Dict[str, Any] = {}
+        metadata: Dict[str, Any] = {
+            "step":       self._state.step_count,
+            "episode_id": self._state.episode_id,
+            "streak":     self._streak,
+        }
+
+        # Only include ground truth for the email that was JUST graded
+        # (i.e. the previous email, not the one being shown now)
         if graded_email:
-            graded_meta = {
-                "graded_true_priority":      graded_email["priority"],
-                "graded_true_category":      graded_email["category"],
-                "graded_true_route":         graded_email["route"],
-                "graded_is_business_critical": graded_email.get("is_business_critical", False),
-            }
+            metadata["graded_true_priority"]       = graded_email["priority"]
+            metadata["graded_true_category"]       = graded_email["category"]
+            metadata["graded_true_route"]          = graded_email["route"]
+            metadata["graded_is_business_critical"] = graded_email.get("is_business_critical", False)
+            metadata["graded_is_phishing"]         = graded_email.get("is_phishing", False)
+            metadata["graded_cluster_id"]          = graded_email.get("cluster_id")
+
+        # Contextual hints (NOT answers) for the current email
+        # These help the agent without leaking the correct classification
+        if email.get("is_phishing"):
+            # Don't reveal it's phishing — that's the test!
+            pass
+        if email.get("cluster_id"):
+            metadata["linked_incident"] = True  # hint that this relates to another email
 
         return EmailTriageObservation(
-            # Current email
             email_id      = email["email_id"],
             email_subject = email["subject"],
             email_sender  = email["sender"],
             email_body    = email["body"],
-            # Feedback from previous action
             last_priority_correct = self._last_grade.priority_ok if self._last_grade else None,
             last_category_correct = self._last_grade.category_ok if self._last_grade else None,
             last_route_correct    = self._last_grade.route_ok    if self._last_grade else None,
-            # Episode info
             emails_remaining = emails_remaining,
             current_streak   = self._streak,
-            # Standard Observation fields
             done   = done,
             reward = reward,
-            metadata = {
-                "step":                self._state.step_count,
-                "episode_id":          self._state.episode_id,
-                "streak":              self._streak,
-                # Ground truth for NEXT email (agent context)
-                "true_priority":       email["priority"],
-                "true_category":       email["category"],
-                "true_route":          email["route"],
-                "is_business_critical": email.get("is_business_critical", False),
-                # Ground truth for JUST-GRADED email (for client-side graders)
-                **graded_meta,
-            },
+            metadata = metadata,
         )

@@ -4,13 +4,26 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
-"""Email Rl Environment."""
+"""Email Triage RL Environment — OpenEnv package."""
 
+from .models import (
+    CATEGORIES,
+    PRIORITIES,
+    ROUTES,
+    ROUTE_MAP,
+    URGENCY_BONUS,
+    EmailTriageAction,
+    EmailTriageObservation,
+)
 from .client import EmailTriageEnv
-from .models import EmailTriageAction, EmailTriageObservation
 
 __all__ = [
     "EmailTriageAction",
     "EmailTriageObservation",
     "EmailTriageEnv",
+    "CATEGORIES",
+    "PRIORITIES",
+    "ROUTES",
+    "ROUTE_MAP",
+    "URGENCY_BONUS",
 ]

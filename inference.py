@@ -1,4 +1,3 @@
-
 """
 inference.py — Email Triage RL Environment
 ==========================================
@@ -7,38 +6,37 @@ MANDATORY ENVIRONMENT VARIABLES
     MODEL_NAME     The model identifier to use for inference.
     HF_TOKEN       Your Hugging Face / API key.
 
-Defaults (must reflect your active inference setup):
-    API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-    MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
-
 STDOUT FORMAT — strictly followed, no deviation:
     [START] task=<task_name> env=<benchmark> model=<model_name>
     [STEP]  step=<n> action=<action_str> reward=<0.00> done=<true|false> error=<msg|null>
     [END]   success=<true|false> steps=<n> score=<0.000> rewards=<r1,r2,...,rn>
 
-TASKS (3 tasks, each with its own grader, all rewards in [0.0, 1.0]):
-    spam-detection          Binary: did the agent correctly identify spam?
-    priority-classification Binary: did the agent assign the correct urgency level?
-    full-triage             Normalized: weighted correctness across all three fields
+TASKS (4 tasks, each with its own grader, all rewards in [0.0, 1.0]):
+    spam-detection           (easy)   — binary spam vs legitimate
+    priority-classification  (medium) — exact urgency level match
+    full-triage              (hard)   — weighted score across all 3 fields
+    critical-escalation      (hard)   — business-critical → human_review detection
 
-All per-step rewards are normalized to [0.0, 1.0] by the client-side graders.
-Ground truth is read from obs.metadata (embedded by the server in every observation).
+FIX LOG (v2):
+    - Runs FULL EPISODES (reset once, step N times) instead of reset-per-step
+    - Ground truth read from graded_true_* keys (not true_* which leaked answers)
+    - Streak bonus now activates across multi-step episodes
+    - Phishing awareness added to system prompts
 """
 from dotenv import load_dotenv
 load_dotenv()
+
 import asyncio
 import os
 import re
+import sys
 import textwrap
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Optional
 
 import httpx
-from dataclasses import dataclass as _dataclass
 from openai import OpenAI
 
-import sys
-import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 try:
@@ -47,7 +45,11 @@ except ModuleNotFoundError:
     from Email_RL.models import EmailTriageAction, EmailTriageObservation
 
 
-@_dataclass
+# ─────────────────────────────────────────────────────────────────────────────
+# HTTP client for the environment
+# ─────────────────────────────────────────────────────────────────────────────
+
+@dataclass
 class _StepResult:
     observation: EmailTriageObservation
     reward:      float
@@ -55,15 +57,12 @@ class _StepResult:
 
 
 class EmailTriageEnv:
-    """
-    HTTP client for the Email Triage environment.
-    Works against both a local server and a HuggingFace Space.
-    """
+    """HTTP client for the Email Triage environment server."""
 
     def __init__(self, base_url: str) -> None:
-        self._base_url    = base_url.rstrip("/")
-        self._client      = httpx.AsyncClient(timeout=30.0)
-        self._session_id  = None
+        self._base_url   = base_url.rstrip("/")
+        self._client     = httpx.AsyncClient(timeout=60.0)
+        self._session_id = None
 
     async def reset(self) -> _StepResult:
         resp = await self._client.post(f"{self._base_url}/reset")
@@ -73,13 +72,15 @@ class EmailTriageEnv:
         return self._parse(payload)
 
     async def step(self, action: EmailTriageAction) -> _StepResult:
-        action_data = {"priority": action.priority,
-                       "category": action.category,
-                       "route":    action.route}
-        # Format 1: action wrapped (what the server expects when session exists)
+        action_data = {
+            "priority": action.priority,
+            "category": action.category,
+            "route":    action.route,
+        }
         payload: dict = {"action": action_data}
         if self._session_id:
             payload["session_id"] = self._session_id
+
         resp = await self._client.post(f"{self._base_url}/step", json=payload)
 
         # Fallback: flat fields (stateless HTTP mode)
@@ -110,147 +111,118 @@ class EmailTriageEnv:
     def _parse(self, payload: dict) -> _StepResult:
         obs_data = payload.get("observation", {})
         observation = EmailTriageObservation(
-            email_id             = obs_data.get("email_id", ""),
-            email_subject        = obs_data.get("email_subject", ""),
-            email_sender         = obs_data.get("email_sender", ""),
-            email_body           = obs_data.get("email_body", ""),
-            last_priority_correct= obs_data.get("last_priority_correct"),
-            last_category_correct= obs_data.get("last_category_correct"),
-            last_route_correct   = obs_data.get("last_route_correct"),
-            emails_remaining     = obs_data.get("emails_remaining", 0),
-            current_streak       = obs_data.get("current_streak", 0),
-            done                 = payload.get("done", False),
-            reward               = payload.get("reward"),
-            metadata             = obs_data.get("metadata", {}),
+            email_id              = obs_data.get("email_id", ""),
+            email_subject         = obs_data.get("email_subject", ""),
+            email_sender          = obs_data.get("email_sender", ""),
+            email_body            = obs_data.get("email_body", ""),
+            last_priority_correct = obs_data.get("last_priority_correct"),
+            last_category_correct = obs_data.get("last_category_correct"),
+            last_route_correct    = obs_data.get("last_route_correct"),
+            emails_remaining      = obs_data.get("emails_remaining", 0),
+            current_streak        = obs_data.get("current_streak", 0),
+            done                  = payload.get("done", False),
+            reward                = payload.get("reward"),
+            metadata              = obs_data.get("metadata", {}),
         )
         return _StepResult(
-            observation = observation,
-            reward      = payload.get("reward") or 0.0,
-            done        = payload.get("done", False),
+            observation=observation,
+            reward=payload.get("reward") or 0.0,
+            done=payload.get("done", False),
         )
 
-# ── Environment variables (mandatory) ─────────────────────────────────────
-IMAGE_NAME   = os.getenv("IMAGE_NAME")                              # Docker image (optional)
-API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
+
+# ── Environment variables ─────────────────────────────────────────────────
+API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY") or os.getenv("OPENAI_API_KEY")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-1.5B-Instruct")
+MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
 SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")
 
-BENCHMARK  = "Email_RL"
-MAX_STEPS  = 10     # matches EmailTriageEnvironment.EPISODE_LENGTH
-TEMPERATURE = 0.3   # lower = more deterministic classification
-MAX_TOKENS  = 80    # XML response is short
+BENCHMARK   = "Email_RL"
+MAX_STEPS   = 10
+TEMPERATURE = 0.3
+MAX_TOKENS  = 120
 
-# ── Domain constants (must stay in sync with models.py) ───────────────────
+# ── Domain constants ──────────────────────────────────────────────────────
 VALID_PRIORITIES = {"low", "medium", "high", "urgent"}
 VALID_CATEGORIES = {"spam", "newsletter", "support", "sales",
                     "internal", "billing", "security"}
 VALID_ROUTES     = {"inbox", "archive", "support_team", "sales_team",
                     "security_team", "billing_team", "trash", "human_review"}
 
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Client-side graders — each returns a float in [0.0, 1.0]
-# Ground truth is read from obs.metadata which the server embeds in every
-# observation: {"true_priority": ..., "true_category": ..., "true_route": ...}
+# Ground truth is read from obs.metadata GRADED keys (post-action, no leakage)
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _extract_graded_truth(metadata: Dict) -> Dict:
+    """
+    Extract ground truth for the JUST-GRADED email from metadata.
+    Uses graded_true_* keys which are only available AFTER the agent acts.
+    Falls back to true_* keys for backward compatibility.
+    """
+    return {
+        "true_priority":        metadata.get("graded_true_priority",
+                                metadata.get("true_priority", "")),
+        "true_category":        metadata.get("graded_true_category",
+                                metadata.get("true_category", "")),
+        "true_route":           metadata.get("graded_true_route",
+                                metadata.get("true_route", "")),
+        "is_business_critical": metadata.get("graded_is_business_critical",
+                                metadata.get("is_business_critical", False)),
+    }
+
+
 def _grade_spam_detection(action: EmailTriageAction, metadata: Dict) -> float:
-    """
-    Binary spam detection grader.
-
-    Score = 1.0 when the agent correctly identifies spam vs. legitimate.
-    Score = 0.0 otherwise.
-
-    The agent still outputs all three fields (priority/category/route) but
-    only the binary spam/not-spam signal from `category` is scored here.
-    """
-    true_is_spam = metadata.get("true_category", "") == "spam"
+    """Binary: did the agent correctly identify spam vs legitimate?"""
+    truth = _extract_graded_truth(metadata)
+    true_is_spam = truth["true_category"] == "spam"
     pred_is_spam = action.category.strip().lower() == "spam"
     return 1.0 if true_is_spam == pred_is_spam else 0.0
 
 
 def _grade_priority_classification(action: EmailTriageAction, metadata: Dict) -> float:
-    """
-    Binary priority classification grader.
-
-    Score = 1.0 when the agent assigns the exact correct urgency level.
-    Score = 0.0 otherwise.
-
-    Strict match required — 'medium' when ground truth is 'high' scores 0.0.
-    This teaches the model to distinguish urgency levels precisely.
-    """
-    true_priority = metadata.get("true_priority", "").strip().lower()
-    pred_priority = action.priority.strip().lower()
-    return 1.0 if pred_priority == true_priority else 0.0
+    """Binary: exact priority level match."""
+    truth = _extract_graded_truth(metadata)
+    true_p = truth["true_priority"].strip().lower()
+    pred_p = action.priority.strip().lower()
+    return 1.0 if pred_p == true_p else 0.0
 
 
 def _grade_full_triage(action: EmailTriageAction, metadata: Dict) -> float:
-    """
-    Normalized full triage grader — scores all three fields.
+    """Normalized weighted score across all 3 fields. Returns [0.0, 1.0]."""
+    truth = _extract_graded_truth(metadata)
+    true_p = truth["true_priority"].strip().lower()
+    true_c = truth["true_category"].strip().lower()
+    true_r = truth["true_route"].strip().lower()
 
-    Uses the same weighted formula as the server (from TriageGrader.base_score)
-    but normalises the result to [0.0, 1.0] by dividing by the maximum
-    possible base score of 2.1.
+    pred_p = action.priority.strip().lower()
+    pred_c = action.category.strip().lower()
+    pred_r = action.route.strip().lower()
 
-    Weights:
-        priority  1.0  (most important signal)
-        category  0.5
-        route     0.3
-        format bonus   +0.1  (priority correct + ≥1 other correct)
-        perfect bonus  +0.2  (all three correct)
-        max possible = 2.1
+    p_ok = (pred_p == true_p) and (pred_p in VALID_PRIORITIES)
+    c_ok = (pred_c == true_c) and (pred_c in VALID_CATEGORIES)
+    r_ok = (pred_r == true_r) and (pred_r in VALID_ROUTES)
 
-    Returns a float in [0.0, 1.0].
-    """
-    true_priority = metadata.get("true_priority", "").strip().lower()
-    true_category = metadata.get("true_category", "").strip().lower()
-    true_route    = metadata.get("true_route",    "").strip().lower()
-
-    pred_priority = action.priority.strip().lower()
-    pred_category = action.category.strip().lower()
-    pred_route    = action.route.strip().lower()
-
-    priority_ok = (pred_priority == true_priority) and (pred_priority in VALID_PRIORITIES)
-    category_ok = (pred_category == true_category) and (pred_category in VALID_CATEGORIES)
-    route_ok    = (pred_route    == true_route)    and (pred_route    in VALID_ROUTES)
-
-    score = 1.0 * priority_ok + 0.5 * category_ok + 0.3 * route_ok
-    if priority_ok and (category_ok or route_ok):
+    score = 1.0 * p_ok + 0.5 * c_ok + 0.3 * r_ok
+    if p_ok and (c_ok or r_ok):
         score += 0.1
-    if priority_ok and category_ok and route_ok:
+    if p_ok and c_ok and r_ok:
         score += 0.2
-
-    _MAX_BASE_SCORE = 2.1
-    return round(min(score / _MAX_BASE_SCORE, 1.0), 4)
+    return round(min(score / 2.1, 1.0), 4)
 
 
 def _grade_critical_escalation(action: EmailTriageAction, metadata: Dict) -> float:
-    """
-    Binary critical escalation grader.
-
-    Scores whether the agent correctly identifies emails that require human
-    sign-off (legal disputes, large contract negotiations, GDPR/compliance
-    violations, insurance claims, policy changes) and routes them to
-    'human_review', while NOT over-escalating normal emails.
-
-    Score = 1.0 when:
-        - Email IS business-critical AND agent routed to 'human_review'
-        - Email is NOT business-critical AND agent did NOT route to 'human_review'
-    Score = 0.0 when:
-        - Email IS business-critical AND agent routed elsewhere  (missed escalation)
-        - Email is NOT business-critical AND agent routed to 'human_review' (over-escalation)
-
-    Both failure modes are penalised equally — the agent must learn the
-    boundary between routine and critical, not simply always escalate.
-    """
-    is_critical  = bool(metadata.get("is_business_critical", False))
+    """Binary: business-critical → human_review detection."""
+    truth = _extract_graded_truth(metadata)
+    is_critical  = bool(truth["is_business_critical"])
     routed_human = action.route.strip().lower() == "human_review"
 
     if is_critical and routed_human:
-        return 1.0   # correct escalation
+        return 1.0
     if not is_critical and not routed_human:
-        return 1.0   # correct non-escalation
-    return 0.0       # missed escalation or over-escalation
+        return 1.0
+    return 0.0
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -260,36 +232,36 @@ def _grade_critical_escalation(action: EmailTriageAction, metadata: Dict) -> flo
 @dataclass
 class TaskConfig:
     name:              str
+    difficulty:        str
     system_prompt:     str
     grader:            Callable[[EmailTriageAction, Dict], float]
-    success_threshold: float   # minimum mean reward to declare success
+    success_threshold: float
 
 
 TASKS: List[TaskConfig] = [
     TaskConfig(
         name="spam-detection",
+        difficulty="easy",
         success_threshold=0.6,
         grader=_grade_spam_detection,
         system_prompt=textwrap.dedent("""
             You are an email spam filter for a B2B software company.
             Your ONLY job is to decide whether each email is SPAM or LEGITIMATE.
 
-            SPAM emails: unsolicited promotions, prize notifications, phishing,
-                         scam messages, fake lottery winners.
-            LEGITIMATE emails: genuine support requests, billing, internal
-                               communication, sales enquiries, newsletters
-                               from known senders, security alerts.
+            SPAM: unsolicited promotions, prize scams, phishing, fake invoices.
+            LEGITIMATE: genuine support, billing, internal comms, sales, newsletters, security alerts.
 
-            You must still output all three fields, but focus on getting
-            `category` right — use "spam" for spam, or any other valid category
-            for legitimate mail.
+            BEWARE OF PHISHING: Some emails impersonate executives (CEO wire transfer
+            requests), fake IT password resets, or spoofed invoices with changed bank
+            details. These are NOT legitimate — classify as "security" and route to
+            "security_team".
+
+            You must output all three fields, but focus on getting `category` right.
 
             PRIORITY : low | medium | high | urgent
             CATEGORY : spam | newsletter | support | sales | internal | billing | security
             ROUTE    : inbox | archive | support_team | sales_team |
-                       security_team | billing_team | trash
-
-            Reward: 1.0 if you correctly detect spam vs. legitimate, 0.0 otherwise.
+                       security_team | billing_team | trash | human_review
 
             Reply ONLY with these three XML tags:
                 <priority>VALUE</priority>
@@ -300,29 +272,29 @@ TASKS: List[TaskConfig] = [
 
     TaskConfig(
         name="priority-classification",
+        difficulty="medium",
         success_threshold=0.5,
         grader=_grade_priority_classification,
         system_prompt=textwrap.dedent("""
             You are an email urgency classifier for a B2B software company.
-            Your primary job is to assign the correct PRIORITY LEVEL to each email.
+            Assign the correct PRIORITY LEVEL to each email.
 
             PRIORITY LEVELS:
                 low    — no time pressure (spam, newsletters, FYI, optional reads)
-                medium — handle within 1-2 business days (routine support, billing queries,
-                         standard sales leads, internal reminders)
-                high   — handle today (escalated support, large sales opportunities,
-                         overdue payments, access reviews, security audits)
+                medium — handle within 1-2 days (routine support, billing, standard sales, reminders)
+                high   — handle today (escalated support, large sales, overdue payments,
+                         access reviews, security audits, sophisticated phishing attempts)
                 urgent — act immediately (production outages, data breaches, critical CVEs,
-                         severely overdue invoices, suspicious logins)
+                         severely overdue invoices, suspicious logins, CEO fraud attempts)
 
-            You must still output all three fields, but `priority` is what matters most.
+            BEWARE: Phishing emails that impersonate executives or fake urgent IT requests
+            should be classified as "high" or "urgent" priority since they represent
+            active security threats requiring immediate attention.
 
             PRIORITY : low | medium | high | urgent
             CATEGORY : spam | newsletter | support | sales | internal | billing | security
             ROUTE    : inbox | archive | support_team | sales_team |
-                       security_team | billing_team | trash
-
-            Reward: 1.0 if you assign the exact correct priority, 0.0 otherwise.
+                       security_team | billing_team | trash | human_review
 
             Reply ONLY with these three XML tags:
                 <priority>VALUE</priority>
@@ -333,6 +305,7 @@ TASKS: List[TaskConfig] = [
 
     TaskConfig(
         name="full-triage",
+        difficulty="hard",
         success_threshold=0.4,
         grader=_grade_full_triage,
         system_prompt=textwrap.dedent("""
@@ -351,11 +324,17 @@ TASKS: List[TaskConfig] = [
                 security   → security_team
                 BUSINESS CRITICAL (legal/compliance/large contracts/claims) → human_review
 
-            REWARD STRUCTURE (normalized to [0.0, 1.0]):
-                Correct priority  → +1.0    Correct category → +0.5
-                Correct route     → +0.3    All correct      → +0.2 bonus
-                Format bonus (+0.1): priority correct AND ≥1 other field correct
-                Maximum possible score = 2.1, divided to normalize to [0,1].
+            PHISHING DETECTION:
+                Watch for these red flags and route to security_team:
+                - CEO/executive impersonation requesting wire transfers
+                - Fake IT password reset links with suspicious URLs
+                - Invoices with "updated" bank details
+                - Spoofed domains (g00gle, paypa1, docusign-secure.xyz)
+                - Urgency pressure + request for credentials or money
+
+            LINKED INCIDENTS:
+                Some emails may reference the same ongoing incident. Try to route
+                related emails to the same team for consistent handling.
 
             Reply ONLY with these three XML tags:
                 <priority>VALUE</priority>
@@ -366,19 +345,20 @@ TASKS: List[TaskConfig] = [
 
     TaskConfig(
         name="critical-escalation",
+        difficulty="hard",
         success_threshold=0.6,
         grader=_grade_critical_escalation,
         system_prompt=textwrap.dedent("""
             You are an expert email triage assistant for a B2B software company.
-            Your primary job in this task is to identify emails that require
-            HUMAN SIGN-OFF and route them to 'human_review'.
+            Your primary job is to identify emails requiring HUMAN SIGN-OFF
+            and route them to 'human_review'.
 
             ROUTE TO human_review when the email involves:
                 - Legal disputes, lawsuits, cease-and-desist letters
-                - Large contract negotiations (typically $10k+ or enterprise deals)
-                - GDPR / regulatory compliance violations or audit requests
+                - Large contract negotiations ($10k+ or enterprise deals)
+                - GDPR / regulatory compliance violations or audits
                 - Insurance claims or workers compensation
-                - Company-wide policy changes requiring executive or board approval
+                - Company-wide policy changes requiring executive approval
                 - Any email where an automated decision could create legal liability
 
             Route to the STANDARD queue for everything else:
@@ -387,16 +367,14 @@ TASKS: List[TaskConfig] = [
                 internal   → inbox           billing    → billing_team
                 security   → security_team
 
+            IMPORTANT: Do NOT over-escalate. Phishing emails should go to
+            security_team, NOT human_review. Only genuine legal/compliance/
+            contract matters need human_review.
+
             PRIORITY : low | medium | high | urgent
             CATEGORY : spam | newsletter | support | sales | internal | billing | security
             ROUTE    : inbox | archive | support_team | sales_team |
                        security_team | billing_team | trash | human_review
-
-            REWARD STRUCTURE:
-                Business-critical email routed to human_review  → 1.0
-                Normal email NOT routed to human_review         → 1.0
-                Business-critical email routed elsewhere        → 0.0  (missed escalation)
-                Normal email routed to human_review             → 0.0  (over-escalation)
 
             Reply ONLY with these three XML tags:
                 <priority>VALUE</priority>
@@ -417,10 +395,7 @@ _ROUTE_RE    = re.compile(r"<route>\s*([^<]+?)\s*</route>",       re.IGNORECASE)
 
 
 def _parse_action(text: str) -> EmailTriageAction:
-    """
-    Extract (priority, category, route) from the model's XML output.
-    Falls back to safe defaults on parse failure.
-    """
+    """Extract (priority, category, route) from XML output. Safe defaults on failure."""
     p = _PRIORITY_RE.search(text)
     c = _CATEGORY_RE.search(text)
     r = _ROUTE_RE.search(text)
@@ -429,7 +404,6 @@ def _parse_action(text: str) -> EmailTriageAction:
     category = c.group(1).strip().lower() if c else "spam"
     route    = r.group(1).strip().lower() if r else "trash"
 
-    # Validate against allowed vocabularies, fall back on invalid
     if priority not in VALID_PRIORITIES:
         priority = "low"
     if category not in VALID_CATEGORIES:
@@ -441,20 +415,14 @@ def _parse_action(text: str) -> EmailTriageAction:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Stdout logging helpers — must match format exactly
+# Stdout logging — exact format, no deviation
 # ─────────────────────────────────────────────────────────────────────────────
 
 def log_start(task: str, env: str, model: str) -> None:
     print(f"[START] task={task} env={env} model={model}", flush=True)
 
 
-def log_step(
-    step: int,
-    action: str,
-    reward: float,
-    done: bool,
-    error: Optional[str],
-) -> None:
+def log_step(step: int, action: str, reward: float, done: bool, error: Optional[str]) -> None:
     error_val = error if error else "null"
     print(
         f"[STEP] step={step} action={action} "
@@ -463,12 +431,7 @@ def log_step(
     )
 
 
-def log_end(
-    success: bool,
-    steps: int,
-    score: float,
-    rewards: List[float],
-) -> None:
+def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> None:
     rewards_str = ",".join(f"{r:.2f}" for r in rewards)
     print(
         f"[END] success={str(success).lower()} steps={steps} "
@@ -484,27 +447,34 @@ def log_end(
 def _call_llm(
     client: OpenAI,
     system_prompt: str,
-    obs,
+    obs: EmailTriageObservation,
     step: int,
     history: List[str],
 ) -> str:
-    """Build the user prompt and call the LLM. Returns raw text response."""
+    """Build user prompt and call the LLM."""
     feedback = ""
     if obs.last_priority_correct is not None:
-        parts = []
-        parts.append(f"priority={'✓' if obs.last_priority_correct else '✗'}")
-        parts.append(f"category={'✓' if obs.last_category_correct else '✗'}")
-        parts.append(f"route={'✓'    if obs.last_route_correct    else '✗'}")
-        feedback = f"\nPrevious action: {', '.join(parts)} | streak={obs.current_streak}"
+        parts = [
+            f"priority={'✓' if obs.last_priority_correct else '✗'}",
+            f"category={'✓' if obs.last_category_correct else '✗'}",
+            f"route={'✓'    if obs.last_route_correct    else '✗'}",
+        ]
+        feedback = f"\nPrevious action feedback: {', '.join(parts)} | streak={obs.current_streak}"
 
     history_block = ""
     if history:
         history_block = "\nRecent decisions:\n" + "\n".join(f"  {h}" for h in history[-3:])
 
+    # Hint about linked incidents (from metadata, not an answer)
+    linked_hint = ""
+    if obs.metadata and obs.metadata.get("linked_incident"):
+        linked_hint = "\n⚠ This email may be related to another incident in this batch."
+
     user_prompt = textwrap.dedent(f"""
-        Step {step} of {MAX_STEPS} | Emails remaining after this: {obs.emails_remaining}
+        Step {step} | Emails remaining after this: {obs.emails_remaining}
         {feedback}
         {history_block}
+        {linked_hint}
 
         --- EMAIL ---
         From   : {obs.email_sender}
@@ -533,28 +503,18 @@ def _call_llm(
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Single task episode runner
+# Episode runner — FULL EPISODES (reset once, step N times)
 # ─────────────────────────────────────────────────────────────────────────────
 
-async def run_task(
-    client: OpenAI,
-    task: TaskConfig,
-) -> None:
+async def run_task(client: OpenAI, task: TaskConfig) -> None:
     """
     Run one full episode for a single task.
 
-    Emits exactly:
-        [START] ...
-        [STEP]  ... × MAX_STEPS
-        [END]   ...
-
-    Reward computation:
-        1. env.reset() returns obs with metadata containing ground truth for email_0.
-        2. Before each step, cache obs.metadata (ground truth for the current email).
-        3. Take the step → get new obs (for next email).
-        4. Compute task-specific reward from cached metadata + action taken.
-           This reward is always in [0.0, 1.0].
-        5. Log the task-specific reward (not the server's shaped reward).
+    v2 FIX: Runs a proper multi-step episode (reset once, step N times).
+    This means:
+      - Streak bonus can activate across steps
+      - Escalation consequences inject follow-up emails dynamically
+      - Episode length may exceed MAX_STEPS if escalations are injected
     """
     env = EmailTriageEnv(base_url=SERVER_URL)
 
@@ -567,15 +527,16 @@ async def run_task(
     log_start(task=task.name, env=BENCHMARK, model=MODEL_NAME)
 
     try:
-        for step in range(1, MAX_STEPS + 1):
+        # ── Reset once to start the episode ───────────────────────────
+        result = await env.reset()
+        obs    = result.observation
+        done   = result.done
 
-            # ── Reset to get a fresh email ──────────────────────────────
-            # In stateless HTTP mode the server creates a new env instance
-            # per request, so we reset before every step to get a new email.
-            result = await env.reset()
-            obs    = result.observation
+        step = 0
+        while not done and step < MAX_STEPS + 5:  # +5 buffer for injected escalations
+            step += 1
 
-            # ── LLM decision ────────────────────────────────────────────
+            # ── LLM decision ──────────────────────────────────────────
             raw_text = _call_llm(client, task.system_prompt, obs, step, history)
             action   = _parse_action(raw_text)
             action_str = (
@@ -584,38 +545,31 @@ async def run_task(
                 f"route={action.route}"
             )
 
-            # ── Environment step ─────────────────────────────────────────
+            # ── Step the environment ──────────────────────────────────
             result = await env.step(action)
-            obs    = result.observation
-            done   = result.done
-            error: Optional[str] = None
+            new_obs = result.observation
+            done    = result.done
+            error:  Optional[str] = None
 
-            # ── Ground truth for the email just graded ───────────────────
-            step_metadata = obs.metadata or {}
-            graded_metadata = {
-                "true_priority":        step_metadata.get("graded_true_priority",
-                                        step_metadata.get("true_priority", "")),
-                "true_category":        step_metadata.get("graded_true_category",
-                                        step_metadata.get("true_category", "")),
-                "true_route":           step_metadata.get("graded_true_route",
-                                        step_metadata.get("true_route", "")),
-                "is_business_critical": step_metadata.get("graded_is_business_critical",
-                                        step_metadata.get("is_business_critical", False)),
-            }
-
-            # ── Task-specific reward (always in [0.0, 1.0]) ──────────────
-            task_reward = task.grader(action, graded_metadata)
+            # ── Grade using post-action metadata ──────────────────────
+            step_metadata = new_obs.metadata or {}
+            task_reward = task.grader(action, step_metadata)
 
             rewards.append(task_reward)
             steps_taken = step
 
-            log_step(step=step, action=action_str, reward=task_reward, done=(step == MAX_STEPS), error=error)
-
-            history.append(
-                f"Step {step}: {action_str} → reward={task_reward:.2f}"
+            log_step(
+                step=step,
+                action=action_str,
+                reward=task_reward,
+                done=done,
+                error=error,
             )
 
-        # Episode score = mean per-step reward, already in [0.0, 1.0]
+            history.append(f"Step {step}: {action_str} → reward={task_reward:.2f}")
+            obs = new_obs
+
+        # Episode score = mean per-step reward
         score   = sum(rewards) / len(rewards) if rewards else 0.0
         score   = round(min(max(score, 0.0), 1.0), 4)
         success = score >= task.success_threshold
@@ -634,19 +588,16 @@ async def run_task(
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Main — runs all 3 tasks sequentially
+# Main
 # ─────────────────────────────────────────────────────────────────────────────
 
 async def main() -> None:
     """
     Run all 4 tasks in sequence.
-
-    Each task produces its own [START]→[STEP]×N→[END] block.
-    Total runtime: 4 tasks × 10 steps × ~2s per LLM call ≈ 80s
-    Well within the 20-minute limit on vcpu=2 / 8GB RAM.
+    Each task produces [START] → [STEP]×N → [END].
+    Estimated runtime: 4 tasks × ~12 steps × ~2s/call ≈ 100s (well within 20min).
     """
     client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
-
     for task in TASKS:
         await run_task(client, task)
 

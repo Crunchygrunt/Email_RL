@@ -4,8 +4,16 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
-"""Email Rl environment server components."""
+"""Email Triage RL Environment — server package."""
 
-from .Email_RL_environment import EmailTriageEnvironment
+from .Email_RL_environment import (
+    EmailTriageEnvironment,
+    TriageGrader,
+    GradeResult,
+)
 
-__all__ = ["EmailTriageEnvironment"]
+__all__ = [
+    "EmailTriageEnvironment",
+    "TriageGrader",
+    "GradeResult",
+]
