@@ -52,24 +52,17 @@ app = create_app(
 )
 
 
-def main(host: str = "0.0.0.0", port: int = 8000) -> None:
-    """
-    Entry point for direct execution via uv run or python -m.
-
-    Examples:
-        uv run --project . server
-        uv run --project . server --port 8001
-        python -m Email_RL.server.app
-    """
-    import uvicorn
-    uvicorn.run(app, host=host, port=port)
-
-
-if __name__ == "__main__":
+def main() -> None:
     import argparse
+    import uvicorn
 
     parser = argparse.ArgumentParser(description="Email Triage RL Environment Server")
     parser.add_argument("--host", type=str, default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
-    main(host=args.host, port=args.port)
+
+    uvicorn.run(app, host=args.host, port=args.port)
+
+
+if __name__ == "__main__":
+    main()
