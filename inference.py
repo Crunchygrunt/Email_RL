@@ -131,7 +131,9 @@ class EmailTriageEnv:
 
 
 # -- Environment variables ----------------------------------------------
-API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY") or os.getenv("OPENAI_API_KEY")
+# For LLM calls: prefer OPENAI_API_KEY (works with OpenRouter, OpenAI, etc.)
+# Fall back to HF_TOKEN only if nothing else is set
+API_KEY      = os.getenv("OPENAI_API_KEY") or os.getenv("API_KEY") or os.getenv("HF_TOKEN")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
 SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")
