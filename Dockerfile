@@ -27,6 +27,9 @@ RUN if ! command -v uv >/dev/null 2>&1; then \
         mv /root/.local/bin/uvx /usr/local/bin/uvx; \
     fi
 
+# Remove any stale venv copied from host and create a fresh one
+RUN rm -rf /app/env/.venv && uv venv /app/env/.venv
+
 RUN --mount=type=cache,target=/root/.cache/uv \
     if [ -f uv.lock ]; then \
         uv sync --frozen --no-install-project --no-editable; \
