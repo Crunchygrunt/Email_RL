@@ -142,4 +142,3 @@ class EmailTriageObservation(Observation):
         default=0,
         description="Consecutive perfectly triaged emails so far",
     )
-
