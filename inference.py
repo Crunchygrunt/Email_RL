@@ -1,22 +1,24 @@
 """
 inference.py -- Email Triage RL Environment
-==========================================
+===========================================
+
 MANDATORY ENVIRONMENT VARIABLES
-    API_BASE_URL   The API endpoint for the LLM.
-    MODEL_NAME     The model identifier to use for inference.
-    HF_TOKEN       Your Hugging Face / API key.
+API_BASE_URL   The API endpoint for the LLM.
+MODEL_NAME     The model identifier to use for inference.
+HF_TOKEN       Your Hugging Face / API key.
 
 STDOUT FORMAT -- strictly followed, no deviation:
-    [START] task=<task_name> env=<benchmark> model=<model_name>
-    [STEP]  step=<n> action=<action_str> reward=<0.00> done=<true|false> error=<msg|null>
-    [END]   success=<true|false> steps=<n> score=<0.000> rewards=<r1,r2,...,rn>
+[START] task=<task_name> env=<benchmark> model=<model_name>
+[STEP]  step=<n> action=<action_str> reward=<0.00> done=<true|false> error=<msg|null>
+[END]   success=<true|false> steps=<n> score=<0.000> rewards=<r1,r2,...,rn>
 
 TASKS (4 tasks, each with its own grader, all rewards in [0.0, 1.0]):
-    spam-detection           (easy)   -- binary spam vs legitimate
-    priority-classification  (medium) -- exact urgency level match
-    full-triage              (hard)   -- weighted score across all 3 fields
-    critical-escalation      (hard)   -- business-critical -> human_review detection
+spam-detection           (easy)   -- binary spam vs legitimate
+priority-classification  (medium) -- exact urgency level match
+full-triage              (hard)   -- weighted score across all 3 fields
+critical-escalation      (hard)   -- business-critical to human_review detection
 """
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -38,17 +40,13 @@ try:
 except ModuleNotFoundError:
     from Email_RL.models import EmailTriageAction, EmailTriageObservation
 
-
-# ---------------------------------------------------------------------------
-# HTTP client for the environment
-# ---------------------------------------------------------------------------
+from dataclasses import dataclass
 
 @dataclass
 class _StepResult:
     observation: EmailTriageObservation
-    reward:      float
-    done:        bool
-
+    reward: float
+    done: bool
 
 class EmailTriageEnv:
     """HTTP client for the Email Triage environment server."""
@@ -126,7 +124,7 @@ class EmailTriageEnv:
 
 
 # -- Environment variables ----------------------------------------------
-API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY") or os.getenv("OPENAI_API_KEY")
+API_KEY      = os.getenv("OPENAI_API_KEY") or os.getenv("HF_TOKEN") or os.getenv("API_KEY") 
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
 SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")
@@ -592,5 +590,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(main())_":
     asyncio.run(main())
