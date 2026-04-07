@@ -136,7 +136,11 @@ class EmailTriageEnv:
 # Environment variables -- per hackathon guidelines
 # ---------------------------------------------------------------------------
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+# API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
+
 MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
+# MODEL_NAME   = os.getenv("MODEL_NAME",   "qwen/qwen-2.5-72b-instruct")
+
 HF_TOKEN     = os.getenv("HF_TOKEN")
 SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")
 
@@ -599,11 +603,6 @@ async def main() -> None:
     Each task: [START] -> [STEP] x 10 -> [END].
     Estimated: 4 tasks x 10 steps x ~2s/call = ~80s (well within 20min).
     """
-    print(f"[CONFIG] API_BASE_URL={API_BASE_URL}", file=sys.stderr, flush=True)
-    print(f"[CONFIG] MODEL_NAME={MODEL_NAME}", file=sys.stderr, flush=True)
-    print(f"[CONFIG] HF_TOKEN={'SET' if HF_TOKEN else 'MISSING'}", file=sys.stderr, flush=True)
-    print(f"[CONFIG] SERVER_URL={SERVER_URL}", file=sys.stderr, flush=True)
-
     client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
     for task in TASKS:
         await run_task(client, task)

@@ -1,6 +1,6 @@
 ---
 title: Algorithm Architects Email RL
-emoji: 📬
+emoji: mail
 colorFrom: indigo
 colorTo: pink
 sdk: docker
@@ -164,10 +164,10 @@ API Endpoints
 
 Baseline Scores
 
-- spam-detection: ~0.85  
-- priority-classification: ~0.60  
-- full-triage: ~0.50  
-- critical-escalation: ~0.65  
+- spam-detection (Easy): 1.000
+- priority-classification (Medium): 0.500
+- full-triage (Hard): 0.615
+- critical-escalation (Hard): 0.900
 
 Project Structure
 
