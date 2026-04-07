@@ -69,6 +69,10 @@ class EmailTriageAction(Action):
       category  -- what type of email is this?
       route     -- which queue / team should receive it?
 
+    For advanced tasks, the agent also outputs:
+      action_plan    -- JSON string describing what actions to take
+      threat_report  -- JSON string with security threat assessment
+
     For business-critical emails (legal disputes, large contract negotiations,
     compliance violations, insurance claims, policy changes) the correct route
     is 'human_review' regardless of category.
@@ -96,6 +100,14 @@ class EmailTriageAction(Action):
             "One of: inbox, archive, support_team, sales_team, "
             "security_team, billing_team, trash, human_review"
         ),
+    )
+    action_plan: Optional[str] = Field(
+        default=None,
+        description="JSON action plan for orchestrator task (optional)",
+    )
+    threat_report: Optional[str] = Field(
+        default=None,
+        description="JSON threat assessment for security task (optional)",
     )
 
 

@@ -1,5 +1,3 @@
-
-
 spec_version: 1
 name: Algorithm_Architects_Email_RL
 type: space
@@ -26,3 +24,5 @@ tasks:
   - priority-classification
   - full-triage
   - critical-escalation
+  - action-orchestrator
+  - threat-assessment

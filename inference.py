@@ -21,6 +21,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import asyncio
+import json
 import os
 import re
 import sys
@@ -135,11 +136,11 @@ class EmailTriageEnv:
 # ---------------------------------------------------------------------------
 # Environment variables -- per hackathon guidelines
 # ---------------------------------------------------------------------------
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-# API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
+# API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
 
-MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
-# MODEL_NAME   = os.getenv("MODEL_NAME",   "qwen/qwen-2.5-72b-instruct")
+# MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
+MODEL_NAME   = os.getenv("MODEL_NAME",   "qwen/qwen-2.5-72b-instruct")
 
 HF_TOKEN     = os.getenv("HF_TOKEN")
 SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")
@@ -150,7 +151,7 @@ if HF_TOKEN is None:
 BENCHMARK   = "Email_RL"
 MAX_STEPS   = 10
 TEMPERATURE = 0.3
-MAX_TOKENS  = 120
+MAX_TOKENS  = 500  # increased for action_plan and threat_report JSON
 
 # -- Domain constants ---------------------------------------------------
 VALID_PRIORITIES = {"low", "medium", "high", "urgent"}
@@ -234,6 +235,262 @@ def _grade_critical_escalation(action: EmailTriageAction, obs_data: Dict) -> flo
     if not is_critical and not routed_human:
         return 1.0
     return 0.0
+
+
+# ---------------------------------------------------------------------------
+# NEW GRADER: Action Orchestrator
+# Scores the quality of an action plan based on email context
+# ---------------------------------------------------------------------------
+
+# Expected systems per category/priority
+_EXPECTED_SYSTEMS = {
+    "urgent": {"pagerduty", "slack"},
+    "high": {"jira", "slack"},
+    "medium": {"jira"},
+    "low": set(),
+}
+
+_EXPECTED_SYSTEMS_BY_CATEGORY = {
+    "security": {"security_scan", "slack"},
+    "billing": {"accounting", "email"},
+    "support": {"jira", "email"},
+    "sales": {"crm", "email", "calendar"},
+    "internal": {"slack"},
+    "spam": set(),
+    "newsletter": set(),
+}
+
+_EXPECTED_STAKEHOLDERS = {
+    "urgent": {"cto", "vp engineering", "on-call engineer", "account manager"},
+    "high": {"team lead", "account manager"},
+    "medium": {"team lead"},
+    "low": set(),
+}
+
+
+def _parse_json_field(text: Optional[str]) -> Optional[Dict]:
+    """Safely parse a JSON string, return None on failure."""
+    if not text or not text.strip():
+        return None
+    text = text.strip()
+    if text.startswith("```"):
+        lines = text.split("\n")
+        lines = [l for l in lines if not l.strip().startswith("```")]
+        text = "\n".join(lines)
+    try:
+        return json.loads(text)
+    except (json.JSONDecodeError, ValueError):
+        start = text.find("{")
+        end = text.rfind("}") + 1
+        if start >= 0 and end > start:
+            try:
+                return json.loads(text[start:end])
+            except (json.JSONDecodeError, ValueError):
+                pass
+    return None
+
+
+def _grade_action_orchestrator(action: EmailTriageAction, obs_data: Dict) -> float:
+    """
+    Grades the action plan quality.
+
+    Scoring (total 1.0):
+      0.20 -- valid JSON with 'actions' list
+      0.25 -- actions mention appropriate systems for the email priority/category
+      0.20 -- sla_deadline present and reasonable
+      0.20 -- stakeholders_to_notify present and relevant
+      0.15 -- response_draft present with appropriate tone
+    """
+    truth = _extract_graded_truth(obs_data)
+    true_priority = truth.get("true_priority", "medium")
+    true_category = truth.get("true_category", "support")
+
+    plan = _parse_json_field(action.action_plan)
+    if plan is None:
+        return 0.0
+
+    score = 0.0
+
+    # 1. Valid structure with actions list (0.20)
+    actions = plan.get("actions")
+    if isinstance(actions, list) and len(actions) > 0:
+        score += 0.20
+
+        # 2. Appropriate systems mentioned (0.25)
+        mentioned_systems = set()
+        for a in actions:
+            if isinstance(a, dict):
+                sys_name = str(a.get("system", "")).lower()
+                if sys_name:
+                    mentioned_systems.add(sys_name)
+
+        expected_by_priority = _EXPECTED_SYSTEMS.get(true_priority, set())
+        expected_by_category = _EXPECTED_SYSTEMS_BY_CATEGORY.get(true_category, set())
+        all_expected = expected_by_priority | expected_by_category
+
+        if all_expected:
+            overlap = mentioned_systems & all_expected
+            system_ratio = len(overlap) / len(all_expected) if all_expected else 0
+            score += 0.25 * min(system_ratio, 1.0)
+        else:
+            # Low priority, no specific systems expected -- give credit for any plan
+            score += 0.15 if len(mentioned_systems) > 0 else 0.0
+
+    # 3. SLA deadline present and reasonable (0.20)
+    sla = plan.get("sla_deadline") or plan.get("sla") or plan.get("deadline")
+    if sla:
+        sla_str = str(sla).lower()
+        if true_priority == "urgent" and any(w in sla_str for w in ["1 hour", "30 min", "immediate", "asap"]):
+            score += 0.20
+        elif true_priority == "high" and any(w in sla_str for w in ["4 hour", "today", "same day", "end of day"]):
+            score += 0.20
+        elif true_priority in ("medium", "low"):
+            score += 0.15  # any SLA is reasonable for lower priority
+        else:
+            score += 0.05  # present but not well-calibrated
+
+    # 4. Stakeholders present and relevant (0.20)
+    stakeholders = plan.get("stakeholders_to_notify") or plan.get("stakeholders") or plan.get("notify")
+    if isinstance(stakeholders, list) and len(stakeholders) > 0:
+        stakeholder_lower = {str(s).lower() for s in stakeholders}
+        expected_stakeholders = _EXPECTED_STAKEHOLDERS.get(true_priority, set())
+        if expected_stakeholders:
+            overlap = sum(1 for es in expected_stakeholders if any(es in sl for sl in stakeholder_lower))
+            ratio = overlap / len(expected_stakeholders)
+            score += 0.20 * min(ratio, 1.0)
+        else:
+            score += 0.10  # low priority, any stakeholder list is fine
+
+    # 5. Response draft present (0.15)
+    has_response = False
+    if isinstance(actions, list):
+        for a in actions:
+            if isinstance(a, dict):
+                if a.get("action") in ("draft_reply", "reply", "respond", "email"):
+                    has_response = True
+                if "response" in str(a.get("system", "")).lower():
+                    has_response = True
+                if a.get("message") or a.get("draft") or a.get("body"):
+                    has_response = True
+    if plan.get("response_draft") or plan.get("draft") or plan.get("reply"):
+        has_response = True
+    if has_response:
+        score += 0.15
+
+    return round(min(score, 1.0), 4)
+
+
+# ---------------------------------------------------------------------------
+# NEW GRADER: Threat Assessment
+# Scores security threat detection quality
+# ---------------------------------------------------------------------------
+
+_PHISHING_INDICATORS = {
+    "spoofed_domain", "suspicious_url", "urgency_pressure", "credential_request",
+    "unusual_request", "secrecy_pressure", "ceo_impersonation", "executive_impersonation",
+    "changed_bank_details", "fake_login", "typosquatting", "impersonation",
+}
+
+_ATTACK_VECTORS = {
+    "ceo_impersonation", "business_email_compromise", "credential_phishing",
+    "invoice_fraud", "spear_phishing", "fake_document", "fake_it_support",
+}
+
+
+def _grade_threat_assessment(action: EmailTriageAction, obs_data: Dict) -> float:
+    """
+    Grades security threat assessment quality.
+
+    Scoring (total 1.0):
+      0.30 -- correct threat/no-threat classification
+      0.20 -- threat_type or attack_vector identified (if phishing)
+      0.20 -- indicators list quality (if phishing)
+      0.15 -- recommended_actions present and sensible
+      0.15 -- risk_score calibrated to actual threat level
+    """
+    truth = _extract_graded_truth(obs_data)
+    is_phishing = bool(obs_data.get("is_phishing", False))
+    true_category = truth.get("true_category", "")
+
+    report = _parse_json_field(action.threat_report)
+    if report is None:
+        # No report -- partial credit if agent at least got category right
+        if is_phishing and action.category.strip().lower() == "security":
+            return 0.15
+        if not is_phishing and action.category.strip().lower() != "security":
+            return 0.15
+        return 0.0
+
+    score = 0.0
+
+    # 1. Correct threat classification (0.30)
+    is_threat = report.get("is_threat", report.get("threat_detected", False))
+    threat_type = str(report.get("threat_type", "")).lower()
+    risk_score_val = report.get("risk_score", 0)
+
+    if is_phishing:
+        # Should detect as threat
+        if is_threat or threat_type not in ("", "none", "legitimate") or (isinstance(risk_score_val, (int, float)) and risk_score_val > 5):
+            score += 0.30
+    else:
+        # Should NOT flag as threat
+        if not is_threat and threat_type in ("", "none", "legitimate", "low_risk"):
+            score += 0.30
+        elif isinstance(risk_score_val, (int, float)) and risk_score_val <= 3:
+            score += 0.20
+
+    # For non-phishing emails, remaining criteria are less relevant
+    if not is_phishing:
+        # Give partial credit for having a structured report
+        if isinstance(report, dict) and len(report) >= 3:
+            score += 0.10
+        return round(min(score, 1.0), 4)
+
+    # 2. Attack vector identified (0.20) -- only for phishing
+    if threat_type:
+        known_vectors = _ATTACK_VECTORS | {"phishing", "social_engineering", "bec", "fraud"}
+        if any(v in threat_type for v in known_vectors):
+            score += 0.20
+        else:
+            score += 0.05  # some attempt
+
+    # 3. Indicators list quality (0.20) -- only for phishing
+    indicators = report.get("indicators", [])
+    if isinstance(indicators, list) and len(indicators) > 0:
+        indicator_lower = {str(i).lower().replace(" ", "_") for i in indicators}
+        known_hits = sum(1 for ki in _PHISHING_INDICATORS if any(ki in il for il in indicator_lower))
+        if known_hits >= 3:
+            score += 0.20
+        elif known_hits >= 2:
+            score += 0.15
+        elif known_hits >= 1:
+            score += 0.10
+        else:
+            score += 0.05  # has indicators but not from known set
+
+    # 4. Recommended actions (0.15)
+    rec_actions = report.get("recommended_actions", [])
+    if isinstance(rec_actions, list) and len(rec_actions) > 0:
+        action_str = " ".join(str(a).lower() for a in rec_actions)
+        good_actions = ["quarantine", "notify", "security", "block", "investigate", "verify", "report"]
+        hits = sum(1 for ga in good_actions if ga in action_str)
+        if hits >= 2:
+            score += 0.15
+        elif hits >= 1:
+            score += 0.10
+        else:
+            score += 0.05
+
+    # 5. Risk score calibration (0.15)
+    if isinstance(risk_score_val, (int, float)):
+        if 7.0 <= risk_score_val <= 10.0:
+            score += 0.15  # high risk for phishing = correct
+        elif 5.0 <= risk_score_val < 7.0:
+            score += 0.10
+        elif risk_score_val > 0:
+            score += 0.05
+
+    return round(min(score, 1.0), 4)
 
 
 # ---------------------------------------------------------------------------
@@ -389,6 +646,93 @@ TASKS: List[TaskConfig] = [
                 <route>VALUE</route>
         """).strip(),
     ),
+
+    TaskConfig(
+        name="action-orchestrator",
+        difficulty="hard",
+        success_threshold=0.3,
+        grader=_grade_action_orchestrator,
+        system_prompt=textwrap.dedent("""
+            You are an AI Chief of Staff for a B2B software company.
+            For each email, you must BOTH classify it AND generate a complete action plan.
+
+            CLASSIFICATION (same as before):
+                PRIORITY : low | medium | high | urgent
+                CATEGORY : spam | newsletter | support | sales | internal | billing | security
+                ROUTE    : inbox | archive | support_team | sales_team |
+                           security_team | billing_team | trash | human_review
+
+            ACTION PLAN -- a JSON object describing what to do about this email:
+                "actions": list of actions, each with:
+                    "system": which tool/platform (pagerduty, slack, jira, email, calendar, crm, accounting, security_scan)
+                    "action": what to do (create_incident, send_message, create_ticket, draft_reply, schedule_meeting, etc.)
+                    "details": brief description
+                "sla_deadline": how quickly must this be handled ("1 hour", "4 hours", "end of day", "this week")
+                "stakeholders_to_notify": list of roles to involve (["CTO", "VP Engineering", "Account Manager", "Team Lead", "On-Call Engineer"])
+                "response_draft": brief 1-2 sentence reply to the sender (if reply needed)
+
+            EXAMPLES:
+                Urgent production outage -> pagerduty P1, slack #incidents, jira ticket, SLA 1 hour, notify CTO + on-call
+                Sales RFP with deadline -> crm update, calendar demo, email reply, SLA end of day, notify team lead
+                Spam email -> no actions needed, SLA: none
+
+            Reply with these XML tags:
+                <priority>VALUE</priority>
+                <category>VALUE</category>
+                <route>VALUE</route>
+                <action_plan>{"actions": [...], "sla_deadline": "...", "stakeholders_to_notify": [...], "response_draft": "..."}</action_plan>
+        """).strip(),
+    ),
+
+    TaskConfig(
+        name="threat-assessment",
+        difficulty="hard",
+        success_threshold=0.3,
+        grader=_grade_threat_assessment,
+        system_prompt=textwrap.dedent("""
+            You are a cybersecurity analyst for a B2B software company.
+            For each email, you must classify it AND produce a threat assessment report.
+
+            CLASSIFICATION (same as before):
+                PRIORITY : low | medium | high | urgent
+                CATEGORY : spam | newsletter | support | sales | internal | billing | security
+                ROUTE    : inbox | archive | support_team | sales_team |
+                           security_team | billing_team | trash | human_review
+
+            THREAT ASSESSMENT -- a JSON object evaluating security risk:
+                "is_threat": true or false
+                "threat_type": type of attack if threat detected
+                    Options: "business_email_compromise", "credential_phishing", "invoice_fraud",
+                             "spear_phishing", "ceo_impersonation", "fake_it_support",
+                             "fake_document", "social_engineering", "none"
+                "confidence": 0.0 to 1.0 (how sure are you)
+                "indicators": list of red flags found
+                    Options: "spoofed_domain", "suspicious_url", "urgency_pressure",
+                             "credential_request", "unusual_request", "secrecy_pressure",
+                             "ceo_impersonation", "changed_bank_details", "typosquatting",
+                             "fake_login", "impersonation"
+                "recommended_actions": what to do
+                    Options: "quarantine", "notify_security", "block_sender", "investigate",
+                             "verify_with_sender", "report_phishing", "no_action"
+                "risk_score": 0.0 to 10.0 (0 = safe, 10 = critical threat)
+
+            RED FLAGS TO WATCH FOR:
+                - CEO/executive requesting wire transfers or secrecy
+                - Suspicious URLs (g00gle, paypa1, -secure.xyz domains)
+                - Changed bank details on invoices
+                - Fake password reset or account verification links
+                - Urgency + credential requests combined
+
+            FOR LEGITIMATE EMAILS: set is_threat=false, threat_type="none",
+                indicators=[], risk_score between 0.0-2.0
+
+            Reply with these XML tags:
+                <priority>VALUE</priority>
+                <category>VALUE</category>
+                <route>VALUE</route>
+                <threat_report>{"is_threat": ..., "threat_type": "...", "confidence": ..., "indicators": [...], "recommended_actions": [...], "risk_score": ...}</threat_report>
+        """).strip(),
+    ),
 ]
 
 
@@ -396,16 +740,20 @@ TASKS: List[TaskConfig] = [
 # XML parser
 # ---------------------------------------------------------------------------
 
-_PRIORITY_RE = re.compile(r"<priority>\s*([^<]+?)\s*</priority>", re.IGNORECASE)
-_CATEGORY_RE = re.compile(r"<category>\s*([^<]+?)\s*</category>", re.IGNORECASE)
-_ROUTE_RE    = re.compile(r"<route>\s*([^<]+?)\s*</route>",       re.IGNORECASE)
+_PRIORITY_RE    = re.compile(r"<priority>\s*([^<]+?)\s*</priority>", re.IGNORECASE)
+_CATEGORY_RE    = re.compile(r"<category>\s*([^<]+?)\s*</category>", re.IGNORECASE)
+_ROUTE_RE       = re.compile(r"<route>\s*([^<]+?)\s*</route>",       re.IGNORECASE)
+_ACTION_PLAN_RE = re.compile(r"<action_plan>\s*(.*?)\s*</action_plan>", re.IGNORECASE | re.DOTALL)
+_THREAT_RE      = re.compile(r"<threat_report>\s*(.*?)\s*</threat_report>", re.IGNORECASE | re.DOTALL)
 
 
 def _parse_action(text: str) -> EmailTriageAction:
-    """Extract (priority, category, route) from XML output. Safe defaults on failure."""
+    """Extract all fields from XML output. Safe defaults on failure."""
     p = _PRIORITY_RE.search(text)
     c = _CATEGORY_RE.search(text)
     r = _ROUTE_RE.search(text)
+    ap = _ACTION_PLAN_RE.search(text)
+    tr = _THREAT_RE.search(text)
 
     priority = p.group(1).strip().lower() if p else "low"
     category = c.group(1).strip().lower() if c else "spam"
@@ -418,7 +766,16 @@ def _parse_action(text: str) -> EmailTriageAction:
     if route not in VALID_ROUTES:
         route = "trash"
 
-    return EmailTriageAction(priority=priority, category=category, route=route)
+    action_plan    = ap.group(1).strip() if ap else None
+    threat_report  = tr.group(1).strip() if tr else None
+
+    return EmailTriageAction(
+        priority=priority,
+        category=category,
+        route=route,
+        action_plan=action_plan,
+        threat_report=threat_report,
+    )
 
 
 # ---------------------------------------------------------------------------
