@@ -1,3 +1,6 @@
+title: Algorithm Architects Email RL emoji: mail colorFrom: blue colorTo: purple sdk: docker app_port: 8000 tags:
+
+openenv
 Email Triage RL -- OpenEnv Environment
 An OpenEnv environment where AI agents learn to prioritize, categorize, and route business emails for a fictional B2B SaaS company. This simulates a genuine daily task performed by support teams, operations staff, and account managers at every company.
 
