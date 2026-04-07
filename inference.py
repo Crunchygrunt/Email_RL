@@ -2,25 +2,20 @@
 inference.py -- Email Triage RL Environment
 ==========================================
 MANDATORY ENVIRONMENT VARIABLES
-    API_BASE_URL   The API endpoint for the LLM.
-    MODEL_NAME     The model identifier to use for inference.
-    HF_TOKEN       Your Hugging Face / API key.
+    API_BASE_URL   The API endpoint for the LLM (must have default).
+    MODEL_NAME     The model identifier to use for inference (must have default).
+    HF_TOKEN       Your Hugging Face / API key (mandatory, no default).
 
 STDOUT FORMAT -- strictly followed, no deviation:
     [START] task=<task_name> env=<benchmark> model=<model_name>
     [STEP]  step=<n> action=<action_str> reward=<0.00> done=<true|false> error=<msg|null>
-    [END]   success=<true|false> steps=<n> score=<0.000> rewards=<r1,r2,...,rn>
+    [END]   success=<true|false> steps=<n> rewards=<r1,r2,...,rn>
 
 TASKS (4 tasks, each with its own grader, all rewards in [0.0, 1.0]):
     spam-detection           (easy)   -- binary spam vs legitimate
     priority-classification  (medium) -- exact urgency level match
     full-triage              (hard)   -- weighted score across all 3 fields
     critical-escalation      (hard)   -- business-critical -> human_review detection
-
-NOTE: The server runs in STATELESS HTTP mode -- each request gets a fresh
-environment instance. This script does reset() + step() per email, running
-MAX_STEPS pairs per task. Ground truth for grading comes from the step()
-response metadata (graded_true_* keys).
 """
 from dotenv import load_dotenv
 load_dotenv()
@@ -137,13 +132,16 @@ class EmailTriageEnv:
         )
 
 
-# -- Environment variables ----------------------------------------------
-# For LLM calls: prefer OPENAI_API_KEY (works with OpenRouter, OpenAI, etc.)
-# Fall back to HF_TOKEN only if nothing else is set
-API_KEY      = os.getenv("OPENAI_API_KEY") or os.getenv("API_KEY") or os.getenv("HF_TOKEN")
+# ---------------------------------------------------------------------------
+# Environment variables -- per hackathon guidelines
+# ---------------------------------------------------------------------------
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
+HF_TOKEN     = os.getenv("HF_TOKEN")
 SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")
+
+if HF_TOKEN is None:
+    raise ValueError("HF_TOKEN environment variable is required")
 
 BENCHMARK   = "Email_RL"
 MAX_STEPS   = 10
@@ -160,46 +158,47 @@ VALID_ROUTES     = {"inbox", "archive", "support_team", "sales_team",
 
 # ---------------------------------------------------------------------------
 # Client-side graders -- each returns a float in [0.0, 1.0]
-# Ground truth comes from step() response metadata (graded_true_* keys)
 # ---------------------------------------------------------------------------
 
-def _extract_graded_truth(metadata: Dict) -> Dict:
+def _extract_graded_truth(obs_data: Dict) -> Dict:
     """
-    Extract ground truth for the JUST-GRADED email from step() metadata.
-    Uses graded_true_* keys (post-action, no leakage).
-    Falls back to true_* keys for backward compat.
+    Extract ground truth from the observation.
+    Reads from named fields on the observation (true_priority, etc.)
+    since the OpenEnv HTTP framework strips the metadata dict.
+    Falls back to metadata keys for WebSocket mode compatibility.
     """
+    metadata = obs_data.get("metadata") or {}
     return {
-        "true_priority":        metadata.get("graded_true_priority",
+        "true_priority":        obs_data.get("true_priority",
                                 metadata.get("true_priority", "")),
-        "true_category":        metadata.get("graded_true_category",
+        "true_category":        obs_data.get("true_category",
                                 metadata.get("true_category", "")),
-        "true_route":           metadata.get("graded_true_route",
+        "true_route":           obs_data.get("true_route",
                                 metadata.get("true_route", "")),
-        "is_business_critical": metadata.get("graded_is_business_critical",
+        "is_business_critical": obs_data.get("is_business_critical",
                                 metadata.get("is_business_critical", False)),
     }
 
 
-def _grade_spam_detection(action: EmailTriageAction, metadata: Dict) -> float:
+def _grade_spam_detection(action: EmailTriageAction, obs_data: Dict) -> float:
     """Binary: did the agent correctly identify spam vs legitimate?"""
-    truth = _extract_graded_truth(metadata)
+    truth = _extract_graded_truth(obs_data)
     true_is_spam = truth["true_category"] == "spam"
     pred_is_spam = action.category.strip().lower() == "spam"
     return 1.0 if true_is_spam == pred_is_spam else 0.0
 
 
-def _grade_priority_classification(action: EmailTriageAction, metadata: Dict) -> float:
+def _grade_priority_classification(action: EmailTriageAction, obs_data: Dict) -> float:
     """Binary: exact priority level match."""
-    truth = _extract_graded_truth(metadata)
+    truth = _extract_graded_truth(obs_data)
     true_p = truth["true_priority"].strip().lower()
     pred_p = action.priority.strip().lower()
     return 1.0 if pred_p == true_p else 0.0
 
 
-def _grade_full_triage(action: EmailTriageAction, metadata: Dict) -> float:
+def _grade_full_triage(action: EmailTriageAction, obs_data: Dict) -> float:
     """Normalized weighted score across all 3 fields. Returns [0.0, 1.0]."""
-    truth = _extract_graded_truth(metadata)
+    truth = _extract_graded_truth(obs_data)
     true_p = truth["true_priority"].strip().lower()
     true_c = truth["true_category"].strip().lower()
     true_r = truth["true_route"].strip().lower()
@@ -220,9 +219,9 @@ def _grade_full_triage(action: EmailTriageAction, metadata: Dict) -> float:
     return round(min(score / 2.1, 1.0), 4)
 
 
-def _grade_critical_escalation(action: EmailTriageAction, metadata: Dict) -> float:
+def _grade_critical_escalation(action: EmailTriageAction, obs_data: Dict) -> float:
     """Binary: business-critical -> human_review detection."""
-    truth = _extract_graded_truth(metadata)
+    truth = _extract_graded_truth(obs_data)
     is_critical  = bool(truth["is_business_critical"])
     routed_human = action.route.strip().lower() == "human_review"
 
@@ -419,7 +418,7 @@ def _parse_action(text: str) -> EmailTriageAction:
 
 
 # ---------------------------------------------------------------------------
-# Stdout logging -- exact format, no deviation
+# Stdout logging -- exact format per hackathon guidelines
 # ---------------------------------------------------------------------------
 
 def log_start(task: str, env: str, model: str) -> None:
@@ -435,11 +434,11 @@ def log_step(step: int, action: str, reward: float, done: bool, error: Optional[
     )
 
 
-def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> None:
+def log_end(success: bool, steps: int, rewards: List[float]) -> None:
     rewards_str = ",".join(f"{r:.2f}" for r in rewards)
     print(
         f"[END] success={str(success).lower()} steps={steps} "
-        f"score={score:.3f} rewards={rewards_str}",
+        f"rewards={rewards_str}",
         flush=True,
     )
 
@@ -503,7 +502,6 @@ def _call_llm(
         result = (completion.choices[0].message.content or "").strip()
         return result
     except Exception as exc:
-        # Print error to stderr so it doesn't pollute the structured stdout logs
         print(f"[LLM_ERROR] {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
         return ""
 
@@ -515,21 +513,13 @@ def _call_llm(
 async def run_task(client: OpenAI, task: TaskConfig) -> None:
     """
     Run one task episode in stateless HTTP mode.
-
-    In stateless mode, the server creates a fresh env per request.
-    So we do reset() to get an email, then step() to submit our action
-    and get it graded. This is repeated MAX_STEPS times.
-
-    Ground truth for grading comes from the step() response metadata
-    (graded_true_* keys), NOT from the reset() observation (which would
-    leak the answer).
+    Does reset() + step() per email, repeated MAX_STEPS times.
     """
     env = EmailTriageEnv(base_url=SERVER_URL)
 
     history:     List[str]   = []
     rewards:     List[float] = []
     steps_taken: int         = 0
-    score:       float       = 0.0
     success:     bool        = False
 
     log_start(task=task.name, env=BENCHMARK, model=MODEL_NAME)
@@ -543,8 +533,6 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
             obs = reset_result.observation
 
             # -- Cache ground truth from reset() observation ----------------
-            # Ground truth lives in named fields on the observation (true_priority, etc.)
-            # NOT in metadata (which OpenEnv HTTP framework strips).
             reset_obs_data = {
                 "true_priority":        obs.true_priority if hasattr(obs, 'true_priority') else None,
                 "true_category":        obs.true_category if hasattr(obs, 'true_category') else None,
@@ -566,7 +554,7 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
             step_result = await env.step(action)
             done        = step_result.done
 
-            # -- Grade using RESET observation (correct email's ground truth) --
+            # -- Grade using RESET observation (correct email's ground truth)
             task_reward = task.grader(action, reset_obs_data)
 
             rewards.append(task_reward)
@@ -589,7 +577,7 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
 
     except Exception as exc:
         print(f"[TASK_ERROR] {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
-        log_end(success=False, steps=steps_taken, score=0.0, rewards=rewards)
+        log_end(success=False, steps=steps_taken, rewards=rewards)
         return
 
     finally:
@@ -598,7 +586,7 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
         except Exception:
             pass
 
-        log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
+        log_end(success=success, steps=steps_taken, rewards=rewards)
 
 
 # ---------------------------------------------------------------------------
@@ -611,17 +599,12 @@ async def main() -> None:
     Each task: [START] -> [STEP] x 10 -> [END].
     Estimated: 4 tasks x 10 steps x ~2s/call = ~80s (well within 20min).
     """
-    # Validate config before starting
     print(f"[CONFIG] API_BASE_URL={API_BASE_URL}", file=sys.stderr, flush=True)
     print(f"[CONFIG] MODEL_NAME={MODEL_NAME}", file=sys.stderr, flush=True)
-    print(f"[CONFIG] API_KEY={'SET' if API_KEY else 'MISSING'}", file=sys.stderr, flush=True)
+    print(f"[CONFIG] HF_TOKEN={'SET' if HF_TOKEN else 'MISSING'}", file=sys.stderr, flush=True)
     print(f"[CONFIG] SERVER_URL={SERVER_URL}", file=sys.stderr, flush=True)
 
-    if not API_KEY:
-        print("[CONFIG] WARNING: No API key found! Set HF_TOKEN, API_KEY, or OPENAI_API_KEY",
-              file=sys.stderr, flush=True)
-
-    client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+    client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
     for task in TASKS:
         await run_task(client, task)
 
