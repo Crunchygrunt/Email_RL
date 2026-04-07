@@ -858,20 +858,6 @@ class EmailTriageEnvironment(Environment):
             metadata["graded_is_phishing"]         = graded_email.get("is_phishing", False)
             metadata["graded_cluster_id"]          = graded_email.get("cluster_id")
 
-        # Ground truth for the CURRENT email (used by client-side graders).
-        # This is safe because the LLM agent only sees email_subject,
-        # email_sender, and email_body -- never the metadata dict.
-        # The OpenEnv agent framework does not pass metadata to the model.
-        metadata["true_priority"]        = email["priority"]
-        metadata["true_category"]        = email["category"]
-        metadata["true_route"]           = email["route"]
-        metadata["is_business_critical"] = email.get("is_business_critical", False)
-        metadata["is_phishing"]          = email.get("is_phishing", False)
-
-        # Contextual hints for the current email
-        if email.get("cluster_id"):
-            metadata["linked_incident"] = True
-
         return EmailTriageObservation(
             email_id      = email["email_id"],
             email_subject = email["subject"],
@@ -882,6 +868,13 @@ class EmailTriageEnvironment(Environment):
             last_route_correct    = self._last_grade.route_ok    if self._last_grade else None,
             emails_remaining = emails_remaining,
             current_streak   = self._streak,
+            # Ground truth as named fields (metadata is stripped by OpenEnv HTTP)
+            true_priority        = email["priority"],
+            true_category        = email["category"],
+            true_route           = email["route"],
+            is_business_critical = email.get("is_business_critical", False),
+            is_phishing          = email.get("is_phishing", False),
+            linked_incident      = bool(email.get("cluster_id")),
             done   = done,
             reward = reward,
             metadata = metadata,

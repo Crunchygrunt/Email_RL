@@ -119,6 +119,13 @@ class EmailTriageEnv:
             last_route_correct    = obs_data.get("last_route_correct"),
             emails_remaining      = obs_data.get("emails_remaining", 0),
             current_streak        = obs_data.get("current_streak", 0),
+            # Ground truth fields (named fields, not metadata)
+            true_priority         = obs_data.get("true_priority"),
+            true_category         = obs_data.get("true_category"),
+            true_route            = obs_data.get("true_route"),
+            is_business_critical  = obs_data.get("is_business_critical", False),
+            is_phishing           = obs_data.get("is_phishing", False),
+            linked_incident       = obs_data.get("linked_incident", False),
             done                  = payload.get("done", False),
             reward                = payload.get("reward"),
             metadata              = obs_data.get("metadata", {}),
@@ -536,9 +543,15 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
             obs = reset_result.observation
 
             # -- Cache ground truth from reset() observation ----------------
-            # The LLM only sees email_subject/sender/body, never metadata.
-            # We use metadata here ONLY for the client-side grader.
-            reset_metadata = obs.metadata or {}
+            # Ground truth lives in named fields on the observation (true_priority, etc.)
+            # NOT in metadata (which OpenEnv HTTP framework strips).
+            reset_obs_data = {
+                "true_priority":        obs.true_priority if hasattr(obs, 'true_priority') else None,
+                "true_category":        obs.true_category if hasattr(obs, 'true_category') else None,
+                "true_route":           obs.true_route if hasattr(obs, 'true_route') else None,
+                "is_business_critical": obs.is_business_critical if hasattr(obs, 'is_business_critical') else False,
+                "metadata":             obs.metadata,
+            }
 
             # -- LLM decision -----------------------------------------------
             raw_text = _call_llm(client, task.system_prompt, obs, step, history)
@@ -553,8 +566,8 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
             step_result = await env.step(action)
             done        = step_result.done
 
-            # -- Grade using RESET metadata (correct email's ground truth) --
-            task_reward = task.grader(action, reset_metadata)
+            # -- Grade using RESET observation (correct email's ground truth) --
+            task_reward = task.grader(action, reset_obs_data)
 
             rewards.append(task_reward)
             steps_taken = step
