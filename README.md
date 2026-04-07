@@ -1,6 +1,6 @@
 ---
 title: Algorithm Architects Email RL
-emoji: mail
+emoji: 📬
 colorFrom: indigo
 colorTo: pink
 sdk: docker
