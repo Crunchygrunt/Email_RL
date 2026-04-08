@@ -213,12 +213,12 @@ python inference.py
 
 | Task | Difficulty | Model | Score |
 |------|-----------|-------|-------|
-| spam-detection | Easy | Qwen2.5-72B-Instruct | 1.000 |
-| priority-classification | Medium | Qwen2.5-72B-Instruct | 0.700 |
-| full-triage | Hard | Qwen2.5-72B-Instruct | 0.728 |
-| critical-escalation | Hard | Qwen2.5-72B-Instruct | 0.900 |
-| action-orchestrator | Hard | Qwen2.5-72B-Instruct | 0.732 |
-| threat-assessment | Hard | Qwen2.5-72B-Instruct | 0.400 |
+| spam-detection | Easy | Qwen2.5-72B-Instruct | 0.990 |
+| priority-classification | Medium | Qwen2.5-72B-Instruct | 0.500 |
+| full-triage | Hard | Qwen2.5-72B-Instruct | 0.648 |
+| critical-escalation | Hard | Qwen2.5-72B-Instruct | 0.794 |
+| action-orchestrator | Hard | Qwen2.5-72B-Instruct | 0.669 |
+| threat-assessment | Hard | Qwen2.5-72B-Instruct | 0.340 |
 
 ## Project Structure
 

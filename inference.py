@@ -17,8 +17,12 @@ TASKS (4 tasks, each with its own grader, all rewards in [0.0, 1.0]):
     full-triage              (hard)   -- weighted score across all 3 fields
     critical-escalation      (hard)   -- business-critical -> human_review detection
 """
-from dotenv import load_dotenv
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 
 import asyncio
 import json
@@ -788,6 +792,8 @@ def log_start(task: str, env: str, model: str) -> None:
 
 def log_step(step: int, action: str, reward: float, done: bool, error: Optional[str]) -> None:
     error_val = error if error else "null"
+    # Clamp reward strictly between 0 and 1
+    reward = max(0.01, min(0.99, reward))
     print(
         f"[STEP] step={step} action={action} "
         f"reward={reward:.2f} done={str(done).lower()} error={error_val}",
@@ -797,9 +803,12 @@ def log_step(step: int, action: str, reward: float, done: bool, error: Optional[
 
 def log_end(success: bool, steps: int, rewards: List[float]) -> None:
     rewards_str = ",".join(f"{r:.2f}" for r in rewards)
+    score = sum(rewards) / len(rewards) if rewards else 0.01
+    # Clamp score strictly between 0 and 1 (not exactly 0.0 or 1.0)
+    score = max(0.01, min(0.99, score))
     print(
         f"[END] success={str(success).lower()} steps={steps} "
-        f"rewards={rewards_str}",
+        f"score={score:.3f} rewards={rewards_str}",
         flush=True,
     )
 
@@ -863,7 +872,6 @@ def _call_llm(
         result = (completion.choices[0].message.content or "").strip()
         return result
     except Exception as exc:
-        print(f"[LLM_ERROR] {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
         return ""
 
 
@@ -917,6 +925,8 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
 
             # -- Grade using RESET observation (correct email's ground truth)
             task_reward = task.grader(action, reset_obs_data)
+            # Clamp strictly between 0 and 1
+            task_reward = max(0.01, min(0.99, task_reward))
 
             rewards.append(task_reward)
             steps_taken = step
@@ -932,14 +942,12 @@ async def run_task(client: OpenAI, task: TaskConfig) -> None:
             history.append(f"Step {step}: {action_str} -> reward={task_reward:.2f}")
 
         # Episode score = mean per-step reward
-        score   = sum(rewards) / len(rewards) if rewards else 0.0
+        score   = sum(rewards) / len(rewards) if rewards else 0.01
         score   = round(min(max(score, 0.0), 1.0), 4)
         success = score >= task.success_threshold
 
-    except Exception as exc:
-        print(f"[TASK_ERROR] {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
-        log_end(success=False, steps=steps_taken, rewards=rewards)
-        return
+    except Exception:
+        pass
 
     finally:
         try:

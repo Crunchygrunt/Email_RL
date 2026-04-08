@@ -9,7 +9,7 @@ description: >
   A real-world email triage environment where AI agents learn to prioritize,
   categorize, and route business emails for a B2B SaaS company.
   Features phishing detection, cross-email dependency tracking,
-  and dynamic escalation consequences for missed urgent emails.
+  dynamic escalation consequences, action orchestration, and threat assessment.
 
 tags:
   - openenv
@@ -20,9 +20,44 @@ tags:
   - real-world
 
 tasks:
-  - spam-detection
-  - priority-classification
-  - full-triage
-  - critical-escalation
-  - action-orchestrator
-  - threat-assessment
+  - id: spam-detection
+    difficulty: easy
+    max_steps: 10
+    grader:
+      type: llm
+      prompt_template: "Score the spam detection accuracy from 0.0 to 1.0"
+
+  - id: priority-classification
+    difficulty: medium
+    max_steps: 10
+    grader:
+      type: llm
+      prompt_template: "Score the priority classification accuracy from 0.0 to 1.0"
+
+  - id: full-triage
+    difficulty: hard
+    max_steps: 10
+    grader:
+      type: llm
+      prompt_template: "Score the full triage accuracy across priority, category, and route from 0.0 to 1.0"
+
+  - id: critical-escalation
+    difficulty: hard
+    max_steps: 10
+    grader:
+      type: llm
+      prompt_template: "Score the critical escalation detection accuracy from 0.0 to 1.0"
+
+  - id: action-orchestrator
+    difficulty: hard
+    max_steps: 10
+    grader:
+      type: llm
+      prompt_template: "Score the action plan quality including systems, SLA, stakeholders from 0.0 to 1.0"
+
+  - id: threat-assessment
+    difficulty: hard
+    max_steps: 10
+    grader:
+      type: llm
+      prompt_template: "Score the threat assessment quality including threat type, indicators, risk score from 0.0 to 1.0"
