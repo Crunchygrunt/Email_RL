@@ -613,12 +613,60 @@ def _generate_cluster_email(
 # GradeResult and TriageGrader
 # ---------------------------------------------------------------------------
 
+# Priority distance matrix for near-miss partial credit
+# Index: low=0, medium=1, high=2, urgent=3
+_PRIORITY_INDEX = {"low": 0, "medium": 1, "high": 2, "urgent": 3}
+
+# Asymmetric error cost: under-prioritizing is worse than over-prioritizing
+# [true_priority][predicted_priority] -> penalty multiplier
+# Missing urgent (predicting low) = 0.0 (total fail)
+# Over-prioritizing (predicting urgent for low) = 0.3 (mild penalty)
+_PRIORITY_PARTIAL = {
+    ("urgent", "high"):   0.50,   # close, forgivable
+    ("urgent", "medium"): 0.10,   # dangerous miss
+    ("urgent", "low"):    0.00,   # catastrophic miss
+    ("high", "urgent"):   0.60,   # over-escalation, minor
+    ("high", "medium"):   0.40,   # under-prioritized
+    ("high", "low"):      0.05,   # bad miss
+    ("medium", "high"):   0.50,   # slight over-escalation
+    ("medium", "low"):    0.30,   # under-prioritized
+    ("medium", "urgent"): 0.30,   # over-escalation
+    ("low", "medium"):    0.50,   # slight over-escalation
+    ("low", "high"):      0.30,   # over-escalation
+    ("low", "urgent"):    0.20,   # significant over-escalation
+}
+
+# Category confusion costs: some misclassifications are catastrophic
+# Calling a security email "spam" and trashing it = worst case
+# Calling support "sales" = annoying but not dangerous
+_CATEGORY_SIMILARITY = {
+    ("security", "spam"):      0.00,  # catastrophic: security threat trashed
+    ("security", "support"):   0.30,  # wrong team but will be seen
+    ("security", "internal"):  0.20,  # might get lost
+    ("spam", "security"):      0.40,  # over-cautious, not harmful
+    ("spam", "newsletter"):    0.60,  # similar enough
+    ("support", "sales"):      0.30,  # wrong team
+    ("support", "internal"):   0.30,  # might get handled
+    ("sales", "support"):      0.30,  # wrong team
+    ("billing", "support"):    0.30,  # adjacent teams
+    ("internal", "support"):   0.30,  # might get handled
+    ("newsletter", "spam"):    0.50,  # over-filtering
+    ("newsletter", "internal"):0.30,  # misrouted
+}
+
+# Sender domain trust tiers for phishing detection
+_TRUSTED_DOMAINS = {"acme.com", "techcorp.io", "startup.co", "enterprise.net", "company.org"}
+_SUSPICIOUS_TLDS = {".xyz", ".co", ".net"}
+
+
 @dataclass
 class GradeResult:
-    """Raw correctness verdict for one triage action."""
+    """Enhanced correctness verdict with partial credit."""
     priority_ok: bool
     category_ok: bool
     route_ok:    bool
+    priority_partial: float  # 0.0-1.0 partial credit for near-miss
+    category_partial: float  # 0.0-1.0 partial credit for similar categories
 
     @property
     def n_correct(self) -> int:
@@ -630,20 +678,44 @@ class GradeResult:
 
     @property
     def base_score(self) -> float:
-        score = (
-            1.0 * self.priority_ok
-            + 0.5 * self.category_ok
-            + 0.3 * self.route_ok
-        )
+        """
+        Enhanced weighted score with partial credit.
+
+        Exact match weights: priority=1.0, category=0.5, route=0.3
+        Near-miss partial credit for priority and category
+        Format bonus (+0.1): priority correct AND >=1 other correct
+        Perfect bonus (+0.2): all three correct
+        """
+        # Priority: full or partial credit
+        if self.priority_ok:
+            p_score = 1.0
+        else:
+            p_score = self.priority_partial * 0.6  # max 0.6 for near-miss
+
+        # Category: full or partial credit
+        if self.category_ok:
+            c_score = 0.5
+        else:
+            c_score = self.category_partial * 0.25  # max 0.25 for similar category
+
+        # Route: exact match only (no partial credit for routing)
+        r_score = 0.3 if self.route_ok else 0.0
+
+        score = p_score + c_score + r_score
+
+        # Format bonus: priority correct AND at least 1 other correct
         if self.priority_ok and (self.category_ok or self.route_ok):
             score += 0.1
+
+        # Perfect bonus
         if self.is_perfect:
             score += 0.2
+
         return round(score, 4)
 
 
 class TriageGrader:
-    """Grades one triage action against ground-truth email labels."""
+    """Enhanced grader with partial credit and asymmetric error costs."""
 
     def grade(self, action: Dict[str, str], email: Dict[str, str]) -> GradeResult:
         pred_p = str(action.get("priority", "")).strip().lower()
@@ -654,10 +726,26 @@ class TriageGrader:
         true_c = str(email.get("category", "")).strip().lower()
         true_r = str(email.get("route",    "")).strip().lower()
 
+        priority_ok = (pred_p == true_p) and (pred_p in PRIORITIES)
+        category_ok = (pred_c == true_c) and (pred_c in CATEGORIES)
+        route_ok    = (pred_r == true_r) and (pred_r in ROUTES)
+
+        # Asymmetric priority partial credit
+        priority_partial = 0.0
+        if not priority_ok and pred_p in PRIORITIES and true_p in PRIORITIES:
+            priority_partial = _PRIORITY_PARTIAL.get((true_p, pred_p), 0.0)
+
+        # Category similarity partial credit
+        category_partial = 0.0
+        if not category_ok and pred_c in CATEGORIES and true_c in CATEGORIES:
+            category_partial = _CATEGORY_SIMILARITY.get((true_c, pred_c), 0.0)
+
         return GradeResult(
-            priority_ok=(pred_p == true_p) and (pred_p in PRIORITIES),
-            category_ok=(pred_c == true_c) and (pred_c in CATEGORIES),
-            route_ok   =(pred_r == true_r) and (pred_r in ROUTES),
+            priority_ok=priority_ok,
+            category_ok=category_ok,
+            route_ok=route_ok,
+            priority_partial=priority_partial,
+            category_partial=category_partial,
         )
 
 
@@ -679,6 +767,10 @@ class EmailTriageEnvironment(Environment):
     OVERLOAD_PENALTY:  float = 0.5
     DEPENDENCY_BONUS:  float = 0.4
     ESCALATION_PENALTY_MULT: float = 1.5
+    RESPONSE_TIME_DECAY: float = 0.05  # per-position decay for urgent emails
+    COHERENCE_BONUS:   float = 0.5     # end-of-episode distribution bonus
+    PHISHING_MISS_PENALTY: float = 0.8 # extra penalty for missing phishing
+    SENDER_TRUST_BONUS: float = 0.15   # bonus for correct phishing detection from untrusted sender
 
     def __init__(self) -> None:
         self._state        = State(episode_id=str(uuid4()), step_count=0)
@@ -690,6 +782,10 @@ class EmailTriageEnvironment(Environment):
         self._cluster_routes: Dict[str, List[str]] = {}
         self._pending_escalations: List[Dict[str, Any]] = []
         self._stateless_http_mode: bool = False
+        # Tracking for batch coherence bonus
+        self._priority_distribution: Dict[str, int] = {"low": 0, "medium": 0, "high": 0, "urgent": 0}
+        self._true_priority_distribution: Dict[str, int] = {"low": 0, "medium": 0, "high": 0, "urgent": 0}
+        self._total_shaped_reward: float = 0.0
 
     # -- OpenEnv interface ----------------------------------------------
 
@@ -701,6 +797,9 @@ class EmailTriageEnvironment(Environment):
         self._cluster_routes = {}
         self._pending_escalations = []
         self._stateless_http_mode = False
+        self._priority_distribution = {"low": 0, "medium": 0, "high": 0, "urgent": 0}
+        self._true_priority_distribution = {"low": 0, "medium": 0, "high": 0, "urgent": 0}
+        self._total_shaped_reward = 0.0
 
         self._email_queue = self._sample_episode()
 
@@ -725,24 +824,39 @@ class EmailTriageEnvironment(Environment):
         )
         self._last_grade = grade
 
+        # Track priority distributions for batch coherence
+        pred_p = action.priority.strip().lower()
+        true_p = current_email["priority"]
+        if pred_p in self._priority_distribution:
+            self._priority_distribution[pred_p] += 1
+        if true_p in self._true_priority_distribution:
+            self._true_priority_distribution[true_p] += 1
+
         # Update streak
         if grade.is_perfect:
             self._streak += 1
         else:
             self._streak = 0
 
-        # Shaped reward
-        true_priority = current_email["priority"]
-        urgency_mult  = URGENCY_BONUS.get(true_priority, 1.0)
+        # === SHAPED REWARD COMPUTATION ===
+
+        # 1. Base score (now includes partial credit for near-misses)
+        urgency_mult = URGENCY_BONUS.get(true_p, 1.0)
         shaped_reward = grade.base_score * urgency_mult
 
-        # Streak bonus
+        # 2. Streak bonus (sustained accuracy)
         if self._streak >= self.STREAK_THRESHOLD:
             shaped_reward += self.STREAK_BONUS
 
-        # Overload penalty
-        if true_priority in ("urgent", "high") and action.priority in ("low", "medium"):
-            shaped_reward -= self.OVERLOAD_PENALTY
+        # 3. Asymmetric overload penalty (missing urgent is catastrophic)
+        if true_p in ("urgent", "high") and pred_p in ("low", "medium"):
+            # Penalty scales with severity of the miss
+            if true_p == "urgent" and pred_p == "low":
+                shaped_reward -= self.OVERLOAD_PENALTY * 1.5  # worst case
+            elif true_p == "urgent" and pred_p == "medium":
+                shaped_reward -= self.OVERLOAD_PENALTY * 1.2
+            else:
+                shaped_reward -= self.OVERLOAD_PENALTY
 
             # CREATIVITY 3: inject escalation consequence
             if (self._current_idx + 2 < len(self._email_queue)
@@ -754,12 +868,38 @@ class EmailTriageEnvironment(Environment):
                 insert_pos = min(self._current_idx + 2, len(self._email_queue))
                 self._email_queue.insert(insert_pos, esc_email)
 
-        # Escalation multiplier on penalty
+        # 4. Response time pressure (urgent emails penalized by queue position)
+        if true_p == "urgent" and self._current_idx > 3:
+            # Urgent email processed late in the queue loses value
+            position_penalty = (self._current_idx - 3) * self.RESPONSE_TIME_DECAY
+            shaped_reward -= position_penalty
+        elif true_p == "high" and self._current_idx > 6:
+            position_penalty = (self._current_idx - 6) * self.RESPONSE_TIME_DECAY * 0.5
+            shaped_reward -= position_penalty
+
+        # 5. Escalation multiplier on injected angry follow-ups
         esc_mult = current_email.get("escalation_multiplier", 1.0)
         if esc_mult > 1.0 and not grade.is_perfect:
             shaped_reward *= (1.0 / esc_mult)
 
-        # CREATIVITY 2: Cross-email dependency bonus
+        # 6. Phishing detection bonus/penalty
+        is_phishing = current_email.get("is_phishing", False)
+        if is_phishing:
+            pred_cat = action.category.strip().lower()
+            pred_route = action.route.strip().lower()
+            if pred_cat == "security" and pred_route == "security_team":
+                # Correctly identified phishing -- bonus
+                shaped_reward += self.SENDER_TRUST_BONUS
+                # Extra bonus if sender domain looks suspicious
+                sender = current_email.get("sender", "")
+                sender_domain = sender.split("@")[-1] if "@" in sender else ""
+                if any(sender_domain.endswith(tld) for tld in _SUSPICIOUS_TLDS):
+                    shaped_reward += self.SENDER_TRUST_BONUS * 0.5
+            else:
+                # Missed phishing -- significant penalty
+                shaped_reward -= self.PHISHING_MISS_PENALTY
+
+        # 7. Cross-email dependency bonus
         cluster_id = current_email.get("cluster_id")
         if cluster_id:
             self._cluster_routes.setdefault(cluster_id, [])
@@ -769,11 +909,26 @@ class EmailTriageEnvironment(Environment):
                 if len(set(routes_in_cluster)) == 1:
                     shaped_reward += self.DEPENDENCY_BONUS
 
-        shaped_reward = round(shaped_reward, 4)
-
-        # Advance to next email
+        # 8. Batch coherence bonus (on final email of episode)
         self._current_idx += 1
         done = self._stateless_http_mode or (self._current_idx >= len(self._email_queue))
+
+        if done and not self._stateless_http_mode:
+            # Compare predicted vs true priority distributions
+            # Reward agent for having a similar distribution shape
+            total_pred = sum(self._priority_distribution.values()) or 1
+            total_true = sum(self._true_priority_distribution.values()) or 1
+            distribution_diff = 0.0
+            for p in ("low", "medium", "high", "urgent"):
+                pred_ratio = self._priority_distribution[p] / total_pred
+                true_ratio = self._true_priority_distribution[p] / total_true
+                distribution_diff += abs(pred_ratio - true_ratio)
+            # distribution_diff ranges 0 (perfect) to 2 (worst)
+            coherence_score = max(0.0, 1.0 - distribution_diff)
+            shaped_reward += self.COHERENCE_BONUS * coherence_score
+
+        shaped_reward = round(shaped_reward, 4)
+        self._total_shaped_reward += shaped_reward
 
         next_email = current_email if done else self._email_queue[self._current_idx]
 

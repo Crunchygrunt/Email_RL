@@ -125,11 +125,40 @@ Success threshold: 0.3.
 
 ## Reward Design
 
-### Classification Tasks (1-4)
+### Classification Tasks (1-4): Multi-Signal Shaped Reward
 
-Base Score per email: Priority correct (+1.0), Category correct (+0.5), Route correct (+0.3), Format bonus (+0.1), Perfect bonus (+0.2). Max base: 2.1.
+The reward system models real-world email operations economics with 8 distinct signals:
 
-Reward Shaping: Urgency multiplier (x0.8-2.0), Streak bonus (+0.3), Dependency bonus (+0.4), Overload penalty (-0.5), Escalation multiplier (/1.5).
+**Base Score with Partial Credit:**
+- Priority exact match: +1.0 | Near-miss partial credit: up to +0.6
+  - Asymmetric: under-prioritizing ("medium" for urgent) scores 0.10, over-prioritizing ("urgent" for low) scores 0.20
+  - This mirrors reality: missing a P1 is catastrophic, over-escalating is merely annoying
+- Category exact match: +0.5 | Similar-category partial credit: up to +0.25
+  - Confusion matrix: calling security "spam" = 0.0 (catastrophic), calling support "sales" = 0.30 (wrong team but survivable)
+- Route exact match: +0.3 (no partial credit -- routing must be precise)
+- Format bonus: +0.1 (priority correct AND >=1 other correct)
+- Perfect bonus: +0.2 (all three correct)
+
+**Reward Shaping Signals:**
+
+| Signal | Value | Trigger | Real-World Analog |
+|--------|-------|---------|-------------------|
+| Urgency multiplier | x0.8-2.0 | Scales by true email priority | Urgent emails matter more |
+| Streak bonus | +0.3 | 3+ consecutive perfect decisions | Sustained reliability matters |
+| Asymmetric overload | -0.50 to -0.75 | Urgent/high mislabeled as low/medium | Missing a fire alarm |
+| Response time decay | -0.05/position | Urgent email processed late in queue | SLA clock is ticking |
+| Phishing detection bonus | +0.15 to +0.225 | Correctly identified phishing from suspicious sender | SOC analyst skill |
+| Phishing miss penalty | -0.80 | Failed to detect phishing email | Security breach risk |
+| Dependency bonus | +0.4 | Linked emails routed to same team | Incident coherence |
+| Batch coherence bonus | +0.5 | Priority distribution matches ground truth | Triage calibration |
+| Escalation multiplier | /1.5 | Reduced reward on injected angry follow-ups | Compounding mistakes |
+
+**Why This Reward Design Is Novel:**
+- Asymmetric error costs model real business risk (missing urgent >> over-escalating)
+- Response time pressure creates queue-ordering incentives
+- Batch coherence prevents degenerate strategies (marking everything "urgent")
+- Phishing detection integrates sender trust analysis
+- Partial credit matrix enables meaningful gradient even for wrong answers
 
 ### Orchestrator Task (5)
 
@@ -166,6 +195,9 @@ The agent must detect social engineering attacks, identify specific attack vecto
 - Ground truth is never exposed before the agent acts
 - Escalation injections dynamically extend episodes
 - Phishing emails bypass simple keyword matching
+- Batch coherence bonus prevents degenerate "always urgent" strategies
+- Asymmetric penalties prevent "always low priority" gaming
+- Response time decay prevents ignoring queue order
 - Action plan grader validates semantic correctness, not just structure
 - Threat assessment grader requires calibrated confidence and risk scores
 
@@ -213,12 +245,12 @@ python inference.py
 
 | Task | Difficulty | Model | Score |
 |------|-----------|-------|-------|
-| spam-detection | Easy | Qwen2.5-72B-Instruct | 0.990 |
-| priority-classification | Medium | Qwen2.5-72B-Instruct | 0.500 |
-| full-triage | Hard | Qwen2.5-72B-Instruct | 0.648 |
-| critical-escalation | Hard | Qwen2.5-72B-Instruct | 0.794 |
-| action-orchestrator | Hard | Qwen2.5-72B-Instruct | 0.669 |
-| threat-assessment | Hard | Qwen2.5-72B-Instruct | 0.340 |
+| spam-detection | Easy | Qwen2.5-72B-Instruct | 1.000 |
+| priority-classification | Medium | Qwen2.5-72B-Instruct | 0.700 |
+| full-triage | Hard | Qwen2.5-72B-Instruct | 0.728 |
+| critical-escalation | Hard | Qwen2.5-72B-Instruct | 0.900 |
+| action-orchestrator | Hard | Qwen2.5-72B-Instruct | 0.732 |
+| threat-assessment | Hard | Qwen2.5-72B-Instruct | 0.400 |
 
 ## Project Structure
 

@@ -140,11 +140,11 @@ class EmailTriageEnv:
 # ---------------------------------------------------------------------------
 # Environment variables -- per hackathon guidelines
 # ---------------------------------------------------------------------------
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-# API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
+# API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
 
-MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
-# MODEL_NAME   = os.getenv("MODEL_NAME",   "qwen/qwen-2.5-72b-instruct")
+# MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
+MODEL_NAME   = os.getenv("MODEL_NAME",   "qwen/qwen-2.5-72b-instruct")
 
 HF_TOKEN     = os.getenv("HF_TOKEN")
 SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")
