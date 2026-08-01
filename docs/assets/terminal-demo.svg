@@ -1,0 +1,40 @@
+<svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Terminal demo: running the email triage RL evaluation and data warehouse pipeline">
+  <defs>
+    <clipPath id="winclip"><rect x="10" y="10" width="880" height="320" rx="10"/></clipPath>
+  </defs>
+  <rect x="10" y="10" width="880" height="320" rx="10" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+  <g clip-path="url(#winclip)">
+    <rect x="10" y="10" width="880" height="34" fill="#161b22"/>
+    <circle cx="34" cy="27" r="6" fill="#ff5f56"/>
+    <circle cx="54" cy="27" r="6" fill="#ffbd2e"/>
+    <circle cx="74" cy="27" r="6" fill="#27c93f"/>
+    <text x="450" y="32" text-anchor="middle" font-family="-apple-system,Segoe UI,sans-serif" font-size="12" fill="#8b949e">bash — email-triage-rl — warehouse</text>
+    <text x="34" y="78" font-family="'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace" font-size="14" fill="#58a6ff" opacity="1">$ python run_episodes.py --episodes 4
+      <animate attributeName="opacity" keyTimes="0.0000;0.0250;0.0286;0.8929;0.9286;1.0000" values="0;0;1;1;0;0" dur="14.0s" begin="0s" repeatCount="indefinite"/>
+    </text>
+    <text x="34" y="104" font-family="'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace" font-size="14" fill="#c9d1d9" opacity="1">[spam-detection ep1 step6] priority=high,category=support,route=support_team
+      <animate attributeName="opacity" keyTimes="0.0000;0.0857;0.0893;0.8929;0.9286;1.0000" values="0;0;1;1;0;0" dur="14.0s" begin="0s" repeatCount="indefinite"/>
+    </text>
+    <text x="34" y="130" font-family="'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace" font-size="14" fill="#3fb950" opacity="1">=== spam-detection episode 1: 10 steps, avg_task_reward=0.990 ===
+      <animate attributeName="opacity" keyTimes="0.0000;0.1464;0.1500;0.8929;0.9286;1.0000" values="0;0;1;1;0;0" dur="14.0s" begin="0s" repeatCount="indefinite"/>
+    </text>
+    <text x="34" y="182" font-family="'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace" font-size="14" fill="#58a6ff" opacity="1">$ python telemetry/compact_to_parquet.py
+      <animate attributeName="opacity" keyTimes="0.0000;0.2071;0.2107;0.8929;0.9286;1.0000" values="0;0;1;1;0;0" dur="14.0s" begin="0s" repeatCount="indefinite"/>
+    </text>
+    <text x="34" y="208" font-family="'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace" font-size="14" fill="#c9d1d9" opacity="1">[client_steps] compacted 10 rows -&gt; data/lake/client_steps
+      <animate attributeName="opacity" keyTimes="0.0000;0.2679;0.2714;0.8929;0.9286;1.0000" values="0;0;1;1;0;0" dur="14.0s" begin="0s" repeatCount="indefinite"/>
+    </text>
+    <text x="34" y="260" font-family="'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace" font-size="14" fill="#58a6ff" opacity="1">$ dbt run --profiles-dir .
+      <animate attributeName="opacity" keyTimes="0.0000;0.3286;0.3321;0.8929;0.9286;1.0000" values="0;0;1;1;0;0" dur="14.0s" begin="0s" repeatCount="indefinite"/>
+    </text>
+    <text x="34" y="286" font-family="'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace" font-size="14" fill="#c9d1d9" opacity="1">Found 7 models, 486 macros  |  Completed successfully
+      <animate attributeName="opacity" keyTimes="0.0000;0.3893;0.3929;0.8929;0.9286;1.0000" values="0;0;1;1;0;0" dur="14.0s" begin="0s" repeatCount="indefinite"/>
+    </text>
+    <text x="34" y="312" font-family="'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace" font-size="14" fill="#3fb950" font-weight="700" opacity="1">Done. PASS=7 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=7
+      <animate attributeName="opacity" keyTimes="0.0000;0.4500;0.4536;0.8929;0.9286;1.0000" values="0;0;1;1;0;0" dur="14.0s" begin="0s" repeatCount="indefinite"/>
+    </text>
+    <rect x="535.6" y="301" width="8" height="14" fill="#3fb950">
+      <animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.4;0.5;0.9;1" dur="1s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+</svg>

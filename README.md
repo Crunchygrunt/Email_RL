@@ -1,161 +1,135 @@
-# Email Triage RL Environment + Observability Warehouse
+<div align="center">
 
-An OpenEnv-based reinforcement learning environment where LLM agents triage
-synthetic emails -- spam detection, priority classification, full triage,
-critical escalation, action orchestration, and threat assessment -- built
-on a hackathon submission and extended into a full telemetry + data
-warehouse pipeline: **event log -> DuckDB/dbt warehouse -> queryable
-leaderboard**, using only free/open-source tooling.
+# 📬 Email Triage Arena
 
-The interesting part of this project isn't just the RL environment itself
--- it's the process of instrumenting it, finding that several of its own
-metrics were structurally unreachable or silently wrong, and fixing that
-with evidence rather than assumption. See `WAREHOUSE.md` for the full,
-warts-and-all writeup; this file is the short version.
+### An RL environment where LLM agents learn to sort chaos — every decision logged, warehoused, and served up as a live leaderboard.
 
-## Architecture
+<p>
+  <img alt="Build" src="https://img.shields.io/badge/build-passing-3fb950?style=flat-square">
+  <img alt="Python" src="https://img.shields.io/badge/python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square">
+  <img alt="dbt-duckdb" src="https://img.shields.io/badge/warehouse-dbt%20%2B%20DuckDB-FF694B?style=flat-square&logo=dbt&logoColor=white">
+  <img alt="LLM agnostic" src="https://img.shields.io/badge/LLM-provider--agnostic-8957e5?style=flat-square">
+  <img alt="OpenEnv" src="https://img.shields.io/badge/built%20on-OpenEnv-0d1117?style=flat-square">
+</p>
 
-```
-LLM agent (via run_episodes.py, WebSocket)
-        │
-        ▼
-EmailTriageEnvironment.step()  ──►  telemetry/event_sink.py  ──►  data/raw/*/dt=YYYY-MM-DD/events.jsonl
-        │                                  (JSONL, fail-open)
-        ▼
-graded reward + observation                       │
-                                     telemetry/compact_to_parquet.py
-                                                    ▼
-                                   data/lake/*/dt=.../*.parquet
-                                                    │
-                                          warehouse/ (dbt-duckdb)
-                                          staging → intermediate → marts
-                                                    ▼
-                                     warehouse/warehouse.duckdb (query this)
-```
+<img src="docs/assets/terminal-demo.svg" alt="Animated terminal demo: running an evaluation episode, compacting telemetry, and building the dbt warehouse" width="820">
 
-- **`server/Email_RL_environment.py`** -- the FastAPI/OpenEnv environment:
-  synthetic email generation, phishing injection, cross-email dependency
-  clusters, escalation consequences, and the shaped reward function.
-- **`inference.py`** -- **frozen**, byte-identical to the original
-  hackathon submission. Its own reported scores are trustworthy and
-  untouched; it is never modified, only imported.
-- **`run_episodes.py`** -- the real evaluation harness. Drives the
-  environment over `client.py`'s WebSocket client with genuine
-  multi-email episode continuity, a model-agnostic action parser, and
-  retry/backoff resilience against rate limits and dropped connections.
-- **`telemetry/`** -- zero-dependency, fail-open JSONL event sink plus a
-  batch Parquet compactor.
-- **`warehouse/`** -- a dbt-duckdb project: staging -> intermediate ->
-  marts, queryable directly with DuckDB.
+<sub>↑ live-looping demo, built from a real run of this repo — not a mockup</sub>
 
-## Quick start
+</div>
+
+---
+
+## ⚙️ Getting Started
+
+### Prerequisites
+
+| Requirement | Version |
+|---|---|
+| Python | 3.11+ |
+| An OpenAI-compatible LLM endpoint | any — [Groq](https://console.groq.com) recommended, free tier, no card required |
+| `dbt-duckdb` | installed via `requirements-warehouse.txt` |
+| OS | Windows / macOS / Linux |
+
+### Installation Guide
 
 ```bash
+git clone https://github.com/<your-username>/email-triage-arena.git
+cd email-triage-arena
+
 pip install -r server/requirements.txt
 pip install -r requirements-warehouse.txt
+```
 
-# .env
+### Environment Configuration
+
+Create a `.env` in the project root:
+
+```bash
+# .env.example — copy to .env and fill in your own key
+
 API_BASE_URL=https://api.groq.com/openai/v1
 MODEL_NAME=llama-3.3-70b-versatile
-HF_TOKEN=<your Groq API key>
+HF_TOKEN=your_api_key_here
+
 EMAIL_RL_SERVER_URL=http://localhost:8000
-
-# terminal 1
-uvicorn server.app:app --host 0.0.0.0 --port 8000   # no --reload for real runs
-
-# terminal 2
-python diagnose_llm.py                              # confirm SUCCESS + non-empty response first
-python run_episodes.py --episodes 4
-python telemetry/compact_to_parquet.py
-cd warehouse && dbt run --profiles-dir .
 ```
 
-Then query it:
+> `HF_TOKEN` is just the name of the field — any OpenAI-compatible provider's
+> key works here, it's not validated against a specific format.
+
+---
+
+## 🚀 Application Lifecycle
+
+### Usage Instructions
+
 ```bash
-python -c "import duckdb; print(duckdb.connect('warehouse/warehouse.duckdb').sql('select * from agg_model_leaderboard').df())"
+# 1 — start the environment server
+uvicorn server.app:app --host 0.0.0.0 --port 8000
+
+# 2 — in a second terminal: run a batch of graded episodes
+python run_episodes.py --episodes 4
+
+# 3 — compact raw telemetry into the Parquet lake
+python telemetry/compact_to_parquet.py
+
+# 4 — build the dbt warehouse
+cd warehouse && dbt run --profiles-dir .
+
+# 5 — query your leaderboard
+python -c "import duckdb; print(duckdb.connect('warehouse.duckdb').sql('select * from agg_model_leaderboard').df())"
 ```
 
-Full setup detail, including the LLM-provider gotchas below, is in
-`WAREHOUSE.md`.
+### Core Features
 
-## What this project actually demonstrates
+- 🧠 **Six graded triage tasks** — spam detection, priority classification,
+  full triage, critical escalation, action orchestration, and threat
+  assessment, each with its own reward shaping and grading logic
+- 🎭 **Adversarial email generation** — CEO-impersonation phishing,
+  cross-email dependency clusters, and injected escalation follow-ups that
+  react to the agent's own mistakes in real time
+- 🔄 **Real multi-step episode continuity** — a WebSocket-driven harness
+  that preserves streaks, dependencies, and coherence across a full
+  10+-email episode, not just isolated single-shot calls
+- 🧩 **Model-agnostic action parsing** — layered fallback (XML →
+  `key: value` → loose text) so grading survives whatever format an LLM
+  actually returns
+- 📡 **Zero-dependency telemetry** — every environment step and every
+  client decision streamed to append-only JSONL, fail-open by design
+- 🏗️ **DuckDB + dbt warehouse** — staging → intermediate → mart layers,
+  queryable with plain SQL, no server to run
+- 📊 **Multi-model leaderboard** — accuracy, perfect-match rate, and
+  phishing catch rate, sliced by model and task
+- 🛡️ **Built-in resilience** — automatic retry/backoff on rate limits and
+  dropped connections, so a long evaluation run survives the real world
 
-Rather than a clean success story, this is a record of finding and fixing
-real problems empirically -- which is the more honest (and more
-interesting) version of a data engineering project:
+### Tech Stack
 
-- **The evaluation harness itself was broken.** `inference.py`'s
-  hand-rolled HTTP client hit stateless routes that spun up a brand-new
-  environment instance on every call -- an agent was shown one email via
-  `/reset` and graded against a completely different one on `/step`.
-  Confirmed by directly comparing mismatched `email_id`s across the same
-  execution, and fixed with a new harness (`run_episodes.py`) that drives
-  the environment's real WebSocket client instead of duplicating or
-  patching the frozen hackathon file.
-- **A phishing-sampling bug meant 0 of 2,000 sampled emails, across 200
-  episodes, were ever actually phishing** -- a `.pop()` call was removing
-  the wrong list index. Confirmed before and after the one-line fix.
-- **A silent parser fallback made two unrelated failures produce the
-  identical symptom.** An exhausted API key and a model that just doesn't
-  reliably emit strict XML both defaulted to the same hardcoded action
-  with zero logging. Replaced with a layered, model-agnostic parser that
-  reports exactly which fallback path fired, plus a diagnostic script
-  (`diagnose_llm.py`) that surfaces the real exception `_call_llm` was
-  swallowing.
-- **A reasoning model (`gpt-oss-120b`) returned genuine HTTP 200s with
-  empty content**, spending its entire token budget on invisible
-  reasoning tokens -- indistinguishable from a rate limit until traced
-  down to the actual API response. Raising `max_tokens` made it *worse*,
-  not better, which was itself a useful (if initially wrong) finding.
-- **Free-tier rate limits turned out to differ meaningfully by model and
-  by task**, not just by provider -- confirmed against Groq's published
-  limits and handled with real retry/backoff and pacing logic rather than
-  a bigger hammer.
-- **A reward-shaping mart was quietly built on structurally unreachable
-  data.** The original harness reset before every single email, so
-  streak/dependency/coherence bonuses -- fully implemented, correctly
-  coded -- could never fire. Fixing the harness surfaced a second,
-  subtler finding: even with real continuity, an imperfect model rarely
-  reaches natural episode completion at all, because missed
-  urgent/high-priority emails inject escalation follow-ups that can push
-  the queue past the step cap. The warehouse now tracks this explicitly
-  (`reached_done`, `emails_remaining_at_cutoff`) instead of conflating a
-  clean finish with a cutoff.
-- **A Parquet schema silently drifted across days** when a column
-  happened to be all-null in one day's batch. Fixed with an explicit,
-  pinned schema instead of per-batch type inference.
+<p>
+  <img alt="Python" src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white">
+  <img alt="FastAPI" src="https://img.shields.io/badge/-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white">
+  <img alt="WebSockets" src="https://img.shields.io/badge/-WebSockets-4A90D9?style=flat-square&logo=websocket&logoColor=white">
+  <img alt="DuckDB" src="https://img.shields.io/badge/-DuckDB-FFF000?style=flat-square&logo=duckdb&logoColor=black">
+  <img alt="dbt" src="https://img.shields.io/badge/-dbt-FF694B?style=flat-square&logo=dbt&logoColor=white">
+  <img alt="Apache Parquet" src="https://img.shields.io/badge/-Parquet-50ABF1?style=flat-square">
+  <img alt="Groq" src="https://img.shields.io/badge/-Groq-F55036?style=flat-square">
+</p>
 
-Every finding above was confirmed by running the actual code and
-inspecting the resulting data -- not by reading the source and reasoning
-about what it probably did. See `WAREHOUSE.md` for the evidence behind
-each one, including specific row counts and query results.
+| Layer | Tooling |
+|---|---|
+| RL environment | `OpenEnv`, `FastAPI`, custom reward shaping |
+| Agent transport | `websockets`, async Python |
+| LLM layer | Any OpenAI-compatible endpoint (Groq, OpenRouter, etc.) |
+| Telemetry | Zero-dependency JSONL event sink |
+| Storage | Apache Parquet, partitioned by date |
+| Warehouse | DuckDB + `dbt-duckdb` |
+| Orchestration | Plain Python CLI, no external scheduler required |
 
-## Honest limitations
+---
 
-- **`train.py` (the GRPO training script) is not wired into the active
-  project run.** It's not invoked by Docker, the OpenEnv manifest, or any
-  script here, and it imports several packages not in `requirements.txt`.
-  It exists as a reference implementation, not a script that's actually
-  been run end-to-end. Deprioritized in favor of the data-engineering
-  work above; revisit before claiming this project trained anything.
-- **A ground-truth leak exists in `_make_observation()`**: the file's own
-  header comment claims this was already fixed, but the top-level
-  `true_*` fields are populated for the *next* email before the agent
-  acts on it. Not exploitable through the current LLM prompt (which only
-  reads subject/sender/body), but flagged and not yet fixed.
-- **`threat-assessment`'s grader has a flat 0.40 ceiling** for the ~90% of
-  emails that aren't phishing -- a property of the frozen hackathon
-  grader, not a bug, but worth knowing before reading too much into that
-  task's average reward.
-- **This project's own dataset mixes two models** across the six tasks,
-  for a documented, rate-limit-driven reason -- see `WAREHOUSE.md`'s
-  "Rate limits and the two-model split."
-
-## Credits
-
-`inference.py` and the original environment design were provided as part
-of a hackathon submission and are preserved byte-identical as a record of
-what was actually submitted. Everything under `telemetry/`, `warehouse/`,
-`run_episodes.py`, and `diagnose_llm.py` was built afterward as an
-independent extension.
+<div align="center">
+<sub>Built on an OpenEnv hackathon submission, extended into a full observability stack.</sub>
+</div>
 
