@@ -21,6 +21,22 @@
 
 ---
 
+## 🏗️ Architecture
+
+Two halves, one pipeline: the **top half** is the RL environment itself —
+an LLM agent making triage decisions against a reactive, adversarial
+inbox. The **bottom half** is what turns every one of those decisions into
+a queryable dataset — the part that makes this a data engineering project
+as much as an AI one. The dashed arrows in the middle are the seam: two
+telemetry hooks, one on each side of the WebSocket boundary, joined later
+by `email_id`.
+
+<p align="center">
+  <img src="docs/assets/architecture.svg" alt="Architecture diagram: AI/RL environment (LLM agent, run_episodes.py, EmailTriageEnvironment) on top, feeding through telemetry hooks into a DuckDB + dbt data warehouse below" width="900">
+</p>
+
+---
+
 ## ⚙️ Getting Started
 
 ### Prerequisites
@@ -35,8 +51,8 @@
 ### Installation Guide
 
 ```bash
-git clone https://github.com/<your-username>/email-triage-arena.git
-cd email-triage-arena
+git clone https://github.com/Crunchygrunt/Email_RL.git
+cd Email_RL
 
 pip install -r server/requirements.txt
 pip install -r requirements-warehouse.txt
