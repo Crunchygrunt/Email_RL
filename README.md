@@ -1,572 +1,161 @@
-<!-- ---
-title: Algorithm Architects Email RL
-emoji: 📬
-colorFrom: indigo
-colorTo: pink
-sdk: docker
-app_port: 8000
-tags:
-  - openenv
----
+# Email Triage RL Environment + Observability Warehouse
 
-# Email Triage RL -- OpenEnv Environment
+An OpenEnv-based reinforcement learning environment where LLM agents triage
+synthetic emails -- spam detection, priority classification, full triage,
+critical escalation, action orchestration, and threat assessment -- built
+on a hackathon submission and extended into a full telemetry + data
+warehouse pipeline: **event log -> DuckDB/dbt warehouse -> queryable
+leaderboard**, using only free/open-source tooling.
 
-An OpenEnv environment where AI agents learn to prioritize, categorize, route, and fully handle business emails for a fictional B2B SaaS company. Goes beyond simple classification -- the agent must generate action plans, detect security threats, and orchestrate cross-system responses like a real operations team.
+The interesting part of this project isn't just the RL environment itself
+-- it's the process of instrumenting it, finding that several of its own
+metrics were structurally unreachable or silently wrong, and fixing that
+with evidence rather than assumption. See `WAREHOUSE.md` for the full,
+warts-and-all writeup; this file is the short version.
 
-## Motivation
+## Architecture
 
-Email triage is one of the most universal knowledge-work bottlenecks. But classification alone is not enough -- in the real world, triaging an email means deciding what to DO about it. This environment tests whether LLM agents can develop the full operational judgment needed to handle a corporate inbox end-to-end:
-
-- Classify emails by urgency, type, and routing destination
-- Generate complete action plans (which systems to trigger, who to notify, what SLA to meet)
-- Detect sophisticated social engineering and phishing attacks with structured threat reports
-- Handle business-critical escalations requiring human sign-off
-
-Why this matters for the RL/agent community:
-
-- Genuine, high-frequency business task -- not a toy problem
-- 6 tasks spanning classification, action planning, and security intelligence
-- Multi-dimensional decision space with rich partial-credit reward signals
-- Novel mechanics: phishing detection, cross-email dependencies, escalation consequences
-- GRPO-compatible reward design for direct RL training
-
-## Environment Description
-
-The agent manages the inbox for Nexora Technologies, a B2B SaaS project management company. Each episode presents 10 emails drawn from a balanced pool of 7 categories, including business-critical emails requiring human sign-off, phishing attempts disguised as legitimate messages, and linked incident chains.
-
-The agent operates at three levels:
-
-1. Classification -- priority, category, and routing (Tasks 1-4)
-2. Action Orchestration -- generate a full action plan with systems, stakeholders, and SLA (Task 5)
-3. Security Intelligence -- produce a structured threat assessment report (Task 6)
-
-## Action Space
-
-The agent outputs these fields per email:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| priority | string | low, medium, high, urgent |
-| category | string | spam, newsletter, support, sales, internal, billing, security |
-| route | string | inbox, archive, support_team, sales_team, security_team, billing_team, trash, human_review |
-| action_plan | JSON string (optional) | Action orchestration plan (Task 5 only) |
-| threat_report | JSON string (optional) | Security threat assessment (Task 6 only) |
-
-The agent responds using XML tags:
-
-```xml
-<priority>urgent</priority>
-<category>security</category>
-<route>security_team</route>
-<action_plan>{"actions": [...], "sla_deadline": "1 hour", "stakeholders_to_notify": [...]}</action_plan>
-<threat_report>{"is_threat": true, "threat_type": "ceo_impersonation", "risk_score": 9.2, ...}</threat_report>
+```
+LLM agent (via run_episodes.py, WebSocket)
+        │
+        ▼
+EmailTriageEnvironment.step()  ──►  telemetry/event_sink.py  ──►  data/raw/*/dt=YYYY-MM-DD/events.jsonl
+        │                                  (JSONL, fail-open)
+        ▼
+graded reward + observation                       │
+                                     telemetry/compact_to_parquet.py
+                                                    ▼
+                                   data/lake/*/dt=.../*.parquet
+                                                    │
+                                          warehouse/ (dbt-duckdb)
+                                          staging → intermediate → marts
+                                                    ▼
+                                     warehouse/warehouse.duckdb (query this)
 ```
 
-## Observation Space
+- **`server/Email_RL_environment.py`** -- the FastAPI/OpenEnv environment:
+  synthetic email generation, phishing injection, cross-email dependency
+  clusters, escalation consequences, and the shaped reward function.
+- **`inference.py`** -- **frozen**, byte-identical to the original
+  hackathon submission. Its own reported scores are trustworthy and
+  untouched; it is never modified, only imported.
+- **`run_episodes.py`** -- the real evaluation harness. Drives the
+  environment over `client.py`'s WebSocket client with genuine
+  multi-email episode continuity, a model-agnostic action parser, and
+  retry/backoff resilience against rate limits and dropped connections.
+- **`telemetry/`** -- zero-dependency, fail-open JSONL event sink plus a
+  batch Parquet compactor.
+- **`warehouse/`** -- a dbt-duckdb project: staging -> intermediate ->
+  marts, queryable directly with DuckDB.
 
-Each observation provides:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| email_id | string | Unique email identifier |
-| email_subject | string | Subject line |
-| email_sender | string | Sender address |
-| email_body | string | Full body text |
-| last_priority_correct | bool or null | Was the previous priority correct? |
-| last_category_correct | bool or null | Was the previous category correct? |
-| last_route_correct | bool or null | Was the previous route correct? |
-| emails_remaining | int | Emails left (0 = last) |
-| current_streak | int | Consecutive perfect decisions |
-| linked_incident | bool | Part of a cross-email cluster |
-| is_phishing | bool | Whether this is a phishing attempt (for grader use) |
-| is_business_critical | bool | Whether this requires human_review (for grader use) |
-
-## Tasks
-
-### Task 1: Spam Detection (Easy)
-
-Binary classification -- is this spam/phishing or legitimate? Includes obvious spam and sophisticated phishing. Score: 1.0 for correct, 0.0 for incorrect. Success threshold: 0.6.
-
-### Task 2: Priority Classification (Medium)
-
-Assign the exact urgency level. Requires understanding business context and threat severity. Score: 1.0 for exact match, 0.0 otherwise. Success threshold: 0.5.
-
-### Task 3: Full Triage (Hard)
-
-Weighted score across all three classification dimensions (priority, category, route). Includes phishing detection, cross-email dependencies, and escalation consequences. Normalized to [0.0, 1.0]. Success threshold: 0.4.
-
-### Task 4: Critical Escalation (Hard)
-
-Identify business-critical emails (legal disputes, GDPR compliance, large contracts, insurance claims, policy changes) and route to human_review. Penalizes both missed escalations AND over-escalation. Score: 1.0 for correct, 0.0 otherwise. Success threshold: 0.6.
-
-### Task 5: Action Orchestrator (Hard) -- NEW
-
-The agent generates a complete action plan for each email. Graded on:
-
-- Valid JSON with actions list (0.20)
-- Appropriate systems for email priority/category (0.25) -- e.g., pagerduty for urgent, jira for bugs
-- SLA deadline calibrated to urgency (0.20) -- e.g., "1 hour" for urgent, "end of day" for high
-- Relevant stakeholders identified (0.20) -- e.g., CTO for P1, team lead for medium
-- Response draft included when needed (0.15)
-
-Success threshold: 0.3.
-
-### Task 6: Threat Assessment (Hard) -- NEW
-
-The agent produces a structured security threat report. Graded on:
-
-- Correct threat/no-threat classification (0.30)
-- Attack vector identified for phishing emails (0.20) -- e.g., "ceo_impersonation", "credential_phishing"
-- Quality of indicators list (0.20) -- e.g., "spoofed_domain", "urgency_pressure", "secrecy_pressure"
-- Sensible recommended actions (0.15) -- e.g., "quarantine", "notify_security", "verify_with_sender"
-- Risk score calibrated to actual threat level (0.15)
-
-Success threshold: 0.3.
-
-## Reward Design
-
-### Classification Tasks (1-4): Multi-Signal Shaped Reward
-
-The reward system models real-world email operations economics with 8 distinct signals:
-
-**Base Score with Partial Credit:**
-- Priority exact match: +1.0 | Near-miss partial credit: up to +0.6
-  - Asymmetric: under-prioritizing ("medium" for urgent) scores 0.10, over-prioritizing ("urgent" for low) scores 0.20
-  - This mirrors reality: missing a P1 is catastrophic, over-escalating is merely annoying
-- Category exact match: +0.5 | Similar-category partial credit: up to +0.25
-  - Confusion matrix: calling security "spam" = 0.0 (catastrophic), calling support "sales" = 0.30 (wrong team but survivable)
-- Route exact match: +0.3 (no partial credit -- routing must be precise)
-- Format bonus: +0.1 (priority correct AND >=1 other correct)
-- Perfect bonus: +0.2 (all three correct)
-
-**Reward Shaping Signals:**
-
-| Signal | Value | Trigger | Real-World Analog |
-|--------|-------|---------|-------------------|
-| Urgency multiplier | x0.8-2.0 | Scales by true email priority | Urgent emails matter more |
-| Streak bonus | +0.3 | 3+ consecutive perfect decisions | Sustained reliability matters |
-| Asymmetric overload | -0.50 to -0.75 | Urgent/high mislabeled as low/medium | Missing a fire alarm |
-| Response time decay | -0.05/position | Urgent email processed late in queue | SLA clock is ticking |
-| Phishing detection bonus | +0.15 to +0.225 | Correctly identified phishing from suspicious sender | SOC analyst skill |
-| Phishing miss penalty | -0.80 | Failed to detect phishing email | Security breach risk |
-| Dependency bonus | +0.4 | Linked emails routed to same team | Incident coherence |
-| Batch coherence bonus | +0.5 | Priority distribution matches ground truth | Triage calibration |
-| Escalation multiplier | /1.5 | Reduced reward on injected angry follow-ups | Compounding mistakes |
-
-**Why This Reward Design Is Novel:**
-- Asymmetric error costs model real business risk (missing urgent >> over-escalating)
-- Response time pressure creates queue-ordering incentives
-- Batch coherence prevents degenerate strategies (marking everything "urgent")
-- Phishing detection integrates sender trust analysis
-- Partial credit matrix enables meaningful gradient even for wrong answers
-
-### Orchestrator Task (5)
-
-Multi-dimensional grading across 5 criteria: structure (0.20), system selection (0.25), SLA calibration (0.20), stakeholder identification (0.20), response quality (0.15). Total normalized to [0.0, 1.0].
-
-### Threat Assessment Task (6)
-
-Multi-dimensional grading across 5 criteria: threat classification (0.30), attack vector (0.20), indicators (0.20), recommended actions (0.15), risk score calibration (0.15). Total normalized to [0.0, 1.0].
-
-train.py docstring: "reference implementation for GRPO wiring — not yet run against a live server; deps not pinned in requirements.txt."
-
-## Novel Environment Mechanics
-
-### 1. Phishing Detection
-
-Six sophisticated phishing templates mimicking real communications: CEO wire transfer requests, fake IT password resets, spoofed invoices with changed bank details, fake Google Drive shares, and fraudulent DocuSign links.
-
-### 2. Cross-Email Dependencies
-
-Three dependency clusters (security incident chain, client churn risk chain, compliance chain) where 2 emails reference the same underlying incident. Consistent routing earns a +0.4 dependency bonus.
-
-### 3. Escalation Consequences
-
-When the agent misclassifies an urgent/high email as low/medium, an angry follow-up email is dynamically injected 2 positions ahead with a 1.5x penalty multiplier.
-
-### 4. Action Orchestration
-
-The agent must reason about which external systems to trigger (PagerDuty, Slack, Jira, CRM, Calendar), calibrate SLA deadlines to email urgency, and identify the right stakeholders to notify.
-
-### 5. Security Intelligence
-
-The agent must detect social engineering attacks, identify specific attack vectors and red-flag indicators, recommend defensive actions, and calibrate a risk score -- going beyond binary spam detection to structured threat analysis.
-
-## Anti-Exploit Protections
-
-- Ground truth is never exposed before the agent acts
-- Escalation injections dynamically extend episodes
-- Phishing emails bypass simple keyword matching
-- Batch coherence bonus prevents degenerate "always urgent" strategies
-- Asymmetric penalties prevent "always low priority" gaming
-- Response time decay prevents ignoring queue order
-- Action plan grader validates semantic correctness, not just structure
-- Threat assessment grader requires calibrated confidence and risk scores
-
-## Setup Instructions
-
-### Local Development
+## Quick start
 
 ```bash
-git clone <repo-url>
-cd Email_OpenEnv/Email_RL
-uv sync
-uvicorn server.app:app --host 0.0.0.0 --port 8000
+pip install -r server/requirements.txt
+pip install -r requirements-warehouse.txt
+
+# .env
+API_BASE_URL=https://api.groq.com/openai/v1
+MODEL_NAME=llama-3.3-70b-versatile
+HF_TOKEN=<your Groq API key>
+EMAIL_RL_SERVER_URL=http://localhost:8000
+
+# terminal 1
+uvicorn server.app:app --host 0.0.0.0 --port 8000   # no --reload for real runs
+
+# terminal 2
+python diagnose_llm.py                              # confirm SUCCESS + non-empty response first
+python run_episodes.py --episodes 4
+python telemetry/compact_to_parquet.py
+cd warehouse && dbt run --profiles-dir .
 ```
 
-### Docker
-
+Then query it:
 ```bash
-docker build -t email-triage-env .
-docker run -p 8000:8000 email-triage-env
+python -c "import duckdb; print(duckdb.connect('warehouse/warehouse.duckdb').sql('select * from agg_model_leaderboard').df())"
 ```
 
-### Run Baseline Inference
+Full setup detail, including the LLM-provider gotchas below, is in
+`WAREHOUSE.md`.
+
+## What this project actually demonstrates
+
+Rather than a clean success story, this is a record of finding and fixing
+real problems empirically -- which is the more honest (and more
+interesting) version of a data engineering project:
+
+- **The evaluation harness itself was broken.** `inference.py`'s
+  hand-rolled HTTP client hit stateless routes that spun up a brand-new
+  environment instance on every call -- an agent was shown one email via
+  `/reset` and graded against a completely different one on `/step`.
+  Confirmed by directly comparing mismatched `email_id`s across the same
+  execution, and fixed with a new harness (`run_episodes.py`) that drives
+  the environment's real WebSocket client instead of duplicating or
+  patching the frozen hackathon file.
+- **A phishing-sampling bug meant 0 of 2,000 sampled emails, across 200
+  episodes, were ever actually phishing** -- a `.pop()` call was removing
+  the wrong list index. Confirmed before and after the one-line fix.
+- **A silent parser fallback made two unrelated failures produce the
+  identical symptom.** An exhausted API key and a model that just doesn't
+  reliably emit strict XML both defaulted to the same hardcoded action
+  with zero logging. Replaced with a layered, model-agnostic parser that
+  reports exactly which fallback path fired, plus a diagnostic script
+  (`diagnose_llm.py`) that surfaces the real exception `_call_llm` was
+  swallowing.
+- **A reasoning model (`gpt-oss-120b`) returned genuine HTTP 200s with
+  empty content**, spending its entire token budget on invisible
+  reasoning tokens -- indistinguishable from a rate limit until traced
+  down to the actual API response. Raising `max_tokens` made it *worse*,
+  not better, which was itself a useful (if initially wrong) finding.
+- **Free-tier rate limits turned out to differ meaningfully by model and
+  by task**, not just by provider -- confirmed against Groq's published
+  limits and handled with real retry/backoff and pacing logic rather than
+  a bigger hammer.
+- **A reward-shaping mart was quietly built on structurally unreachable
+  data.** The original harness reset before every single email, so
+  streak/dependency/coherence bonuses -- fully implemented, correctly
+  coded -- could never fire. Fixing the harness surfaced a second,
+  subtler finding: even with real continuity, an imperfect model rarely
+  reaches natural episode completion at all, because missed
+  urgent/high-priority emails inject escalation follow-ups that can push
+  the queue past the step cap. The warehouse now tracks this explicitly
+  (`reached_done`, `emails_remaining_at_cutoff`) instead of conflating a
+  clean finish with a cutoff.
+- **A Parquet schema silently drifted across days** when a column
+  happened to be all-null in one day's batch. Fixed with an explicit,
+  pinned schema instead of per-batch type inference.
+
+Every finding above was confirmed by running the actual code and
+inspecting the resulting data -- not by reading the source and reasoning
+about what it probably did. See `WAREHOUSE.md` for the evidence behind
+each one, including specific row counts and query results.
+
+## Honest limitations
+
+- **`train.py` (the GRPO training script) is not wired into the active
+  project run.** It's not invoked by Docker, the OpenEnv manifest, or any
+  script here, and it imports several packages not in `requirements.txt`.
+  It exists as a reference implementation, not a script that's actually
+  been run end-to-end. Deprioritized in favor of the data-engineering
+  work above; revisit before claiming this project trained anything.
+- **A ground-truth leak exists in `_make_observation()`**: the file's own
+  header comment claims this was already fixed, but the top-level
+  `true_*` fields are populated for the *next* email before the agent
+  acts on it. Not exploitable through the current LLM prompt (which only
+  reads subject/sender/body), but flagged and not yet fixed.
+- **`threat-assessment`'s grader has a flat 0.40 ceiling** for the ~90% of
+  emails that aren't phishing -- a property of the frozen hackathon
+  grader, not a bug, but worth knowing before reading too much into that
+  task's average reward.
+- **This project's own dataset mixes two models** across the six tasks,
+  for a documented, rate-limit-driven reason -- see `WAREHOUSE.md`'s
+  "Rate limits and the two-model split."
+
+## Credits
+
+`inference.py` and the original environment design were provided as part
+of a hackathon submission and are preserved byte-identical as a record of
+what was actually submitted. Everything under `telemetry/`, `warehouse/`,
+`run_episodes.py`, and `diagnose_llm.py` was built afterward as an
+independent extension.
 
-```bash
-export API_BASE_URL="https://router.huggingface.co/v1"
-export MODEL_NAME="Qwen/Qwen2.5-72B-Instruct"
-export HF_TOKEN="your-token-here"
-export EMAIL_RL_SERVER_URL="http://localhost:8000"
-python inference.py
-```
-
-## API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| / | GET | Health check and metadata |
-| /health | GET | Simple health check |
-| /reset | POST | Reset environment, returns first email |
-| /step | POST | Submit triage action, returns reward |
-| /state | GET | Current episode state |
-| /schema | GET | Action and observation schemas |
-| /ws | WS | WebSocket for persistent sessions |
-
-## Baseline Scores
-
-| Task | Difficulty | Model | Score |
-|------|-----------|-------|-------|
-| spam-detection | Easy | Qwen2.5-72B-Instruct | 1.000 |
-| priority-classification | Medium | Qwen2.5-72B-Instruct | 0.700 |
-| full-triage | Hard | Qwen2.5-72B-Instruct | 0.728 |
-| critical-escalation | Hard | Qwen2.5-72B-Instruct | 0.900 |
-| action-orchestrator | Hard | Qwen2.5-72B-Instruct | 0.732 |
-| threat-assessment | Hard | Qwen2.5-72B-Instruct | 0.400 |
-
-## Project Structure
-
-```
-Email_RL/
-    server/
-        __init__.py
-        app.py
-        Email_RL_environment.py
-    __init__.py
-    models.py
-    client.py
-    inference.py
-    train.py
-    openenv.yaml
-    Dockerfile
-    pyproject.toml
-    .env.example
-    README.md
-```
-
-## Validation
-
-```bash
-openenv validate
-curl http://localhost:8000/
-curl -X POST http://localhost:8000/reset
-curl http://localhost:8000/state
-``` -->
-
-
-
-
----
-title: Algorithm Architects Email RL
-emoji: 📬
-colorFrom: indigo
-colorTo: pink
-sdk: docker
-app_port: 8000
-tags:
-  - openenv
----
-
-# Email Triage RL -- OpenEnv Environment
-
-An OpenEnv environment where AI agents learn to prioritize, categorize, route, and fully handle business emails for a fictional B2B SaaS company. Goes beyond simple classification -- the agent must generate action plans, detect security threats, and orchestrate cross-system responses like a real operations team.
-
-## Motivation
-
-Email triage is one of the most universal knowledge-work bottlenecks. But classification alone is not enough -- in the real world, triaging an email means deciding what to DO about it. This environment tests whether LLM agents can develop the full operational judgment needed to handle a corporate inbox end-to-end:
-
-- Classify emails by urgency, type, and routing destination
-- Generate complete action plans (which systems to trigger, who to notify, what SLA to meet)
-- Detect sophisticated social engineering and phishing attacks with structured threat reports
-- Handle business-critical escalations requiring human sign-off
-
-Why this matters for the RL/agent community:
-
-- Genuine, high-frequency business task -- not a toy problem
-- 6 tasks spanning classification, action planning, and security intelligence
-- Multi-dimensional decision space with rich partial-credit reward signals
-- Novel mechanics: phishing detection, cross-email dependencies, escalation consequences
-- GRPO-compatible reward design for direct RL training
-
-## Environment Description
-
-The agent manages the inbox for Nexora Technologies, a B2B SaaS project management company. Each episode presents 10 emails drawn from a balanced pool of 7 categories, including business-critical emails requiring human sign-off, phishing attempts disguised as legitimate messages, and linked incident chains.
-
-The agent operates at three levels:
-
-1. Classification -- priority, category, and routing (Tasks 1-4)
-2. Action Orchestration -- generate a full action plan with systems, stakeholders, and SLA (Task 5)
-3. Security Intelligence -- produce a structured threat assessment report (Task 6)
-
-## Action Space
-
-The agent outputs these fields per email:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| priority | string | low, medium, high, urgent |
-| category | string | spam, newsletter, support, sales, internal, billing, security |
-| route | string | inbox, archive, support_team, sales_team, security_team, billing_team, trash, human_review |
-| action_plan | JSON string (optional) | Action orchestration plan (Task 5 only) |
-| threat_report | JSON string (optional) | Security threat assessment (Task 6 only) |
-
-The agent responds using XML tags:
-
-```xml
-<priority>urgent</priority>
-<category>security</category>
-<route>security_team</route>
-<action_plan>{"actions": [...], "sla_deadline": "1 hour", "stakeholders_to_notify": [...]}</action_plan>
-<threat_report>{"is_threat": true, "threat_type": "ceo_impersonation", "risk_score": 9.2, ...}</threat_report>
-```
-
-## Observation Space
-
-Each observation provides:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| email_id | string | Unique email identifier |
-| email_subject | string | Subject line |
-| email_sender | string | Sender address |
-| email_body | string | Full body text |
-| last_priority_correct | bool or null | Was the previous priority correct? |
-| last_category_correct | bool or null | Was the previous category correct? |
-| last_route_correct | bool or null | Was the previous route correct? |
-| emails_remaining | int | Emails left (0 = last) |
-| current_streak | int | Consecutive perfect decisions |
-| linked_incident | bool | Part of a cross-email cluster |
-| is_phishing | bool | Whether this is a phishing attempt (for grader use) |
-| is_business_critical | bool | Whether this requires human_review (for grader use) |
-
-## Tasks
-
-### Task 1: Spam Detection (Easy)
-
-Binary classification -- is this spam/phishing or legitimate? Includes obvious spam and sophisticated phishing. Score: 1.0 for correct, 0.0 for incorrect. Success threshold: 0.6.
-
-### Task 2: Priority Classification (Medium)
-
-Assign the exact urgency level. Requires understanding business context and threat severity. Score: 1.0 for exact match, 0.0 otherwise. Success threshold: 0.5.
-
-### Task 3: Full Triage (Hard)
-
-Weighted score across all three classification dimensions (priority, category, route). Includes phishing detection, cross-email dependencies, and escalation consequences. Normalized to [0.0, 1.0]. Success threshold: 0.4.
-
-### Task 4: Critical Escalation (Hard)
-
-Identify business-critical emails (legal disputes, GDPR compliance, large contracts, insurance claims, policy changes) and route to human_review. Penalizes both missed escalations AND over-escalation. Score: 1.0 for correct, 0.0 otherwise. Success threshold: 0.6.
-
-### Task 5: Action Orchestrator (Hard) -- NEW
-
-The agent generates a complete action plan for each email. Graded on:
-
-- Valid JSON with actions list (0.20)
-- Appropriate systems for email priority/category (0.25) -- e.g., pagerduty for urgent, jira for bugs
-- SLA deadline calibrated to urgency (0.20) -- e.g., "1 hour" for urgent, "end of day" for high
-- Relevant stakeholders identified (0.20) -- e.g., CTO for P1, team lead for medium
-- Response draft included when needed (0.15)
-
-Success threshold: 0.3.
-
-### Task 6: Threat Assessment (Hard) -- NEW
-
-The agent produces a structured security threat report. Graded on:
-
-- Correct threat/no-threat classification (0.30)
-- Attack vector identified for phishing emails (0.20) -- e.g., "ceo_impersonation", "credential_phishing"
-- Quality of indicators list (0.20) -- e.g., "spoofed_domain", "urgency_pressure", "secrecy_pressure"
-- Sensible recommended actions (0.15) -- e.g., "quarantine", "notify_security", "verify_with_sender"
-- Risk score calibrated to actual threat level (0.15)
-
-Success threshold: 0.3.
-
-## Reward Design
-
-### Classification Tasks (1-4): Multi-Signal Shaped Reward
-
-The reward system models real-world email operations economics with 8 distinct signals:
-
-**Base Score with Partial Credit:**
-- Priority exact match: +1.0 | Near-miss partial credit: up to +0.6
-  - Asymmetric: under-prioritizing ("medium" for urgent) scores 0.10, over-prioritizing ("urgent" for low) scores 0.20
-  - This mirrors reality: missing a P1 is catastrophic, over-escalating is merely annoying
-- Category exact match: +0.5 | Similar-category partial credit: up to +0.25
-  - Confusion matrix: calling security "spam" = 0.0 (catastrophic), calling support "sales" = 0.30 (wrong team but survivable)
-- Route exact match: +0.3 (no partial credit -- routing must be precise)
-- Format bonus: +0.1 (priority correct AND >=1 other correct)
-- Perfect bonus: +0.2 (all three correct)
-
-**Reward Shaping Signals:**
-
-| Signal | Value | Trigger | Real-World Analog |
-|--------|-------|---------|-------------------|
-| Urgency multiplier | x0.8-2.0 | Scales by true email priority | Urgent emails matter more |
-| Streak bonus | +0.3 | 3+ consecutive perfect decisions | Sustained reliability matters |
-| Asymmetric overload | -0.50 to -0.75 | Urgent/high mislabeled as low/medium | Missing a fire alarm |
-| Response time decay | -0.05/position | Urgent email processed late in queue | SLA clock is ticking |
-| Phishing detection bonus | +0.15 to +0.225 | Correctly identified phishing from suspicious sender | SOC analyst skill |
-| Phishing miss penalty | -0.80 | Failed to detect phishing email | Security breach risk |
-| Dependency bonus | +0.4 | Linked emails routed to same team | Incident coherence |
-| Batch coherence bonus | +0.5 | Priority distribution matches ground truth | Triage calibration |
-| Escalation multiplier | /1.5 | Reduced reward on injected angry follow-ups | Compounding mistakes |
-
-**Why This Reward Design Is Novel:**
-- Asymmetric error costs model real business risk (missing urgent >> over-escalating)
-- Response time pressure creates queue-ordering incentives
-- Batch coherence prevents degenerate strategies (marking everything "urgent")
-- Phishing detection integrates sender trust analysis
-- Partial credit matrix enables meaningful gradient even for wrong answers
-
-### Orchestrator Task (5)
-
-Multi-dimensional grading across 5 criteria: structure (0.20), system selection (0.25), SLA calibration (0.20), stakeholder identification (0.20), response quality (0.15). Total normalized to [0.0, 1.0].
-
-### Threat Assessment Task (6)
-
-Multi-dimensional grading across 5 criteria: threat classification (0.30), attack vector (0.20), indicators (0.20), recommended actions (0.15), risk score calibration (0.15). Total normalized to [0.0, 1.0].
-
-train.py docstring: "reference implementation for GRPO wiring — not yet run against a live server; deps not pinned in requirements.txt."
-
-## Novel Environment Mechanics
-
-### 1. Phishing Detection
-
-Six sophisticated phishing templates mimicking real communications: CEO wire transfer requests, fake IT password resets, spoofed invoices with changed bank details, fake Google Drive shares, and fraudulent DocuSign links.
-
-### 2. Cross-Email Dependencies
-
-Three dependency clusters (security incident chain, client churn risk chain, compliance chain) where 2 emails reference the same underlying incident. Consistent routing earns a +0.4 dependency bonus.
-
-### 3. Escalation Consequences
-
-When the agent misclassifies an urgent/high email as low/medium, an angry follow-up email is dynamically injected 2 positions ahead with a 1.5x penalty multiplier.
-
-### 4. Action Orchestration
-
-The agent must reason about which external systems to trigger (PagerDuty, Slack, Jira, CRM, Calendar), calibrate SLA deadlines to email urgency, and identify the right stakeholders to notify.
-
-### 5. Security Intelligence
-
-The agent must detect social engineering attacks, identify specific attack vectors and red-flag indicators, recommend defensive actions, and calibrate a risk score -- going beyond binary spam detection to structured threat analysis.
-
-## Anti-Exploit Protections
-
-- Ground truth is never exposed before the agent acts
-- Escalation injections dynamically extend episodes
-- Phishing emails bypass simple keyword matching
-- Batch coherence bonus prevents degenerate "always urgent" strategies
-- Asymmetric penalties prevent "always low priority" gaming
-- Response time decay prevents ignoring queue order
-- Action plan grader validates semantic correctness, not just structure
-- Threat assessment grader requires calibrated confidence and risk scores
-
-## Setup Instructions
-
-### Local Development
-
-```bash
-git clone <repo-url>
-cd Email_OpenEnv/Email_RL
-uv sync
-uvicorn server.app:app --host 0.0.0.0 --port 8000
-```
-
-### Docker
-
-```bash
-docker build -t email-triage-env .
-docker run -p 8000:8000 email-triage-env
-```
-
-### Run Baseline Inference
-
-```bash
-export API_BASE_URL="https://router.huggingface.co/v1"
-export MODEL_NAME="Qwen/Qwen2.5-72B-Instruct"
-export HF_TOKEN="your-token-here"
-export EMAIL_RL_SERVER_URL="http://localhost:8000"
-python inference.py
-```
-
-## API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| / | GET | Health check and metadata |
-| /health | GET | Simple health check |
-| /reset | POST | Reset environment, returns first email |
-| /step | POST | Submit triage action, returns reward |
-| /state | GET | Current episode state |
-| /schema | GET | Action and observation schemas |
-| /ws | WS | WebSocket for persistent sessions |
-
-## Baseline Scores
-
-| Task | Difficulty | Model | Score |
-|------|-----------|-------|-------|
-| spam-detection | Easy | Qwen2.5-72B-Instruct | 1.000 |
-| priority-classification | Medium | Qwen2.5-72B-Instruct | 0.700 |
-| full-triage | Hard | Qwen2.5-72B-Instruct | 0.728 |
-| critical-escalation | Hard | Qwen2.5-72B-Instruct | 0.900 |
-| action-orchestrator | Hard | Qwen2.5-72B-Instruct | 0.732 |
-| threat-assessment | Hard | Qwen2.5-72B-Instruct | 0.400 |
-
-## Project Structure
-
-```
-Email_RL/
-    server/
-        __init__.py
-        app.py
-        Email_RL_environment.py
-    __init__.py
-    models.py
-    client.py
-    inference.py
-    train.py
-    openenv.yaml
-    Dockerfile
-    pyproject.toml
-    .env.example
-    README.md
-```
-
-## Validation
-
-```bash
-openenv validate
-curl http://localhost:8000/
-curl -X POST http://localhost:8000/reset
-curl http://localhost:8000/state
-```

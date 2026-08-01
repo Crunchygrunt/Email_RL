@@ -83,7 +83,51 @@ try:
 except ModuleNotFoundError:
     from Email_RL import telemetry
 
+import websockets.exceptions
 from openai import OpenAI
+
+# --- Rate-limit / flaky-connection resilience -------------------------
+#
+# Both added after a real run hit two separate failures back to back:
+# (1) Groq's free-tier RPM/TPM budget got tripped ~160 requests into a
+#     240-request run, and _call_llm's blanket except-Exception-return-''
+#     made that indistinguishable from a genuine parse failure until we
+#     started retrying instead of accepting the first empty response.
+# (2) The local WebSocket connection itself got dropped mid-run
+#     (websockets.exceptions.ConnectionClosedError), which previously
+#     took the entire multi-hour, multi-task run down with it instead of
+#     just losing the one in-flight episode.
+_LLM_RETRY_DELAYS = (5, 15, 30)     # seconds; retried on an EMPTY llm response only
+_REQUEST_PACING_DELAY = 1.0         # seconds; small proactive gap between LLM calls
+_MAX_EPISODE_CONNECTION_RETRIES = 3
+_EPISODE_RETRY_DELAY = 10           # seconds, before reconnecting with a fresh session
+
+
+async def _call_llm_with_retry(llm_client: OpenAI, system_prompt: str, obs, step: int, history: List[str]) -> str:
+    """
+    Wraps inference._call_llm with retry-on-empty-response.
+
+    _call_llm swallows every exception and returns "" -- so an empty
+    response could mean a genuine formatting failure OR a rate limit OR
+    a dropped connection to the LLM provider. We can't tell which from
+    the return value alone, but rate limits are the most likely cause on
+    a free tier mid-run, and they're worth waiting out rather than
+    immediately burning a graded step on a forced default. Only truly
+    persistent emptiness (after all retries) gets treated as real by
+    _parse_action_lenient.
+    """
+    raw_text = inference._call_llm(llm_client, system_prompt, obs, step, history)
+    for attempt, delay in enumerate(_LLM_RETRY_DELAYS, start=1):
+        if raw_text and raw_text.strip():
+            return raw_text
+        print(
+            f"[retry] empty LLM response (likely a rate limit) -- "
+            f"attempt {attempt}/{len(_LLM_RETRY_DELAYS)}, waiting {delay}s before retrying...",
+            file=sys.stderr,
+        )
+        await asyncio.sleep(delay)
+        raw_text = inference._call_llm(llm_client, system_prompt, obs, step, history)
+    return raw_text
 
 
 # ---------------------------------------------------------------------------
@@ -251,8 +295,9 @@ async def run_episode(llm_client: OpenAI, task: "inference.TaskConfig", episode_
             email_id = obs.email_id
 
             _llm_start = time.monotonic()
-            raw_text = inference._call_llm(llm_client, task.system_prompt, obs, step, history)
+            raw_text = await _call_llm_with_retry(llm_client, task.system_prompt, obs, step, history)
             llm_latency_ms = (time.monotonic() - _llm_start) * 1000.0
+            await asyncio.sleep(_REQUEST_PACING_DELAY)  # small proactive gap, cheaper than tripping the limit
             action, parse_diag = _parse_action_lenient(raw_text)
             action_str = f"priority={action.priority},category={action.category},route={action.route}"
             if not parse_diag["parse_ok"]:
@@ -319,9 +364,44 @@ async def main(n_episodes: int, task_filter: Optional[List[str]]) -> None:
         if missing:
             print(f"WARNING: unknown task name(s), skipping: {sorted(missing)}", file=sys.stderr)
 
+    failed_episodes: List[tuple] = []
+
     for task in tasks:
         for ep in range(1, n_episodes + 1):
-            await run_episode(llm_client, task, ep)
+            for attempt in range(1, _MAX_EPISODE_CONNECTION_RETRIES + 1):
+                try:
+                    await run_episode(llm_client, task, ep)
+                    break
+                except (websockets.exceptions.ConnectionClosed, OSError, asyncio.TimeoutError) as exc:
+                    print(
+                        f"[connection] WARNING: {task.name} ep{ep} lost its WebSocket "
+                        f"connection (attempt {attempt}/{_MAX_EPISODE_CONNECTION_RETRIES}): "
+                        f"{exc!r}",
+                        file=sys.stderr,
+                    )
+                    if attempt == _MAX_EPISODE_CONNECTION_RETRIES:
+                        print(
+                            f"[connection] ERROR: {task.name} ep{ep} failed after "
+                            f"{_MAX_EPISODE_CONNECTION_RETRIES} attempts -- skipping it "
+                            f"and continuing with the rest of the run.",
+                            file=sys.stderr,
+                        )
+                        failed_episodes.append((task.name, ep))
+                    else:
+                        print(
+                            f"[connection] Retrying with a fresh connection in "
+                            f"{_EPISODE_RETRY_DELAY}s (this episode restarts from step 1; "
+                            f"steps already logged before the drop stay in the telemetry)...",
+                            file=sys.stderr,
+                        )
+                        await asyncio.sleep(_EPISODE_RETRY_DELAY)
+
+    if failed_episodes:
+        print(
+            f"\n=== {len(failed_episodes)} episode(s) could not be completed after "
+            f"retries and were skipped: {failed_episodes} ===",
+            file=sys.stderr,
+        )
 
 
 if __name__ == "__main__":
@@ -334,3 +414,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     task_filter = [t.strip() for t in args.tasks.split(",")] if args.tasks else None
     asyncio.run(main(args.episodes, task_filter))
+    
+    

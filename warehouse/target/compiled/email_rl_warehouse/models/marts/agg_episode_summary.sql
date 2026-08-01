@@ -30,7 +30,7 @@ with last_step as (
         episode_id,
         env_done          as reached_done,
         emails_remaining  as emails_remaining_at_cutoff
-    from {{ ref('int_steps_joined') }}
+    from "warehouse"."main"."int_steps_joined"
     qualify row_number() over (
         partition by episode_id
         order by env_step desc
@@ -49,8 +49,7 @@ select
     max(s.env_step)                   as final_step,
     any_value(l.reached_done)         as reached_done,
     any_value(l.emails_remaining_at_cutoff) as emails_remaining_at_cutoff
-from {{ ref('int_steps_joined') }} s
+from "warehouse"."main"."int_steps_joined" s
 join last_step l using (episode_id)
 group by 1
 order by episode_dt, episode_id
-

@@ -354,3 +354,1929 @@ alter view "warehouse"."main"."stg_client_steps__dbt_tmp" rename to "stg_client_
 [0m18:16:00.189894 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51826E110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51826E7D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51826F810>]}
 [0m18:16:00.191492 [debug] [MainThread]: Flushing usage events
 [0m18:16:01.533346 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m11:12:37.935875 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272A9D6290>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272A9D6090>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272A9D6510>]}
+
+
+============================== 11:12:37.949466 | a96c52aa-cb97-4e85-a671-5e754b6bccbc ==============================
+[0m11:12:37.949466 [info ] [MainThread]: Running with dbt=1.12.0
+[0m11:12:37.951599 [debug] [MainThread]: running dbt with arguments {'maximum_seed_size_mib': '1', 'no_print': 'None', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'version_check': 'True', 'printer_width': '80', 'write_json': 'True', 'empty': 'False', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'profiles_dir': '.', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'use_colors': 'True', 'use_experimental_parser': 'False', 'invocation_command': 'dbt run --profiles-dir .', 'log_path': 'C:\\Users\\Yuvraj Singh\\OneDrive\\Desktop\\Email_OpenEnv\\Email_RL\\warehouse\\logs'}
+[0m11:12:39.607829 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272AB527D0>]}
+[0m11:12:39.826029 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000022725F49F90>]}
+[0m11:12:39.882216 [info ] [MainThread]: Registered adapter: duckdb=1.10.1
+[0m11:12:41.000110 [debug] [MainThread]: checksum: f0d9819fa8ee4563bd15d8de06517e98ba4ac797156a47baad28b9341f2427ea, vars: {}, profile: email_rl_warehouse, target: dev, version: 1.12.0
+[0m11:12:45.142569 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 0 files changed.
+[0m11:12:45.144089 [debug] [MainThread]: Nothing changed, skipping partial parsing.
+[0m11:12:45.148594 [debug] [MainThread]: Partial parsing enabled, no changes found, skipping parsing
+[0m11:12:45.175706 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272AAF2790>]}
+[0m11:12:45.430907 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m11:12:45.485764 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m11:12:45.600252 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m11:12:45.640488 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272B06B890>]}
+[0m11:12:45.643253 [info ] [MainThread]: Found 7 models, 486 macros
+[0m11:12:45.643253 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272B0536D0>]}
+[0m11:12:45.648123 [info ] [MainThread]: 
+[0m11:12:45.648123 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m11:12:45.650506 [info ] [MainThread]: 
+[0m11:12:45.651538 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m11:12:45.664839 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse'
+[0m11:12:53.561754 [debug] [ThreadPool]: Using duckdb connection "list_warehouse"
+[0m11:12:53.561754 [debug] [ThreadPool]: On list_warehouse: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse"} */
+
+    
+    select schema_name
+    from system.information_schema.schemata
+    
+    where lower(catalog_name) = '"warehouse"'
+    
+  
+  
+[0m11:12:53.561754 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m11:12:53.658097 [debug] [ThreadPool]: SQL status: OK in 0.096 seconds
+[0m11:12:53.672573 [debug] [ThreadPool]: On list_warehouse: Close
+[0m11:12:53.672573 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_warehouse, now create_warehouse_main)
+[0m11:12:53.672573 [debug] [ThreadPool]: Creating schema "database: "warehouse"
+schema: "main"
+"
+[0m11:12:53.689597 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m11:12:53.689597 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+        select type from duckdb_databases()
+        where lower(database_name)='warehouse'
+        and type='sqlite'
+    
+  
+[0m11:12:53.689597 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m11:12:53.704169 [debug] [ThreadPool]: SQL status: OK in 0.004 seconds
+[0m11:12:53.704169 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m11:12:53.704169 [debug] [ThreadPool]: On create_warehouse_main: BEGIN
+[0m11:12:53.704169 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m11:12:53.704169 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m11:12:53.704169 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+    
+        create schema if not exists "warehouse"."main"
+    
+[0m11:12:53.719827 [debug] [ThreadPool]: SQL status: OK in 0.002 seconds
+[0m11:12:53.719827 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m11:12:53.719827 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m11:12:53.719827 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m11:12:53.719827 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m11:12:53.719827 [debug] [ThreadPool]: On create_warehouse_main: Close
+[0m11:12:53.735622 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse_main'
+[0m11:12:53.751768 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m11:12:53.751768 [debug] [ThreadPool]: On list_warehouse_main: BEGIN
+[0m11:12:53.751768 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m11:12:53.751768 [debug] [ThreadPool]: SQL status: OK in 0.003 seconds
+[0m11:12:53.751768 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m11:12:53.751768 [debug] [ThreadPool]: On list_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse_main"} */
+select
+      'warehouse' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'warehouse'
+  
+[0m11:12:53.783146 [debug] [ThreadPool]: SQL status: OK in 0.019 seconds
+[0m11:12:53.788325 [debug] [ThreadPool]: On list_warehouse_main: ROLLBACK
+[0m11:12:53.815212 [debug] [ThreadPool]: Failed to rollback 'list_warehouse_main'
+[0m11:12:53.831097 [debug] [ThreadPool]: On list_warehouse_main: Close
+[0m11:12:53.831097 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272AD1FF90>]}
+[0m11:12:53.831097 [debug] [MainThread]: Using duckdb connection "master"
+[0m11:12:53.831097 [debug] [MainThread]: On master: BEGIN
+[0m11:12:53.831097 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m11:12:53.831097 [debug] [MainThread]: SQL status: OK in 0.002 seconds
+[0m11:12:53.831097 [debug] [MainThread]: On master: COMMIT
+[0m11:12:53.831097 [debug] [MainThread]: Using duckdb connection "master"
+[0m11:12:53.831097 [debug] [MainThread]: On master: COMMIT
+[0m11:12:53.846876 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m11:12:53.846876 [debug] [MainThread]: On master: Close
+[0m11:12:53.862587 [debug] [Thread-1 (]: Began running node model.email_rl_warehouse.stg_client_steps
+[0m11:12:53.862587 [debug] [Thread-2 (]: Began running node model.email_rl_warehouse.stg_env_steps
+[0m11:12:53.862587 [info ] [Thread-1 (]: 1 of 7 START sql view model main.stg_client_steps .............................. [RUN]
+[0m11:12:53.862587 [info ] [Thread-2 (]: 2 of 7 START sql view model main.stg_env_steps ................................. [RUN]
+[0m11:12:53.862587 [debug] [Thread-1 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.stg_client_steps'
+[0m11:12:53.876014 [debug] [Thread-2 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.stg_env_steps'
+[0m11:12:53.876014 [debug] [Thread-1 (]: Began compiling node model.email_rl_warehouse.stg_client_steps
+[0m11:12:53.879243 [debug] [Thread-2 (]: Began compiling node model.email_rl_warehouse.stg_env_steps
+[0m11:12:53.895674 [debug] [Thread-1 (]: Writing injected SQL for node "model.email_rl_warehouse.stg_client_steps"
+[0m11:12:53.905786 [debug] [Thread-2 (]: Writing injected SQL for node "model.email_rl_warehouse.stg_env_steps"
+[0m11:12:53.905786 [debug] [Thread-1 (]: Began executing node model.email_rl_warehouse.stg_client_steps
+[0m11:12:53.912235 [debug] [Thread-2 (]: Began executing node model.email_rl_warehouse.stg_env_steps
+[0m11:12:54.004032 [debug] [Thread-1 (]: Writing runtime sql for node "model.email_rl_warehouse.stg_client_steps"
+[0m11:12:54.012134 [debug] [Thread-2 (]: Writing runtime sql for node "model.email_rl_warehouse.stg_env_steps"
+[0m11:12:54.012134 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m11:12:54.012134 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: BEGIN
+[0m11:12:54.012134 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m11:12:54.020350 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m11:12:54.021597 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: BEGIN
+[0m11:12:54.023714 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m11:12:54.026186 [debug] [Thread-2 (]: Opening a new connection, currently in state init
+[0m11:12:54.026186 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m11:12:54.028758 [debug] [Thread-2 (]: SQL status: OK in 0.003 seconds
+[0m11:12:54.028758 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+
+  
+  create view "warehouse"."main"."stg_client_steps__dbt_tmp" as (
+    -- Thin select off the raw Parquet lake for client-side client_steps events
+-- (logged from inside inference.py's run_task() -- see
+-- telemetry/event_sink.py::log_client_step).
+
+with source as (
+    select *
+    from read_parquet('../data/lake/client_steps/dt=*/*.parquet', hive_partitioning = true)
+)
+
+select
+    event_type,
+    logged_at,
+    model_name,
+    task,
+    step,
+    email_id,
+    predicted_priority,
+    predicted_category,
+    predicted_route,
+    action_plan,
+    threat_report,
+    task_reward,
+    done,
+    llm_latency_ms,
+    session_id,
+    error,
+    dt
+from source
+  );
+
+[0m11:12:54.028758 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m11:12:54.028758 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+
+  
+  create view "warehouse"."main"."stg_env_steps__dbt_tmp" as (
+    -- Thin select off the raw Parquet lake for server-side env_steps events
+-- (logged from inside EmailTriageEnvironment.step() -- see
+-- telemetry/event_sink.py::log_env_step).
+--
+-- hive_partitioning=true turns the dt=YYYY-MM-DD folder name into a
+-- queryable `dt` column automatically. Each row also carries its own `dt`
+-- field written at log time (see event_sink.py) -- harmless duplication,
+-- kept as a cross-check in case partition-folder naming ever drifts from
+-- the logged timestamp.
+
+with source as (
+    select *
+    from read_parquet('../data/lake/env_steps/dt=*/*.parquet', hive_partitioning = true)
+)
+
+select
+    event_type,
+    logged_at,
+    episode_id,
+    step,
+    email_id,
+    predicted_priority,
+    predicted_category,
+    predicted_route,
+    true_priority,
+    true_category,
+    true_route,
+    is_business_critical,
+    is_phishing,
+    cluster_id,
+    is_escalation,
+    priority_ok,
+    category_ok,
+    route_ok,
+    is_perfect,
+    base_score,
+    urgency_multiplier,
+    reward_components,   -- JSON string; unpacked in marts/fct_reward_components.sql
+    shaped_reward,
+    current_streak,
+    done,
+    stateless_http_mode,
+    emails_remaining,
+    dt
+from source
+  );
+
+[0m11:12:54.061830 [debug] [Thread-1 (]: SQL status: OK in 0.036 seconds
+[0m11:12:54.071930 [debug] [Thread-2 (]: SQL status: OK in 0.036 seconds
+[0m11:12:54.078658 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m11:12:54.087981 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m11:12:54.087981 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+alter view "warehouse"."main"."stg_client_steps__dbt_tmp" rename to "stg_client_steps"
+[0m11:12:54.087981 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+alter view "warehouse"."main"."stg_env_steps__dbt_tmp" rename to "stg_env_steps"
+[0m11:12:54.095025 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.095025 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.120520 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: COMMIT
+[0m11:12:54.127110 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: COMMIT
+[0m11:12:54.127110 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m11:12:54.127110 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m11:12:54.127110 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: COMMIT
+[0m11:12:54.127110 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: COMMIT
+[0m11:12:54.135431 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m11:12:54.143785 [debug] [Thread-2 (]: SQL status: OK in 0.008 seconds
+[0m11:12:54.143785 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m11:12:54.143785 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m11:12:54.152202 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+
+      drop view if exists "warehouse"."main"."stg_client_steps__dbt_backup" cascade
+    
+[0m11:12:54.152202 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+
+      drop view if exists "warehouse"."main"."stg_env_steps__dbt_backup" cascade
+    
+[0m11:12:54.153884 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.153884 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.160386 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: Close
+[0m11:12:54.160386 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: Close
+[0m11:12:54.164890 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272B5A5F50>]}
+[0m11:12:54.168563 [debug] [Thread-2 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272B588090>]}
+[0m11:12:54.169939 [info ] [Thread-1 (]: 1 of 7 OK created sql view model main.stg_client_steps ......................... [[32mOK[0m in 0.30s]
+[0m11:12:54.171004 [info ] [Thread-2 (]: 2 of 7 OK created sql view model main.stg_env_steps ............................ [[32mOK[0m in 0.29s]
+[0m11:12:54.173925 [debug] [Thread-1 (]: Finished running node model.email_rl_warehouse.stg_client_steps
+[0m11:12:54.173925 [debug] [Thread-2 (]: Finished running node model.email_rl_warehouse.stg_env_steps
+[0m11:12:54.176953 [debug] [Thread-4 (]: Began running node model.email_rl_warehouse.int_steps_joined
+[0m11:12:54.179310 [info ] [Thread-4 (]: 3 of 7 START sql view model main.int_steps_joined .............................. [RUN]
+[0m11:12:54.179310 [debug] [Thread-4 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.int_steps_joined'
+[0m11:12:54.183186 [debug] [Thread-4 (]: Began compiling node model.email_rl_warehouse.int_steps_joined
+[0m11:12:54.188316 [debug] [Thread-4 (]: Writing injected SQL for node "model.email_rl_warehouse.int_steps_joined"
+[0m11:12:54.188316 [debug] [Thread-4 (]: Began executing node model.email_rl_warehouse.int_steps_joined
+[0m11:12:54.193343 [debug] [Thread-4 (]: Writing runtime sql for node "model.email_rl_warehouse.int_steps_joined"
+[0m11:12:54.193343 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m11:12:54.200827 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: BEGIN
+[0m11:12:54.200827 [debug] [Thread-4 (]: Opening a new connection, currently in state init
+[0m11:12:54.200827 [debug] [Thread-4 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.200827 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m11:12:54.200827 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.int_steps_joined"} */
+
+  
+  create view "warehouse"."main"."int_steps_joined__dbt_tmp" as (
+    -- Joins client_steps onto env_steps by email_id -- see WAREHOUSE.md
+-- "Join key" section for why email_id (not episode_id/session_id) is the
+-- primary key across these two streams.
+--
+-- LEFT JOIN, not INNER: env_steps is authoritative. Every graded email
+-- produces an env_step row regardless of who called step() or whether
+-- client-side telemetry logged successfully (event_sink is fail-open by
+-- design, so a client_steps write can silently fail without breaking the
+-- run). An INNER JOIN would silently drop those rows instead of surfacing
+-- them as env-only.
+
+select
+    env.episode_id,
+    env.step                 as env_step,
+    env.email_id,
+    env.predicted_priority   as env_predicted_priority,
+    env.predicted_category   as env_predicted_category,
+    env.predicted_route      as env_predicted_route,
+    env.true_priority,
+    env.true_category,
+    env.true_route,
+    env.is_business_critical,
+    env.is_phishing,
+    env.cluster_id,
+    env.is_escalation,
+    env.priority_ok,
+    env.category_ok,
+    env.route_ok,
+    env.is_perfect,
+    env.base_score,
+    env.urgency_multiplier,
+    env.reward_components,
+    env.shaped_reward,
+    env.current_streak,
+    env.done                 as env_done,
+    env.stateless_http_mode,
+    env.emails_remaining,
+    env.dt                   as env_dt,
+    cli.model_name,
+    cli.task,
+    cli.step                 as client_step,
+    cli.predicted_priority   as client_predicted_priority,
+    cli.predicted_category   as client_predicted_category,
+    cli.predicted_route      as client_predicted_route,
+    cli.action_plan,
+    cli.threat_report,
+    cli.task_reward,
+    cli.llm_latency_ms,
+    cli.session_id,
+    cli.error                as client_error,
+    cli.dt                   as client_dt
+from "warehouse"."main"."stg_env_steps" env
+left join "warehouse"."main"."stg_client_steps" cli
+    on env.email_id = cli.email_id
+  );
+
+[0m11:12:54.209041 [debug] [Thread-4 (]: SQL status: OK in 0.004 seconds
+[0m11:12:54.209041 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m11:12:54.209041 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.int_steps_joined"} */
+alter view "warehouse"."main"."int_steps_joined__dbt_tmp" rename to "int_steps_joined"
+[0m11:12:54.217535 [debug] [Thread-4 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.220541 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: COMMIT
+[0m11:12:54.220541 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m11:12:54.220541 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: COMMIT
+[0m11:12:54.227813 [debug] [Thread-4 (]: SQL status: OK in 0.004 seconds
+[0m11:12:54.232291 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m11:12:54.233447 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.int_steps_joined"} */
+
+      drop view if exists "warehouse"."main"."int_steps_joined__dbt_backup" cascade
+    
+[0m11:12:54.235663 [debug] [Thread-4 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.239073 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: Close
+[0m11:12:54.239073 [debug] [Thread-4 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000022725FFDED0>]}
+[0m11:12:54.241649 [info ] [Thread-4 (]: 3 of 7 OK created sql view model main.int_steps_joined ......................... [[32mOK[0m in 0.06s]
+[0m11:12:54.243597 [debug] [Thread-4 (]: Finished running node model.email_rl_warehouse.int_steps_joined
+[0m11:12:54.243597 [debug] [Thread-1 (]: Began running node model.email_rl_warehouse.agg_episode_summary
+[0m11:12:54.243597 [debug] [Thread-2 (]: Began running node model.email_rl_warehouse.agg_model_leaderboard
+[0m11:12:54.248633 [debug] [Thread-3 (]: Began running node model.email_rl_warehouse.fct_confusion_matrix
+[0m11:12:54.248633 [debug] [Thread-4 (]: Began running node model.email_rl_warehouse.fct_reward_components
+[0m11:12:54.250155 [info ] [Thread-1 (]: 4 of 7 START sql table model main.agg_episode_summary .......................... [RUN]
+[0m11:12:54.250155 [info ] [Thread-2 (]: 5 of 7 START sql table model main.agg_model_leaderboard ........................ [RUN]
+[0m11:12:54.254855 [info ] [Thread-3 (]: 6 of 7 START sql table model main.fct_confusion_matrix ......................... [RUN]
+[0m11:12:54.254855 [info ] [Thread-4 (]: 7 of 7 START sql table model main.fct_reward_components ........................ [RUN]
+[0m11:12:54.256868 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.email_rl_warehouse.stg_client_steps, now model.email_rl_warehouse.agg_episode_summary)
+[0m11:12:54.258880 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly model.email_rl_warehouse.stg_env_steps, now model.email_rl_warehouse.agg_model_leaderboard)
+[0m11:12:54.260895 [debug] [Thread-3 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.fct_confusion_matrix'
+[0m11:12:54.262908 [debug] [Thread-4 (]: Re-using an available connection from the pool (formerly model.email_rl_warehouse.int_steps_joined, now model.email_rl_warehouse.fct_reward_components)
+[0m11:12:54.264220 [debug] [Thread-1 (]: Began compiling node model.email_rl_warehouse.agg_episode_summary
+[0m11:12:54.266121 [debug] [Thread-2 (]: Began compiling node model.email_rl_warehouse.agg_model_leaderboard
+[0m11:12:54.266121 [debug] [Thread-3 (]: Began compiling node model.email_rl_warehouse.fct_confusion_matrix
+[0m11:12:54.268454 [debug] [Thread-4 (]: Began compiling node model.email_rl_warehouse.fct_reward_components
+[0m11:12:54.273074 [debug] [Thread-1 (]: Writing injected SQL for node "model.email_rl_warehouse.agg_episode_summary"
+[0m11:12:54.275994 [debug] [Thread-2 (]: Writing injected SQL for node "model.email_rl_warehouse.agg_model_leaderboard"
+[0m11:12:54.280055 [debug] [Thread-3 (]: Writing injected SQL for node "model.email_rl_warehouse.fct_confusion_matrix"
+[0m11:12:54.290056 [debug] [Thread-4 (]: Writing injected SQL for node "model.email_rl_warehouse.fct_reward_components"
+[0m11:12:54.298152 [debug] [Thread-2 (]: Began executing node model.email_rl_warehouse.agg_model_leaderboard
+[0m11:12:54.298152 [debug] [Thread-3 (]: Began executing node model.email_rl_warehouse.fct_confusion_matrix
+[0m11:12:54.314574 [debug] [Thread-1 (]: Began executing node model.email_rl_warehouse.agg_episode_summary
+[0m11:12:54.320651 [debug] [Thread-2 (]: Writing runtime sql for node "model.email_rl_warehouse.agg_model_leaderboard"
+[0m11:12:54.320651 [debug] [Thread-4 (]: Began executing node model.email_rl_warehouse.fct_reward_components
+[0m11:12:54.338396 [debug] [Thread-3 (]: Writing runtime sql for node "model.email_rl_warehouse.fct_confusion_matrix"
+[0m11:12:54.346007 [debug] [Thread-1 (]: Writing runtime sql for node "model.email_rl_warehouse.agg_episode_summary"
+[0m11:12:54.357250 [debug] [Thread-4 (]: Writing runtime sql for node "model.email_rl_warehouse.fct_reward_components"
+[0m11:12:54.361277 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m11:12:54.362286 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m11:12:54.362286 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_model_leaderboard: BEGIN
+[0m11:12:54.365562 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m11:12:54.365562 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: BEGIN
+[0m11:12:54.367881 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m11:12:54.367881 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m11:12:54.369644 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: BEGIN
+[0m11:12:54.369644 [debug] [Thread-3 (]: Opening a new connection, currently in state init
+[0m11:12:54.369644 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: BEGIN
+[0m11:12:54.373550 [debug] [Thread-2 (]: SQL status: OK in 0.006 seconds
+[0m11:12:54.373550 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m11:12:54.376437 [debug] [Thread-3 (]: SQL status: OK in 0.006 seconds
+[0m11:12:54.377983 [debug] [Thread-4 (]: Opening a new connection, currently in state closed
+[0m11:12:54.377983 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m11:12:54.380453 [debug] [Thread-1 (]: SQL status: OK in 0.006 seconds
+[0m11:12:54.380453 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m11:12:54.382779 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_model_leaderboard: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_model_leaderboard"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."agg_model_leaderboard__dbt_tmp"
+  
+    as (
+      -- Accuracy per field, perfect-match rate, and phishing catch rate, per
+-- model_name x task.
+--
+-- phishing_catch_rate is populated now that the _sample_episode() bug
+-- that dropped phishing emails from every episode has been fixed (see
+-- WAREHOUSE.md finding #2). If you're rebuilding this against telemetry
+-- generated before that fix, expect n_phishing_emails_seen = 0 and
+-- phishing_catch_rate = NULL instead -- that reflects the data, not this
+-- mart.
+
+select
+    model_name,
+    task,
+    count(*)                                          as n_graded_emails,
+    avg(case when priority_ok then 1.0 else 0.0 end)  as priority_accuracy,
+    avg(case when category_ok then 1.0 else 0.0 end)  as category_accuracy,
+    avg(case when route_ok    then 1.0 else 0.0 end)  as route_accuracy,
+    avg(case when is_perfect  then 1.0 else 0.0 end)  as perfect_match_rate,
+    avg(task_reward)                                  as avg_task_reward,
+    sum(case when is_phishing then 1 else 0 end)      as n_phishing_emails_seen,
+    avg(
+        case when is_phishing
+             then case when category_ok and route_ok then 1.0 else 0.0 end
+        end
+    )                                                  as phishing_catch_rate
+from "warehouse"."main"."int_steps_joined"
+where model_name is not null
+group by 1, 2
+order by model_name, task
+    );
+  
+  
+[0m11:12:54.384679 [debug] [Thread-4 (]: SQL status: OK in 0.006 seconds
+[0m11:12:54.384679 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m11:12:54.386483 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_confusion_matrix"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."fct_confusion_matrix__dbt_tmp"
+  
+    as (
+      -- Predicted-vs-true counts across priority/category/route, grouped by
+-- model_name x task. Uses the client-reported prediction (what the LLM
+-- actually output for that task's action space); rows with no client_steps
+-- match (model_name is null) are excluded here since there's no prediction
+-- to compare -- see fct_reward_components / int_steps_joined for the
+-- env-only view of those rows.
+
+with base as (
+    select model_name, task, 'priority' as field,
+           true_priority as true_value, client_predicted_priority as predicted_value
+    from "warehouse"."main"."int_steps_joined"
+    where model_name is not null
+
+    union all
+
+    select model_name, task, 'category' as field,
+           true_category as true_value, client_predicted_category as predicted_value
+    from "warehouse"."main"."int_steps_joined"
+    where model_name is not null
+
+    union all
+
+    select model_name, task, 'route' as field,
+           true_route as true_value, client_predicted_route as predicted_value
+    from "warehouse"."main"."int_steps_joined"
+    where model_name is not null
+)
+
+select
+    model_name,
+    task,
+    field,
+    true_value,
+    predicted_value,
+    count(*) as n
+from base
+group by 1, 2, 3, 4, 5
+    );
+  
+  
+[0m11:12:54.388067 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m11:12:54.388067 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."agg_episode_summary__dbt_tmp"
+  
+    as (
+      -- Per-episode rollups.
+--
+-- LOWER CONFIDENCE MART: given the reset-per-email finding in
+-- WAREHOUSE.md, most "episodes" produced by running inference.py as-is
+-- are exactly one email long, so n_steps will mostly read 1 here. This
+-- mart is still correct for whatever episode structure actually occurred
+-- -- full multi-email episodes if you drive the server directly (or fix
+-- run_task's reset-per-email pattern), single-email "episodes" if you ran
+-- inference.py unmodified.
+
+select
+    episode_id,
+    min(env_dt)                    as episode_dt,
+    count(*)                       as n_steps,
+    sum(shaped_reward)             as total_shaped_reward,
+    avg(shaped_reward)             as avg_shaped_reward,
+    max(current_streak)            as max_streak,
+    bool_or(is_business_critical)  as had_business_critical_email,
+    bool_or(is_phishing)           as had_phishing_email,
+    max(env_step)                  as final_step
+from "warehouse"."main"."int_steps_joined"
+group by 1
+order by episode_dt, episode_id
+    );
+  
+  
+[0m11:12:54.395092 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_reward_components"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."fct_reward_components__dbt_tmp"
+  
+    as (
+      -- Unpacks reward_components (a JSON string column) into individual
+-- numeric columns via json_extract_string(...)::double.
+--
+-- EXPECTED, NOT A BUG: streak_bonus / dependency_bonus / coherence_bonus
+-- will read near-zero across most rows if the data was generated by
+-- inference.py as-is (reset() before every single graded email wipes
+-- multi-step state -- see WAREHOUSE.md "Known findings", #1). Note that
+-- phishing_bonus / phishing_miss_penalty were also flat-zero for an
+-- unrelated reason (a _sample_episode() bug that dropped the phishing
+-- email from every episode) -- that one has since been fixed; see
+-- WAREHOUSE.md finding #2 for before/after evidence.
+
+select
+    episode_id,
+    env_step,
+    email_id,
+    model_name,
+    task,
+    shaped_reward,
+    json_extract_string(reward_components, '$.base_score')::double                  as base_score,
+    json_extract_string(reward_components, '$.urgency_multiplier')::double          as urgency_multiplier,
+    json_extract_string(reward_components, '$.streak_bonus')::double                as streak_bonus,
+    json_extract_string(reward_components, '$.overload_penalty')::double            as overload_penalty,
+    json_extract_string(reward_components, '$.response_time_penalty')::double       as response_time_penalty,
+    json_extract_string(reward_components, '$.escalation_multiplier_delta')::double as escalation_multiplier_delta,
+    json_extract_string(reward_components, '$.phishing_bonus')::double              as phishing_bonus,
+    json_extract_string(reward_components, '$.phishing_miss_penalty')::double       as phishing_miss_penalty,
+    json_extract_string(reward_components, '$.dependency_bonus')::double            as dependency_bonus,
+    json_extract_string(reward_components, '$.coherence_bonus')::double             as coherence_bonus,
+    env_dt as dt
+from "warehouse"."main"."int_steps_joined"
+    );
+  
+  
+[0m11:12:54.432299 [debug] [Thread-4 (]: SQL status: OK in 0.035 seconds
+[0m11:12:54.432299 [debug] [Thread-1 (]: SQL status: OK in 0.037 seconds
+[0m11:12:54.432299 [debug] [Thread-2 (]: SQL status: OK in 0.046 seconds
+[0m11:12:54.436534 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m11:12:54.436534 [debug] [Thread-3 (]: SQL status: OK in 0.046 seconds
+[0m11:12:54.436534 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m11:12:54.445321 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m11:12:54.445321 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_reward_components"} */
+alter table "warehouse"."main"."fct_reward_components__dbt_tmp" rename to "fct_reward_components"
+[0m11:12:54.454424 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m11:12:54.454424 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+alter table "warehouse"."main"."agg_episode_summary__dbt_tmp" rename to "agg_episode_summary"
+[0m11:12:54.454424 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_model_leaderboard: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_model_leaderboard"} */
+alter table "warehouse"."main"."agg_model_leaderboard__dbt_tmp" rename to "agg_model_leaderboard"
+[0m11:12:54.454424 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_confusion_matrix"} */
+alter table "warehouse"."main"."fct_confusion_matrix__dbt_tmp" rename to "fct_confusion_matrix"
+[0m11:12:54.454424 [debug] [Thread-4 (]: SQL status: OK in 0.002 seconds
+[0m11:12:54.454424 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.454424 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.454424 [debug] [Thread-3 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.476905 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: COMMIT
+[0m11:12:54.476905 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: COMMIT
+[0m11:12:54.485195 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_model_leaderboard: COMMIT
+[0m11:12:54.487603 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: COMMIT
+[0m11:12:54.493294 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m11:12:54.493294 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m11:12:54.493294 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m11:12:54.493294 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m11:12:54.501445 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: COMMIT
+[0m11:12:54.504527 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: COMMIT
+[0m11:12:54.505729 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_model_leaderboard: COMMIT
+[0m11:12:54.509821 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: COMMIT
+[0m11:12:54.509821 [debug] [Thread-4 (]: SQL status: OK in 0.005 seconds
+[0m11:12:54.520487 [debug] [Thread-2 (]: SQL status: OK in 0.006 seconds
+[0m11:12:54.520895 [debug] [Thread-1 (]: SQL status: OK in 0.010 seconds
+[0m11:12:54.526151 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m11:12:54.526151 [debug] [Thread-3 (]: SQL status: OK in 0.018 seconds
+[0m11:12:54.537504 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m11:12:54.542390 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m11:12:54.552728 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_reward_components"} */
+
+      drop table if exists "warehouse"."main"."fct_reward_components__dbt_backup" cascade
+    
+[0m11:12:54.559021 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m11:12:54.559021 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_model_leaderboard: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_model_leaderboard"} */
+
+      drop table if exists "warehouse"."main"."agg_model_leaderboard__dbt_backup" cascade
+    
+[0m11:12:54.559021 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+      drop table if exists "warehouse"."main"."agg_episode_summary__dbt_backup" cascade
+    
+[0m11:12:54.568742 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_confusion_matrix"} */
+
+      drop table if exists "warehouse"."main"."fct_confusion_matrix__dbt_backup" cascade
+    
+[0m11:12:54.570768 [debug] [Thread-4 (]: SQL status: OK in 0.004 seconds
+[0m11:12:54.575661 [debug] [Thread-2 (]: SQL status: OK in 0.002 seconds
+[0m11:12:54.575661 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m11:12:54.575661 [debug] [Thread-3 (]: SQL status: OK in 0.001 seconds
+[0m11:12:54.586067 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: Close
+[0m11:12:54.592313 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_model_leaderboard: Close
+[0m11:12:54.599360 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: Close
+[0m11:12:54.607479 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: Close
+[0m11:12:54.612013 [debug] [Thread-4 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272B598190>]}
+[0m11:12:54.616920 [debug] [Thread-2 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272B0B25D0>]}
+[0m11:12:54.620465 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272AFF7590>]}
+[0m11:12:54.624508 [debug] [Thread-3 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a96c52aa-cb97-4e85-a671-5e754b6bccbc', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272B5591D0>]}
+[0m11:12:54.626527 [info ] [Thread-4 (]: 7 of 7 OK created sql table model main.fct_reward_components ................... [[32mOK[0m in 0.35s]
+[0m11:12:54.630388 [info ] [Thread-2 (]: 5 of 7 OK created sql table model main.agg_model_leaderboard ................... [[32mOK[0m in 0.36s]
+[0m11:12:54.634462 [info ] [Thread-1 (]: 4 of 7 OK created sql table model main.agg_episode_summary ..................... [[32mOK[0m in 0.36s]
+[0m11:12:54.638639 [info ] [Thread-3 (]: 6 of 7 OK created sql table model main.fct_confusion_matrix .................... [[32mOK[0m in 0.36s]
+[0m11:12:54.644441 [debug] [Thread-4 (]: Finished running node model.email_rl_warehouse.fct_reward_components
+[0m11:12:54.644441 [debug] [Thread-2 (]: Finished running node model.email_rl_warehouse.agg_model_leaderboard
+[0m11:12:54.644441 [debug] [Thread-1 (]: Finished running node model.email_rl_warehouse.agg_episode_summary
+[0m11:12:54.655336 [debug] [Thread-3 (]: Finished running node model.email_rl_warehouse.fct_confusion_matrix
+[0m11:12:54.664743 [debug] [MainThread]: Using duckdb connection "master"
+[0m11:12:54.664743 [debug] [MainThread]: On master: BEGIN
+[0m11:12:54.672132 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m11:12:54.672132 [debug] [MainThread]: SQL status: OK in 0.003 seconds
+[0m11:12:54.677802 [debug] [MainThread]: On master: COMMIT
+[0m11:12:54.679138 [debug] [MainThread]: Using duckdb connection "master"
+[0m11:12:54.679138 [debug] [MainThread]: On master: COMMIT
+[0m11:12:54.687215 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m11:12:54.689245 [debug] [MainThread]: On master: Close
+[0m11:12:54.692978 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m11:12:54.697029 [debug] [MainThread]: Connection 'create_warehouse_main' was properly closed.
+[0m11:12:54.699056 [debug] [MainThread]: Connection 'list_warehouse_main' was properly closed.
+[0m11:12:54.704119 [debug] [MainThread]: Connection 'model.email_rl_warehouse.agg_episode_summary' was properly closed.
+[0m11:12:54.706140 [debug] [MainThread]: Connection 'model.email_rl_warehouse.agg_model_leaderboard' was properly closed.
+[0m11:12:54.706140 [debug] [MainThread]: Connection 'model.email_rl_warehouse.fct_reward_components' was properly closed.
+[0m11:12:54.711504 [debug] [MainThread]: Connection 'model.email_rl_warehouse.fct_confusion_matrix' was properly closed.
+[0m11:12:54.712825 [info ] [MainThread]: 
+[0m11:12:54.716125 [info ] [MainThread]: Finished running 4 table models, 3 view models in 0 hours 0 minutes and 9.06 seconds (9.06s).
+[0m11:12:54.727538 [debug] [MainThread]: Command end result
+[0m11:12:54.893294 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m11:12:54.903638 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m11:12:54.912156 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m11:12:54.930057 [debug] [MainThread]: Wrote artifact RunExecutionResult to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\run_results.json
+[0m11:12:54.931697 [info ] [MainThread]: 
+[0m11:12:54.933332 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m11:12:54.934443 [info ] [MainThread]: 
+[0m11:12:54.936102 [info ] [MainThread]: Done. PASS=7 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=7
+[0m11:12:54.938763 [debug] [MainThread]: Command `dbt run` succeeded at 11:12:54.938763 after 17.32 seconds
+[0m11:12:54.939870 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272A9BF710>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272A91C110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002272A91C150>]}
+[0m11:12:54.941500 [debug] [MainThread]: Flushing usage events
+[0m11:12:56.822704 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m12:47:42.634404 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242DB2FFD50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242DB2FFC50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242DB3BEF50>]}
+
+
+============================== 12:47:42.640427 | 8c2face3-e8c2-4b62-8abf-44cb8bac85e0 ==============================
+[0m12:47:42.640427 [info ] [MainThread]: Running with dbt=1.12.0
+[0m12:47:42.640427 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'no_print': 'None', 'maximum_seed_size_mib': '1', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'version_check': 'True', 'printer_width': '80', 'write_json': 'True', 'empty': 'False', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': '.', 'use_colors': 'True', 'hints_enabled': 'True', 'invocation_command': 'dbt run --profiles-dir . --select agg_episode_summary', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'log_path': 'C:\\Users\\Yuvraj Singh\\OneDrive\\Desktop\\Email_OpenEnv\\Email_RL\\warehouse\\logs'}
+[0m12:47:43.164151 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '8c2face3-e8c2-4b62-8abf-44cb8bac85e0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242DB544990>]}
+[0m12:47:43.275453 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '8c2face3-e8c2-4b62-8abf-44cb8bac85e0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242D68BA350>]}
+[0m12:47:43.291189 [info ] [MainThread]: Registered adapter: duckdb=1.10.1
+[0m12:47:43.787843 [debug] [MainThread]: checksum: f0d9819fa8ee4563bd15d8de06517e98ba4ac797156a47baad28b9341f2427ea, vars: {}, profile: email_rl_warehouse, target: dev, version: 1.12.0
+[0m12:47:45.849506 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 1 files changed.
+[0m12:47:45.849506 [debug] [MainThread]: Partial parsing: updated file: email_rl_warehouse://models\marts\agg_episode_summary.sql
+[0m12:47:46.195282 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '8c2face3-e8c2-4b62-8abf-44cb8bac85e0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242DB7FA210>]}
+[0m12:47:46.286957 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m12:47:46.309488 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m12:47:46.361622 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m12:47:46.405686 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '8c2face3-e8c2-4b62-8abf-44cb8bac85e0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242DBABC850>]}
+[0m12:47:46.405686 [info ] [MainThread]: Found 7 models, 486 macros
+[0m12:47:46.405686 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '8c2face3-e8c2-4b62-8abf-44cb8bac85e0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242D9049490>]}
+[0m12:47:46.409170 [info ] [MainThread]: 
+[0m12:47:46.409170 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m12:47:46.409170 [info ] [MainThread]: 
+[0m12:47:46.409170 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m12:47:46.414783 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse'
+[0m12:47:50.771387 [debug] [ThreadPool]: Using duckdb connection "list_warehouse"
+[0m12:47:50.771387 [debug] [ThreadPool]: On list_warehouse: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse"} */
+
+    
+    select schema_name
+    from system.information_schema.schemata
+    
+    where lower(catalog_name) = '"warehouse"'
+    
+  
+  
+[0m12:47:50.771387 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m12:47:50.804809 [debug] [ThreadPool]: SQL status: OK in 0.034 seconds
+[0m12:47:50.804809 [debug] [ThreadPool]: On list_warehouse: Close
+[0m12:47:50.819424 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_warehouse, now create_warehouse_main)
+[0m12:47:50.819424 [debug] [ThreadPool]: Creating schema "database: "warehouse"
+schema: "main"
+"
+[0m12:47:50.821909 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m12:47:50.821909 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+        select type from duckdb_databases()
+        where lower(database_name)='warehouse'
+        and type='sqlite'
+    
+  
+[0m12:47:50.821909 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m12:47:50.821909 [debug] [ThreadPool]: SQL status: OK in 0.002 seconds
+[0m12:47:50.835022 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m12:47:50.836192 [debug] [ThreadPool]: On create_warehouse_main: BEGIN
+[0m12:47:50.838206 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m12:47:50.838206 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m12:47:50.838206 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+    
+        create schema if not exists "warehouse"."main"
+    
+[0m12:47:50.838206 [debug] [ThreadPool]: SQL status: OK in 0.002 seconds
+[0m12:47:50.838206 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m12:47:50.838206 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m12:47:50.838206 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m12:47:50.838206 [debug] [ThreadPool]: SQL status: OK in 0.000 seconds
+[0m12:47:50.838206 [debug] [ThreadPool]: On create_warehouse_main: Close
+[0m12:47:50.852808 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse_main'
+[0m12:47:50.852808 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m12:47:50.852808 [debug] [ThreadPool]: On list_warehouse_main: BEGIN
+[0m12:47:50.852808 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m12:47:50.863645 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m12:47:50.863645 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m12:47:50.863645 [debug] [ThreadPool]: On list_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse_main"} */
+select
+      'warehouse' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'warehouse'
+  
+[0m12:47:50.869477 [debug] [ThreadPool]: SQL status: OK in 0.011 seconds
+[0m12:47:50.869477 [debug] [ThreadPool]: On list_warehouse_main: ROLLBACK
+[0m12:47:50.887174 [debug] [ThreadPool]: Failed to rollback 'list_warehouse_main'
+[0m12:47:50.887174 [debug] [ThreadPool]: On list_warehouse_main: Close
+[0m12:47:50.887174 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '8c2face3-e8c2-4b62-8abf-44cb8bac85e0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242DB7BF010>]}
+[0m12:47:50.903197 [debug] [MainThread]: Using duckdb connection "master"
+[0m12:47:50.905661 [debug] [MainThread]: On master: BEGIN
+[0m12:47:50.905661 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m12:47:50.905661 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m12:47:50.908257 [debug] [MainThread]: On master: COMMIT
+[0m12:47:50.908257 [debug] [MainThread]: Using duckdb connection "master"
+[0m12:47:50.908257 [debug] [MainThread]: On master: COMMIT
+[0m12:47:50.908257 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m12:47:50.908257 [debug] [MainThread]: On master: Close
+[0m12:47:50.911525 [debug] [Thread-1 (]: Began running node model.email_rl_warehouse.agg_episode_summary
+[0m12:47:50.911525 [info ] [Thread-1 (]: 1 of 1 START sql table model main.agg_episode_summary .......................... [RUN]
+[0m12:47:50.921076 [debug] [Thread-1 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.agg_episode_summary'
+[0m12:47:50.921076 [debug] [Thread-1 (]: Began compiling node model.email_rl_warehouse.agg_episode_summary
+[0m12:47:50.932549 [debug] [Thread-1 (]: Writing injected SQL for node "model.email_rl_warehouse.agg_episode_summary"
+[0m12:47:50.932549 [debug] [Thread-1 (]: Began executing node model.email_rl_warehouse.agg_episode_summary
+[0m12:47:50.980457 [debug] [Thread-1 (]: Writing runtime sql for node "model.email_rl_warehouse.agg_episode_summary"
+[0m12:47:50.980457 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m12:47:50.985775 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: BEGIN
+[0m12:47:50.987892 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m12:47:50.989911 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m12:47:50.991923 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m12:47:50.993934 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."agg_episode_summary__dbt_tmp"
+  
+    as (
+      -- Per-episode rollups.
+--
+-- LOWER CONFIDENCE MART: given the reset-per-email finding in
+-- WAREHOUSE.md, most "episodes" produced by running inference.py as-is
+-- are exactly one email long, so n_steps will mostly read 1 here. This
+-- mart is still correct for whatever episode structure actually occurred
+-- -- full multi-email episodes if you drive the server directly (or fix
+-- run_task's reset-per-email pattern), single-email "episodes" if you ran
+-- inference.py unmodified.
+--
+-- reached_done / emails_remaining_at_cutoff (added after the
+-- escalation-injection finding -- see WAREHOUSE.md): the environment can
+-- grow its own email queue mid-episode (every missed urgent/high email
+-- injects a follow-up escalation 2 positions ahead), but run_episodes.py
+-- stops at a fixed MAX_STEPS regardless of whether the queue has grown
+-- past that. n_steps / final_step alone can't distinguish "episode
+-- genuinely finished" from "client gave up mid-escalation-spiral with
+-- emails still queued" -- both can show n_steps=10. reached_done and
+-- emails_remaining_at_cutoff, taken from the LAST logged step of each
+-- episode, make that distinction explicit instead of silently averaging
+-- the two outcomes together on the leaderboard.
+
+with last_step as (
+    select
+        episode_id,
+        done              as reached_done,
+        emails_remaining  as emails_remaining_at_cutoff
+    from "warehouse"."main"."int_steps_joined"
+    qualify row_number() over (
+        partition by episode_id
+        order by env_step desc
+    ) = 1
+)
+
+select
+    s.episode_id,
+    min(s.env_dt)                     as episode_dt,
+    count(*)                          as n_steps,
+    sum(s.shaped_reward)              as total_shaped_reward,
+    avg(s.shaped_reward)              as avg_shaped_reward,
+    max(s.current_streak)             as max_streak,
+    bool_or(s.is_business_critical)   as had_business_critical_email,
+    bool_or(s.is_phishing)            as had_phishing_email,
+    max(s.env_step)                   as final_step,
+    any_value(l.reached_done)         as reached_done,
+    any_value(l.emails_remaining_at_cutoff) as emails_remaining_at_cutoff
+from "warehouse"."main"."int_steps_joined" s
+join last_step l using (episode_id)
+group by 1
+order by episode_dt, episode_id
+    );
+  
+  
+[0m12:47:51.025280 [debug] [Thread-1 (]: DuckDB adapter: duckdb error: Binder Error: Referenced column "done" not found in FROM clause!
+Candidate bindings: "model_name", "route_ok", "session_id", "action_plan", "is_business_critical"
+
+LINE 36:         done              as reached_done,
+                 ^
+[0m12:47:51.025280 [debug] [Thread-1 (]: DuckDB adapter: Error running SQL: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."agg_episode_summary__dbt_tmp"
+  
+    as (
+      -- Per-episode rollups.
+--
+-- LOWER CONFIDENCE MART: given the reset-per-email finding in
+-- WAREHOUSE.md, most "episodes" produced by running inference.py as-is
+-- are exactly one email long, so n_steps will mostly read 1 here. This
+-- mart is still correct for whatever episode structure actually occurred
+-- -- full multi-email episodes if you drive the server directly (or fix
+-- run_task's reset-per-email pattern), single-email "episodes" if you ran
+-- inference.py unmodified.
+--
+-- reached_done / emails_remaining_at_cutoff (added after the
+-- escalation-injection finding -- see WAREHOUSE.md): the environment can
+-- grow its own email queue mid-episode (every missed urgent/high email
+-- injects a follow-up escalation 2 positions ahead), but run_episodes.py
+-- stops at a fixed MAX_STEPS regardless of whether the queue has grown
+-- past that. n_steps / final_step alone can't distinguish "episode
+-- genuinely finished" from "client gave up mid-escalation-spiral with
+-- emails still queued" -- both can show n_steps=10. reached_done and
+-- emails_remaining_at_cutoff, taken from the LAST logged step of each
+-- episode, make that distinction explicit instead of silently averaging
+-- the two outcomes together on the leaderboard.
+
+with last_step as (
+    select
+        episode_id,
+        done              as reached_done,
+        emails_remaining  as emails_remaining_at_cutoff
+    from "warehouse"."main"."int_steps_joined"
+    qualify row_number() over (
+        partition by episode_id
+        order by env_step desc
+    ) = 1
+)
+
+select
+    s.episode_id,
+    min(s.env_dt)                     as episode_dt,
+    count(*)                          as n_steps,
+    sum(s.shaped_reward)              as total_shaped_reward,
+    avg(s.shaped_reward)              as avg_shaped_reward,
+    max(s.current_streak)             as max_streak,
+    bool_or(s.is_business_critical)   as had_business_critical_email,
+    bool_or(s.is_phishing)            as had_phishing_email,
+    max(s.env_step)                   as final_step,
+    any_value(l.reached_done)         as reached_done,
+    any_value(l.emails_remaining_at_cutoff) as emails_remaining_at_cutoff
+from "warehouse"."main"."int_steps_joined" s
+join last_step l using (episode_id)
+group by 1
+order by episode_dt, episode_id
+    );
+  
+  
+[0m12:47:51.025280 [debug] [Thread-1 (]: DuckDB adapter: Rolling back transaction.
+[0m12:47:51.025280 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: ROLLBACK
+[0m12:47:51.073164 [debug] [Thread-1 (]: Failed to rollback 'model.email_rl_warehouse.agg_episode_summary'
+[0m12:47:51.073164 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: Close
+[0m12:47:51.202321 [debug] [Thread-1 (]: Runtime Error in model agg_episode_summary (models\marts\agg_episode_summary.sql)
+  Binder Error: Referenced column "done" not found in FROM clause!
+  Candidate bindings: "model_name", "route_ok", "session_id", "action_plan", "is_business_critical"
+  
+  LINE 36:         done              as reached_done,
+                   ^
+[0m12:47:51.202321 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '8c2face3-e8c2-4b62-8abf-44cb8bac85e0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242D902D950>]}
+[0m12:47:51.202321 [error] [Thread-1 (]: 1 of 1 ERROR creating sql table model main.agg_episode_summary ................. [[31mERROR[0m in 0.28s]
+[0m12:47:51.202321 [debug] [Thread-1 (]: Finished running node model.email_rl_warehouse.agg_episode_summary
+[0m12:47:51.202321 [debug] [Thread-7 (]: Marking all children of 'model.email_rl_warehouse.agg_episode_summary' to be skipped because of status 'error'.  Reason: Runtime Error in model agg_episode_summary (models\marts\agg_episode_summary.sql)
+  Binder Error: Referenced column "done" not found in FROM clause!
+  Candidate bindings: "model_name", "route_ok", "session_id", "action_plan", "is_business_critical"
+  
+  LINE 36:         done              as reached_done,
+                   ^.
+[0m12:47:51.202321 [debug] [MainThread]: Using duckdb connection "master"
+[0m12:47:51.218061 [debug] [MainThread]: On master: BEGIN
+[0m12:47:51.219091 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m12:47:51.221242 [debug] [MainThread]: SQL status: OK in 0.002 seconds
+[0m12:47:51.223621 [debug] [MainThread]: On master: COMMIT
+[0m12:47:51.224230 [debug] [MainThread]: Using duckdb connection "master"
+[0m12:47:51.224230 [debug] [MainThread]: On master: COMMIT
+[0m12:47:51.224230 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m12:47:51.228295 [debug] [MainThread]: On master: Close
+[0m12:47:51.229909 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m12:47:51.231142 [debug] [MainThread]: Connection 'create_warehouse_main' was properly closed.
+[0m12:47:51.232593 [debug] [MainThread]: Connection 'list_warehouse_main' was properly closed.
+[0m12:47:51.232593 [debug] [MainThread]: Connection 'model.email_rl_warehouse.agg_episode_summary' was properly closed.
+[0m12:47:51.232593 [info ] [MainThread]: 
+[0m12:47:51.235823 [info ] [MainThread]: Finished running 1 table model in 0 hours 0 minutes and 4.82 seconds (4.82s).
+[0m12:47:51.238590 [debug] [MainThread]: Command end result
+[0m12:47:51.299383 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m12:47:51.305205 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m12:47:51.307675 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m12:47:51.322652 [debug] [MainThread]: Wrote artifact RunExecutionResult to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\run_results.json
+[0m12:47:51.323644 [info ] [MainThread]: 
+[0m12:47:51.325157 [info ] [MainThread]: [31mCompleted with 1 error, 0 partial successes, and 0 warnings:[0m
+[0m12:47:51.326175 [info ] [MainThread]: 
+[0m12:47:51.327174 [error] [MainThread]: [[31mERROR[0m]: in model agg_episode_summary (models\marts\agg_episode_summary.sql)
+[0m12:47:51.328652 [error] [MainThread]:   Runtime Error in model agg_episode_summary (models\marts\agg_episode_summary.sql)
+  Binder Error: Referenced column "done" not found in FROM clause!
+  Candidate bindings: "model_name", "route_ok", "session_id", "action_plan", "is_business_critical"
+  
+  LINE 36:         done              as reached_done,
+                   ^
+[0m12:47:51.329674 [info ] [MainThread]: 
+[0m12:47:51.330895 [info ] [MainThread]:   compiled code at target\compiled\email_rl_warehouse\models\marts\agg_episode_summary.sql
+[0m12:47:51.331894 [info ] [MainThread]: 
+[0m12:47:51.332572 [info ] [MainThread]: Done. PASS=0 WARN=0 ERROR=1 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+[0m12:47:51.335633 [debug] [MainThread]: Command `dbt run` failed at 12:47:51.334695 after 8.89 seconds
+[0m12:47:51.337097 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242D3540D50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242DB3D0DD0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000242DB3C7F90>]}
+[0m12:47:51.338097 [debug] [MainThread]: Flushing usage events
+[0m12:47:52.828170 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m12:55:11.657179 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E233500C50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E23337FC50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E23337D490>]}
+
+
+============================== 12:55:11.666509 | e8d30832-2126-4851-9bfc-e2ada52a39c0 ==============================
+[0m12:55:11.666509 [info ] [MainThread]: Running with dbt=1.12.0
+[0m12:55:11.666509 [debug] [MainThread]: running dbt with arguments {'maximum_seed_size_mib': '1', 'no_print': 'None', 'static_parser': 'True', 'target_path': 'None', 'version_check': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'write_json': 'True', 'empty': 'False', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'profiles_dir': '.', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'use_colors': 'True', 'hints_enabled': 'True', 'invocation_command': 'dbt run --profiles-dir . --select agg_episode_summary', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'log_path': 'C:\\Users\\Yuvraj Singh\\OneDrive\\Desktop\\Email_OpenEnv\\Email_RL\\warehouse\\logs'}
+[0m12:55:11.994366 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'e8d30832-2126-4851-9bfc-e2ada52a39c0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E23359FE50>]}
+[0m12:55:12.090413 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'e8d30832-2126-4851-9bfc-e2ada52a39c0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E22E948FD0>]}
+[0m12:55:12.092585 [info ] [MainThread]: Registered adapter: duckdb=1.10.1
+[0m12:55:12.383517 [debug] [MainThread]: checksum: f0d9819fa8ee4563bd15d8de06517e98ba4ac797156a47baad28b9341f2427ea, vars: {}, profile: email_rl_warehouse, target: dev, version: 1.12.0
+[0m12:55:12.572950 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 1 files changed.
+[0m12:55:12.588495 [debug] [MainThread]: Partial parsing: updated file: email_rl_warehouse://models\marts\agg_episode_summary.sql
+[0m12:55:12.948071 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': 'e8d30832-2126-4851-9bfc-e2ada52a39c0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E233876450>]}
+[0m12:55:13.027730 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m12:55:13.027730 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m12:55:13.059243 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m12:55:13.089119 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': 'e8d30832-2126-4851-9bfc-e2ada52a39c0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E233DE9BD0>]}
+[0m12:55:13.090221 [info ] [MainThread]: Found 7 models, 486 macros
+[0m12:55:13.091251 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'e8d30832-2126-4851-9bfc-e2ada52a39c0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E233B37D50>]}
+[0m12:55:13.092319 [info ] [MainThread]: 
+[0m12:55:13.092319 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m12:55:13.092319 [info ] [MainThread]: 
+[0m12:55:13.092319 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m12:55:13.098011 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse'
+[0m12:55:13.214132 [debug] [ThreadPool]: Using duckdb connection "list_warehouse"
+[0m12:55:13.215131 [debug] [ThreadPool]: On list_warehouse: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse"} */
+
+    
+    select schema_name
+    from system.information_schema.schemata
+    
+    where lower(catalog_name) = '"warehouse"'
+    
+  
+  
+[0m12:55:13.216134 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m12:55:13.258436 [debug] [ThreadPool]: SQL status: OK in 0.042 seconds
+[0m12:55:13.260196 [debug] [ThreadPool]: On list_warehouse: Close
+[0m12:55:13.260196 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_warehouse, now create_warehouse_main)
+[0m12:55:13.260196 [debug] [ThreadPool]: Creating schema "database: "warehouse"
+schema: "main"
+"
+[0m12:55:13.270147 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m12:55:13.270147 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+        select type from duckdb_databases()
+        where lower(database_name)='warehouse'
+        and type='sqlite'
+    
+  
+[0m12:55:13.272157 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m12:55:13.272157 [debug] [ThreadPool]: SQL status: OK in 0.002 seconds
+[0m12:55:13.275456 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m12:55:13.275456 [debug] [ThreadPool]: On create_warehouse_main: BEGIN
+[0m12:55:13.278064 [debug] [ThreadPool]: SQL status: OK in 0.000 seconds
+[0m12:55:13.278064 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m12:55:13.278064 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+    
+        create schema if not exists "warehouse"."main"
+    
+[0m12:55:13.280245 [debug] [ThreadPool]: SQL status: OK in 0.000 seconds
+[0m12:55:13.281370 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m12:55:13.281370 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m12:55:13.281370 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m12:55:13.285281 [debug] [ThreadPool]: SQL status: OK in 0.000 seconds
+[0m12:55:13.286511 [debug] [ThreadPool]: On create_warehouse_main: Close
+[0m12:55:13.292076 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse_main'
+[0m12:55:13.292076 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m12:55:13.292076 [debug] [ThreadPool]: On list_warehouse_main: BEGIN
+[0m12:55:13.292076 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m12:55:13.292076 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m12:55:13.292076 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m12:55:13.301403 [debug] [ThreadPool]: On list_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse_main"} */
+select
+      'warehouse' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'warehouse'
+  
+[0m12:55:13.301403 [debug] [ThreadPool]: SQL status: OK in 0.004 seconds
+[0m12:55:13.301403 [debug] [ThreadPool]: On list_warehouse_main: ROLLBACK
+[0m12:55:13.301403 [debug] [ThreadPool]: Failed to rollback 'list_warehouse_main'
+[0m12:55:13.301403 [debug] [ThreadPool]: On list_warehouse_main: Close
+[0m12:55:13.301403 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'e8d30832-2126-4851-9bfc-e2ada52a39c0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E233A8A8D0>]}
+[0m12:55:13.301403 [debug] [MainThread]: Using duckdb connection "master"
+[0m12:55:13.301403 [debug] [MainThread]: On master: BEGIN
+[0m12:55:13.301403 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m12:55:13.301403 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m12:55:13.301403 [debug] [MainThread]: On master: COMMIT
+[0m12:55:13.301403 [debug] [MainThread]: Using duckdb connection "master"
+[0m12:55:13.301403 [debug] [MainThread]: On master: COMMIT
+[0m12:55:13.317864 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m12:55:13.317864 [debug] [MainThread]: On master: Close
+[0m12:55:13.323864 [debug] [Thread-1 (]: Began running node model.email_rl_warehouse.agg_episode_summary
+[0m12:55:13.324843 [info ] [Thread-1 (]: 1 of 1 START sql table model main.agg_episode_summary .......................... [RUN]
+[0m12:55:13.325828 [debug] [Thread-1 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.agg_episode_summary'
+[0m12:55:13.326334 [debug] [Thread-1 (]: Began compiling node model.email_rl_warehouse.agg_episode_summary
+[0m12:55:13.335655 [debug] [Thread-1 (]: Writing injected SQL for node "model.email_rl_warehouse.agg_episode_summary"
+[0m12:55:13.337339 [debug] [Thread-1 (]: Began executing node model.email_rl_warehouse.agg_episode_summary
+[0m12:55:13.370783 [debug] [Thread-1 (]: Writing runtime sql for node "model.email_rl_warehouse.agg_episode_summary"
+[0m12:55:13.371906 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m12:55:13.375052 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: BEGIN
+[0m12:55:13.376312 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m12:55:13.376312 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m12:55:13.378292 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m12:55:13.378292 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."agg_episode_summary__dbt_tmp"
+  
+    as (
+      -- Per-episode rollups.
+--
+-- LOWER CONFIDENCE MART: given the reset-per-email finding in
+-- WAREHOUSE.md, most "episodes" produced by running inference.py as-is
+-- are exactly one email long, so n_steps will mostly read 1 here. This
+-- mart is still correct for whatever episode structure actually occurred
+-- -- full multi-email episodes if you drive the server directly (or fix
+-- run_task's reset-per-email pattern), single-email "episodes" if you ran
+-- inference.py unmodified.
+--
+-- reached_done / emails_remaining_at_cutoff (added after the
+-- escalation-injection finding -- see WAREHOUSE.md): the environment can
+-- grow its own email queue mid-episode (every missed urgent/high email
+-- injects a follow-up escalation 2 positions ahead), but run_episodes.py
+-- stops at a fixed MAX_STEPS regardless of whether the queue has grown
+-- past that. n_steps / final_step alone can't distinguish "episode
+-- genuinely finished" from "client gave up mid-escalation-spiral with
+-- emails still queued" -- both can show n_steps=10. reached_done and
+-- emails_remaining_at_cutoff, taken from the LAST logged step of each
+-- episode, make that distinction explicit instead of silently averaging
+-- the two outcomes together on the leaderboard.
+--
+-- Note: this is env_done (int_steps_joined aliases the env-side `done`
+-- to disambiguate it from client_steps' own `done` field) -- NOT the
+-- client's done, which just reflects run_episodes.py's local MAX_STEPS
+-- cutoff rather than the environment's real completion state.
+
+with last_step as (
+    select
+        episode_id,
+        env_done          as reached_done,
+        emails_remaining  as emails_remaining_at_cutoff
+    from "warehouse"."main"."int_steps_joined"
+    qualify row_number() over (
+        partition by episode_id
+        order by env_step desc
+    ) = 1
+)
+
+select
+    s.episode_id,
+    min(s.env_dt)                     as episode_dt,
+    count(*)                          as n_steps,
+    sum(s.shaped_reward)              as total_shaped_reward,
+    avg(s.shaped_reward)              as avg_shaped_reward,
+    max(s.current_streak)             as max_streak,
+    bool_or(s.is_business_critical)   as had_business_critical_email,
+    bool_or(s.is_phishing)            as had_phishing_email,
+    max(s.env_step)                   as final_step,
+    any_value(l.reached_done)         as reached_done,
+    any_value(l.emails_remaining_at_cutoff) as emails_remaining_at_cutoff
+from "warehouse"."main"."int_steps_joined" s
+join last_step l using (episode_id)
+group by 1
+order by episode_dt, episode_id
+    );
+  
+  
+[0m12:55:13.422931 [debug] [Thread-1 (]: SQL status: OK in 0.043 seconds
+[0m12:55:13.429590 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m12:55:13.429590 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+    SELECT index_name
+    FROM duckdb_indexes()
+    WHERE schema_name = 'main'
+      AND table_name = 'agg_episode_summary'
+  
+[0m12:55:13.431587 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m12:55:13.433680 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m12:55:13.434653 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+    SELECT COUNT(*) as remaining_indexes
+    FROM duckdb_indexes()
+    WHERE schema_name = 'main'
+      AND table_name = 'agg_episode_summary'
+  
+[0m12:55:13.435694 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m12:55:13.438898 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m12:55:13.438898 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+alter table "warehouse"."main"."agg_episode_summary" rename to "agg_episode_summary__dbt_backup"
+[0m12:55:13.446795 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m12:55:13.446795 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m12:55:13.446795 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+alter table "warehouse"."main"."agg_episode_summary__dbt_tmp" rename to "agg_episode_summary"
+[0m12:55:13.446795 [debug] [Thread-1 (]: SQL status: OK in 0.000 seconds
+[0m12:55:13.470449 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: COMMIT
+[0m12:55:13.470449 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m12:55:13.470449 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: COMMIT
+[0m12:55:13.479600 [debug] [Thread-1 (]: SQL status: OK in 0.008 seconds
+[0m12:55:13.486603 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m12:55:13.486603 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+      drop table if exists "warehouse"."main"."agg_episode_summary__dbt_backup" cascade
+    
+[0m12:55:13.486603 [debug] [Thread-1 (]: SQL status: OK in 0.005 seconds
+[0m12:55:13.486603 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: Close
+[0m12:55:13.486603 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'e8d30832-2126-4851-9bfc-e2ada52a39c0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E2351BCA10>]}
+[0m12:55:13.486603 [info ] [Thread-1 (]: 1 of 1 OK created sql table model main.agg_episode_summary ..................... [[32mOK[0m in 0.16s]
+[0m12:55:13.486603 [debug] [Thread-1 (]: Finished running node model.email_rl_warehouse.agg_episode_summary
+[0m12:55:13.503939 [debug] [MainThread]: Using duckdb connection "master"
+[0m12:55:13.503939 [debug] [MainThread]: On master: BEGIN
+[0m12:55:13.503939 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m12:55:13.503939 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m12:55:13.507171 [debug] [MainThread]: On master: COMMIT
+[0m12:55:13.507171 [debug] [MainThread]: Using duckdb connection "master"
+[0m12:55:13.507171 [debug] [MainThread]: On master: COMMIT
+[0m12:55:13.508774 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m12:55:13.508774 [debug] [MainThread]: On master: Close
+[0m12:55:13.510781 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m12:55:13.510781 [debug] [MainThread]: Connection 'create_warehouse_main' was properly closed.
+[0m12:55:13.510781 [debug] [MainThread]: Connection 'list_warehouse_main' was properly closed.
+[0m12:55:13.510781 [debug] [MainThread]: Connection 'model.email_rl_warehouse.agg_episode_summary' was properly closed.
+[0m12:55:13.510781 [info ] [MainThread]: 
+[0m12:55:13.510781 [info ] [MainThread]: Finished running 1 table model in 0 hours 0 minutes and 0.42 seconds (0.42s).
+[0m12:55:13.515096 [debug] [MainThread]: Command end result
+[0m12:55:13.570915 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m12:55:13.577452 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m12:55:13.577452 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m12:55:13.593362 [debug] [MainThread]: Wrote artifact RunExecutionResult to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\run_results.json
+[0m12:55:13.594335 [info ] [MainThread]: 
+[0m12:55:13.595332 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m12:55:13.597775 [info ] [MainThread]: 
+[0m12:55:13.598772 [info ] [MainThread]: Done. PASS=1 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=1
+[0m12:55:13.599771 [debug] [MainThread]: Command `dbt run` succeeded at 12:55:13.599771 after 2.10 seconds
+[0m12:55:13.600878 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E22B590D50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E23338C110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001E23342F6D0>]}
+[0m12:55:13.602158 [debug] [MainThread]: Flushing usage events
+[0m12:55:14.963423 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m16:53:47.751166 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E938FC90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E938F110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E938F090>]}
+
+
+============================== 16:53:47.751166 | bd79af41-58fc-4c38-b680-c490e1e91143 ==============================
+[0m16:53:47.751166 [info ] [MainThread]: Running with dbt=1.12.0
+[0m16:53:47.751166 [debug] [MainThread]: running dbt with arguments {'maximum_seed_size_mib': '1', 'no_print': 'None', 'version_check': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'static_parser': 'True', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'False', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'profiles_dir': '.', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'use_colors': 'True', 'hints_enabled': 'True', 'indirect_selection': 'eager', 'use_experimental_parser': 'False', 'invocation_command': 'dbt run --profiles-dir .', 'log_path': 'C:\\Users\\Yuvraj Singh\\OneDrive\\Desktop\\Email_OpenEnv\\Email_RL\\warehouse\\logs'}
+[0m16:53:48.438553 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E96C2A50>]}
+[0m16:53:48.538503 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E64C23D0>]}
+[0m16:53:48.581888 [info ] [MainThread]: Registered adapter: duckdb=1.10.1
+[0m16:53:49.045276 [debug] [MainThread]: checksum: f0d9819fa8ee4563bd15d8de06517e98ba4ac797156a47baad28b9341f2427ea, vars: {}, profile: email_rl_warehouse, target: dev, version: 1.12.0
+[0m16:53:49.303737 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 1 files changed.
+[0m16:53:49.305329 [debug] [MainThread]: Partial parsing: updated file: email_rl_warehouse://models\staging\stg_client_steps.sql
+[0m16:53:49.695873 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E6F5C7D0>]}
+[0m16:53:49.788651 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m16:53:49.822050 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m16:53:49.901476 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m16:53:49.925087 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E9A4D450>]}
+[0m16:53:49.925087 [info ] [MainThread]: Found 7 models, 486 macros
+[0m16:53:49.925087 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E97C8C90>]}
+[0m16:53:49.934386 [info ] [MainThread]: 
+[0m16:53:49.934386 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m16:53:49.934386 [info ] [MainThread]: 
+[0m16:53:49.934386 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m16:53:49.944434 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse'
+[0m16:53:50.118920 [debug] [ThreadPool]: Using duckdb connection "list_warehouse"
+[0m16:53:50.119917 [debug] [ThreadPool]: On list_warehouse: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse"} */
+
+    
+    select schema_name
+    from system.information_schema.schemata
+    
+    where lower(catalog_name) = '"warehouse"'
+    
+  
+  
+[0m16:53:50.119917 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m16:53:50.163803 [debug] [ThreadPool]: SQL status: OK in 0.047 seconds
+[0m16:53:50.171011 [debug] [ThreadPool]: On list_warehouse: Close
+[0m16:53:50.171011 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_warehouse, now create_warehouse_main)
+[0m16:53:50.171011 [debug] [ThreadPool]: Creating schema "database: "warehouse"
+schema: "main"
+"
+[0m16:53:50.174730 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m16:53:50.174730 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+        select type from duckdb_databases()
+        where lower(database_name)='warehouse'
+        and type='sqlite'
+    
+  
+[0m16:53:50.174730 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m16:53:50.174730 [debug] [ThreadPool]: SQL status: OK in 0.002 seconds
+[0m16:53:50.174730 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m16:53:50.174730 [debug] [ThreadPool]: On create_warehouse_main: BEGIN
+[0m16:53:50.185954 [debug] [ThreadPool]: SQL status: OK in 0.000 seconds
+[0m16:53:50.185954 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m16:53:50.185954 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+    
+        create schema if not exists "warehouse"."main"
+    
+[0m16:53:50.185954 [debug] [ThreadPool]: SQL status: OK in 0.002 seconds
+[0m16:53:50.185954 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m16:53:50.185954 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m16:53:50.185954 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m16:53:50.185954 [debug] [ThreadPool]: SQL status: OK in 0.000 seconds
+[0m16:53:50.185954 [debug] [ThreadPool]: On create_warehouse_main: Close
+[0m16:53:50.185954 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse_main'
+[0m16:53:50.185954 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m16:53:50.202029 [debug] [ThreadPool]: On list_warehouse_main: BEGIN
+[0m16:53:50.202029 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m16:53:50.202029 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m16:53:50.202029 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m16:53:50.202029 [debug] [ThreadPool]: On list_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse_main"} */
+select
+      'warehouse' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'warehouse'
+  
+[0m16:53:50.202029 [debug] [ThreadPool]: SQL status: OK in 0.010 seconds
+[0m16:53:50.217034 [debug] [ThreadPool]: On list_warehouse_main: ROLLBACK
+[0m16:53:50.218733 [debug] [ThreadPool]: Failed to rollback 'list_warehouse_main'
+[0m16:53:50.218733 [debug] [ThreadPool]: On list_warehouse_main: Close
+[0m16:53:50.220913 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E9A1D310>]}
+[0m16:53:50.220913 [debug] [MainThread]: Using duckdb connection "master"
+[0m16:53:50.220913 [debug] [MainThread]: On master: BEGIN
+[0m16:53:50.220913 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m16:53:50.223742 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m16:53:50.223742 [debug] [MainThread]: On master: COMMIT
+[0m16:53:50.224923 [debug] [MainThread]: Using duckdb connection "master"
+[0m16:53:50.224923 [debug] [MainThread]: On master: COMMIT
+[0m16:53:50.226408 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m16:53:50.226408 [debug] [MainThread]: On master: Close
+[0m16:53:50.233935 [debug] [Thread-1 (]: Began running node model.email_rl_warehouse.stg_client_steps
+[0m16:53:50.233935 [debug] [Thread-2 (]: Began running node model.email_rl_warehouse.stg_env_steps
+[0m16:53:50.233935 [info ] [Thread-1 (]: 1 of 7 START sql view model main.stg_client_steps .............................. [RUN]
+[0m16:53:50.233935 [info ] [Thread-2 (]: 2 of 7 START sql view model main.stg_env_steps ................................. [RUN]
+[0m16:53:50.233935 [debug] [Thread-1 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.stg_client_steps'
+[0m16:53:50.233935 [debug] [Thread-2 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.stg_env_steps'
+[0m16:53:50.233935 [debug] [Thread-1 (]: Began compiling node model.email_rl_warehouse.stg_client_steps
+[0m16:53:50.239962 [debug] [Thread-2 (]: Began compiling node model.email_rl_warehouse.stg_env_steps
+[0m16:53:50.241418 [debug] [Thread-1 (]: Writing injected SQL for node "model.email_rl_warehouse.stg_client_steps"
+[0m16:53:50.241418 [debug] [Thread-2 (]: Writing injected SQL for node "model.email_rl_warehouse.stg_env_steps"
+[0m16:53:50.250848 [debug] [Thread-1 (]: Began executing node model.email_rl_warehouse.stg_client_steps
+[0m16:53:50.252816 [debug] [Thread-2 (]: Began executing node model.email_rl_warehouse.stg_env_steps
+[0m16:53:50.288431 [debug] [Thread-1 (]: Writing runtime sql for node "model.email_rl_warehouse.stg_client_steps"
+[0m16:53:50.288431 [debug] [Thread-2 (]: Writing runtime sql for node "model.email_rl_warehouse.stg_env_steps"
+[0m16:53:50.288431 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m16:53:50.288431 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: BEGIN
+[0m16:53:50.288431 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m16:53:50.301399 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m16:53:50.301399 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: BEGIN
+[0m16:53:50.301399 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m16:53:50.303938 [debug] [Thread-2 (]: Opening a new connection, currently in state init
+[0m16:53:50.304707 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m16:53:50.305838 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+
+  
+  create view "warehouse"."main"."stg_client_steps__dbt_tmp" as (
+    -- Thin select off the raw Parquet lake for client-side client_steps events
+-- (logged from inside inference.py's run_task() -- see
+-- telemetry/event_sink.py::log_client_step).
+
+with source as (
+    select *
+    from read_parquet('../data/lake/client_steps/dt=*/*.parquet', hive_partitioning = true)
+)
+
+select
+    event_type,
+    logged_at,
+    model_name,
+    task,
+    step,
+    email_id,
+    predicted_priority,
+    predicted_category,
+    predicted_route,
+    action_plan,
+    threat_report,
+    task_reward,
+    done,
+    llm_latency_ms,
+    session_id,
+    error,
+    parse_ok,
+    raw_response_snippet,
+    dt
+from source
+  );
+
+[0m16:53:50.306956 [debug] [Thread-2 (]: SQL status: OK in 0.003 seconds
+[0m16:53:50.307956 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m16:53:50.307956 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+
+  
+  create view "warehouse"."main"."stg_env_steps__dbt_tmp" as (
+    -- Thin select off the raw Parquet lake for server-side env_steps events
+-- (logged from inside EmailTriageEnvironment.step() -- see
+-- telemetry/event_sink.py::log_env_step).
+--
+-- hive_partitioning=true turns the dt=YYYY-MM-DD folder name into a
+-- queryable `dt` column automatically. Each row also carries its own `dt`
+-- field written at log time (see event_sink.py) -- harmless duplication,
+-- kept as a cross-check in case partition-folder naming ever drifts from
+-- the logged timestamp.
+
+with source as (
+    select *
+    from read_parquet('../data/lake/env_steps/dt=*/*.parquet', hive_partitioning = true)
+)
+
+select
+    event_type,
+    logged_at,
+    episode_id,
+    step,
+    email_id,
+    predicted_priority,
+    predicted_category,
+    predicted_route,
+    true_priority,
+    true_category,
+    true_route,
+    is_business_critical,
+    is_phishing,
+    cluster_id,
+    is_escalation,
+    priority_ok,
+    category_ok,
+    route_ok,
+    is_perfect,
+    base_score,
+    urgency_multiplier,
+    reward_components,   -- JSON string; unpacked in marts/fct_reward_components.sql
+    shaped_reward,
+    current_streak,
+    done,
+    stateless_http_mode,
+    emails_remaining,
+    dt
+from source
+  );
+
+[0m16:53:50.329521 [debug] [Thread-2 (]: SQL status: OK in 0.020 seconds
+[0m16:53:50.330563 [debug] [Thread-1 (]: SQL status: OK in 0.023 seconds
+[0m16:53:50.336555 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m16:53:50.339555 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m16:53:50.339555 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+alter view "warehouse"."main"."stg_env_steps__dbt_tmp" rename to "stg_env_steps"
+[0m16:53:50.340613 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+alter view "warehouse"."main"."stg_client_steps__dbt_tmp" rename to "stg_client_steps"
+[0m16:53:50.340613 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m16:53:50.340613 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m16:53:50.355676 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: COMMIT
+[0m16:53:50.355676 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: COMMIT
+[0m16:53:50.355676 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m16:53:50.355676 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m16:53:50.355676 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: COMMIT
+[0m16:53:50.355676 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: COMMIT
+[0m16:53:50.364201 [debug] [Thread-2 (]: SQL status: OK in 0.005 seconds
+[0m16:53:50.373813 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m16:53:50.373813 [debug] [Thread-1 (]: SQL status: OK in 0.011 seconds
+[0m16:53:50.373813 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+
+      drop view if exists "warehouse"."main"."stg_env_steps__dbt_backup" cascade
+    
+[0m16:53:50.373813 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m16:53:50.373813 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+
+      drop view if exists "warehouse"."main"."stg_client_steps__dbt_backup" cascade
+    
+[0m16:53:50.373813 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m16:53:50.373813 [debug] [Thread-1 (]: SQL status: OK in 0.000 seconds
+[0m16:53:50.380258 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: Close
+[0m16:53:50.380258 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: Close
+[0m16:53:50.380258 [debug] [Thread-2 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128EB153D90>]}
+[0m16:53:50.380258 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E96E3D90>]}
+[0m16:53:50.388780 [info ] [Thread-2 (]: 2 of 7 OK created sql view model main.stg_env_steps ............................ [[32mOK[0m in 0.15s]
+[0m16:53:50.388780 [info ] [Thread-1 (]: 1 of 7 OK created sql view model main.stg_client_steps ......................... [[32mOK[0m in 0.15s]
+[0m16:53:50.388780 [debug] [Thread-2 (]: Finished running node model.email_rl_warehouse.stg_env_steps
+[0m16:53:50.388780 [debug] [Thread-1 (]: Finished running node model.email_rl_warehouse.stg_client_steps
+[0m16:53:50.388780 [debug] [Thread-4 (]: Began running node model.email_rl_warehouse.int_steps_joined
+[0m16:53:50.388780 [info ] [Thread-4 (]: 3 of 7 START sql view model main.int_steps_joined .............................. [RUN]
+[0m16:53:50.388780 [debug] [Thread-4 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.int_steps_joined'
+[0m16:53:50.396146 [debug] [Thread-4 (]: Began compiling node model.email_rl_warehouse.int_steps_joined
+[0m16:53:50.399041 [debug] [Thread-4 (]: Writing injected SQL for node "model.email_rl_warehouse.int_steps_joined"
+[0m16:53:50.401058 [debug] [Thread-4 (]: Began executing node model.email_rl_warehouse.int_steps_joined
+[0m16:53:50.407417 [debug] [Thread-4 (]: Writing runtime sql for node "model.email_rl_warehouse.int_steps_joined"
+[0m16:53:50.409383 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m16:53:50.410824 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: BEGIN
+[0m16:53:50.411846 [debug] [Thread-4 (]: Opening a new connection, currently in state init
+[0m16:53:50.412828 [debug] [Thread-4 (]: SQL status: OK in 0.001 seconds
+[0m16:53:50.413822 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m16:53:50.414858 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.int_steps_joined"} */
+
+  
+  create view "warehouse"."main"."int_steps_joined__dbt_tmp" as (
+    -- Joins client_steps onto env_steps by email_id -- see WAREHOUSE.md
+-- "Join key" section for why email_id (not episode_id/session_id) is the
+-- primary key across these two streams.
+--
+-- LEFT JOIN, not INNER: env_steps is authoritative. Every graded email
+-- produces an env_step row regardless of who called step() or whether
+-- client-side telemetry logged successfully (event_sink is fail-open by
+-- design, so a client_steps write can silently fail without breaking the
+-- run). An INNER JOIN would silently drop those rows instead of surfacing
+-- them as env-only.
+
+select
+    env.episode_id,
+    env.step                 as env_step,
+    env.email_id,
+    env.predicted_priority   as env_predicted_priority,
+    env.predicted_category   as env_predicted_category,
+    env.predicted_route      as env_predicted_route,
+    env.true_priority,
+    env.true_category,
+    env.true_route,
+    env.is_business_critical,
+    env.is_phishing,
+    env.cluster_id,
+    env.is_escalation,
+    env.priority_ok,
+    env.category_ok,
+    env.route_ok,
+    env.is_perfect,
+    env.base_score,
+    env.urgency_multiplier,
+    env.reward_components,
+    env.shaped_reward,
+    env.current_streak,
+    env.done                 as env_done,
+    env.stateless_http_mode,
+    env.emails_remaining,
+    env.dt                   as env_dt,
+    cli.model_name,
+    cli.task,
+    cli.step                 as client_step,
+    cli.predicted_priority   as client_predicted_priority,
+    cli.predicted_category   as client_predicted_category,
+    cli.predicted_route      as client_predicted_route,
+    cli.action_plan,
+    cli.threat_report,
+    cli.task_reward,
+    cli.llm_latency_ms,
+    cli.session_id,
+    cli.error                as client_error,
+    cli.dt                   as client_dt
+from "warehouse"."main"."stg_env_steps" env
+left join "warehouse"."main"."stg_client_steps" cli
+    on env.email_id = cli.email_id
+  );
+
+[0m16:53:50.418853 [debug] [Thread-4 (]: SQL status: OK in 0.003 seconds
+[0m16:53:50.421925 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m16:53:50.421925 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.int_steps_joined"} */
+alter view "warehouse"."main"."int_steps_joined__dbt_tmp" rename to "int_steps_joined"
+[0m16:53:50.425771 [debug] [Thread-4 (]: SQL status: OK in 0.000 seconds
+[0m16:53:50.427460 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: COMMIT
+[0m16:53:50.427460 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m16:53:50.427460 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: COMMIT
+[0m16:53:50.427460 [debug] [Thread-4 (]: SQL status: OK in 0.002 seconds
+[0m16:53:50.427460 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m16:53:50.427460 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.int_steps_joined"} */
+
+      drop view if exists "warehouse"."main"."int_steps_joined__dbt_backup" cascade
+    
+[0m16:53:50.427460 [debug] [Thread-4 (]: SQL status: OK in 0.000 seconds
+[0m16:53:50.427460 [debug] [Thread-4 (]: On model.email_rl_warehouse.int_steps_joined: Close
+[0m16:53:50.427460 [debug] [Thread-4 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E9A4C890>]}
+[0m16:53:50.438280 [info ] [Thread-4 (]: 3 of 7 OK created sql view model main.int_steps_joined ......................... [[32mOK[0m in 0.04s]
+[0m16:53:50.439619 [debug] [Thread-4 (]: Finished running node model.email_rl_warehouse.int_steps_joined
+[0m16:53:50.441567 [debug] [Thread-2 (]: Began running node model.email_rl_warehouse.agg_episode_summary
+[0m16:53:50.441567 [debug] [Thread-1 (]: Began running node model.email_rl_warehouse.agg_model_leaderboard
+[0m16:53:50.442602 [debug] [Thread-3 (]: Began running node model.email_rl_warehouse.fct_confusion_matrix
+[0m16:53:50.443566 [debug] [Thread-4 (]: Began running node model.email_rl_warehouse.fct_reward_components
+[0m16:53:50.442602 [info ] [Thread-2 (]: 4 of 7 START sql table model main.agg_episode_summary .......................... [RUN]
+[0m16:53:50.444600 [info ] [Thread-1 (]: 5 of 7 START sql table model main.agg_model_leaderboard ........................ [RUN]
+[0m16:53:50.445569 [info ] [Thread-3 (]: 6 of 7 START sql table model main.fct_confusion_matrix ......................... [RUN]
+[0m16:53:50.446299 [info ] [Thread-4 (]: 7 of 7 START sql table model main.fct_reward_components ........................ [RUN]
+[0m16:53:50.447380 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly model.email_rl_warehouse.stg_env_steps, now model.email_rl_warehouse.agg_episode_summary)
+[0m16:53:50.448485 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.email_rl_warehouse.stg_client_steps, now model.email_rl_warehouse.agg_model_leaderboard)
+[0m16:53:50.449764 [debug] [Thread-3 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.fct_confusion_matrix'
+[0m16:53:50.450781 [debug] [Thread-4 (]: Re-using an available connection from the pool (formerly model.email_rl_warehouse.int_steps_joined, now model.email_rl_warehouse.fct_reward_components)
+[0m16:53:50.450781 [debug] [Thread-2 (]: Began compiling node model.email_rl_warehouse.agg_episode_summary
+[0m16:53:50.451846 [debug] [Thread-1 (]: Began compiling node model.email_rl_warehouse.agg_model_leaderboard
+[0m16:53:50.452814 [debug] [Thread-3 (]: Began compiling node model.email_rl_warehouse.fct_confusion_matrix
+[0m16:53:50.453819 [debug] [Thread-4 (]: Began compiling node model.email_rl_warehouse.fct_reward_components
+[0m16:53:50.456809 [debug] [Thread-2 (]: Writing injected SQL for node "model.email_rl_warehouse.agg_episode_summary"
+[0m16:53:50.459809 [debug] [Thread-1 (]: Writing injected SQL for node "model.email_rl_warehouse.agg_model_leaderboard"
+[0m16:53:50.463814 [debug] [Thread-3 (]: Writing injected SQL for node "model.email_rl_warehouse.fct_confusion_matrix"
+[0m16:53:50.466863 [debug] [Thread-4 (]: Writing injected SQL for node "model.email_rl_warehouse.fct_reward_components"
+[0m16:53:50.469829 [debug] [Thread-2 (]: Began executing node model.email_rl_warehouse.agg_episode_summary
+[0m16:53:50.492346 [debug] [Thread-2 (]: Writing runtime sql for node "model.email_rl_warehouse.agg_episode_summary"
+[0m16:53:50.493676 [debug] [Thread-1 (]: Began executing node model.email_rl_warehouse.agg_model_leaderboard
+[0m16:53:50.493676 [debug] [Thread-3 (]: Began executing node model.email_rl_warehouse.fct_confusion_matrix
+[0m16:53:50.495947 [debug] [Thread-4 (]: Began executing node model.email_rl_warehouse.fct_reward_components
+[0m16:53:50.498983 [debug] [Thread-1 (]: Writing runtime sql for node "model.email_rl_warehouse.agg_model_leaderboard"
+[0m16:53:50.501930 [debug] [Thread-3 (]: Writing runtime sql for node "model.email_rl_warehouse.fct_confusion_matrix"
+[0m16:53:50.504804 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m16:53:50.506604 [debug] [Thread-4 (]: Writing runtime sql for node "model.email_rl_warehouse.fct_reward_components"
+[0m16:53:50.506604 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_episode_summary: BEGIN
+[0m16:53:50.506604 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m16:53:50.506604 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m16:53:50.506604 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m16:53:50.506604 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_model_leaderboard: BEGIN
+[0m16:53:50.515659 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m16:53:50.515659 [debug] [Thread-2 (]: SQL status: OK in 0.003 seconds
+[0m16:53:50.515659 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: BEGIN
+[0m16:53:50.517494 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m16:53:50.517494 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: BEGIN
+[0m16:53:50.517494 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m16:53:50.517494 [debug] [Thread-3 (]: Opening a new connection, currently in state init
+[0m16:53:50.521325 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m16:53:50.521325 [debug] [Thread-4 (]: Opening a new connection, currently in state closed
+[0m16:53:50.522345 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."agg_episode_summary__dbt_tmp"
+  
+    as (
+      -- Per-episode rollups.
+--
+-- LOWER CONFIDENCE MART: given the reset-per-email finding in
+-- WAREHOUSE.md, most "episodes" produced by running inference.py as-is
+-- are exactly one email long, so n_steps will mostly read 1 here. This
+-- mart is still correct for whatever episode structure actually occurred
+-- -- full multi-email episodes if you drive the server directly (or fix
+-- run_task's reset-per-email pattern), single-email "episodes" if you ran
+-- inference.py unmodified.
+--
+-- reached_done / emails_remaining_at_cutoff (added after the
+-- escalation-injection finding -- see WAREHOUSE.md): the environment can
+-- grow its own email queue mid-episode (every missed urgent/high email
+-- injects a follow-up escalation 2 positions ahead), but run_episodes.py
+-- stops at a fixed MAX_STEPS regardless of whether the queue has grown
+-- past that. n_steps / final_step alone can't distinguish "episode
+-- genuinely finished" from "client gave up mid-escalation-spiral with
+-- emails still queued" -- both can show n_steps=10. reached_done and
+-- emails_remaining_at_cutoff, taken from the LAST logged step of each
+-- episode, make that distinction explicit instead of silently averaging
+-- the two outcomes together on the leaderboard.
+--
+-- Note: this is env_done (int_steps_joined aliases the env-side `done`
+-- to disambiguate it from client_steps' own `done` field) -- NOT the
+-- client's done, which just reflects run_episodes.py's local MAX_STEPS
+-- cutoff rather than the environment's real completion state.
+
+with last_step as (
+    select
+        episode_id,
+        env_done          as reached_done,
+        emails_remaining  as emails_remaining_at_cutoff
+    from "warehouse"."main"."int_steps_joined"
+    qualify row_number() over (
+        partition by episode_id
+        order by env_step desc
+    ) = 1
+)
+
+select
+    s.episode_id,
+    min(s.env_dt)                     as episode_dt,
+    count(*)                          as n_steps,
+    sum(s.shaped_reward)              as total_shaped_reward,
+    avg(s.shaped_reward)              as avg_shaped_reward,
+    max(s.current_streak)             as max_streak,
+    bool_or(s.is_business_critical)   as had_business_critical_email,
+    bool_or(s.is_phishing)            as had_phishing_email,
+    max(s.env_step)                   as final_step,
+    any_value(l.reached_done)         as reached_done,
+    any_value(l.emails_remaining_at_cutoff) as emails_remaining_at_cutoff
+from "warehouse"."main"."int_steps_joined" s
+join last_step l using (episode_id)
+group by 1
+order by episode_dt, episode_id
+    );
+  
+  
+[0m16:53:50.522345 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m16:53:50.522345 [debug] [Thread-3 (]: SQL status: OK in 0.005 seconds
+[0m16:53:50.522345 [debug] [Thread-4 (]: SQL status: OK in 0.004 seconds
+[0m16:53:50.522345 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_model_leaderboard: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_model_leaderboard"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."agg_model_leaderboard__dbt_tmp"
+  
+    as (
+      -- Accuracy per field, perfect-match rate, and phishing catch rate, per
+-- model_name x task.
+--
+-- phishing_catch_rate is populated now that the _sample_episode() bug
+-- that dropped phishing emails from every episode has been fixed (see
+-- WAREHOUSE.md finding #2). If you're rebuilding this against telemetry
+-- generated before that fix, expect n_phishing_emails_seen = 0 and
+-- phishing_catch_rate = NULL instead -- that reflects the data, not this
+-- mart.
+
+select
+    model_name,
+    task,
+    count(*)                                          as n_graded_emails,
+    avg(case when priority_ok then 1.0 else 0.0 end)  as priority_accuracy,
+    avg(case when category_ok then 1.0 else 0.0 end)  as category_accuracy,
+    avg(case when route_ok    then 1.0 else 0.0 end)  as route_accuracy,
+    avg(case when is_perfect  then 1.0 else 0.0 end)  as perfect_match_rate,
+    avg(task_reward)                                  as avg_task_reward,
+    sum(case when is_phishing then 1 else 0 end)      as n_phishing_emails_seen,
+    avg(
+        case when is_phishing
+             then case when category_ok and route_ok then 1.0 else 0.0 end
+        end
+    )                                                  as phishing_catch_rate
+from "warehouse"."main"."int_steps_joined"
+where model_name is not null
+group by 1, 2
+order by model_name, task
+    );
+  
+  
+[0m16:53:50.522345 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m16:53:50.522345 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m16:53:50.522345 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_confusion_matrix"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."fct_confusion_matrix__dbt_tmp"
+  
+    as (
+      -- Predicted-vs-true counts across priority/category/route, grouped by
+-- model_name x task. Uses the client-reported prediction (what the LLM
+-- actually output for that task's action space); rows with no client_steps
+-- match (model_name is null) are excluded here since there's no prediction
+-- to compare -- see fct_reward_components / int_steps_joined for the
+-- env-only view of those rows.
+
+with base as (
+    select model_name, task, 'priority' as field,
+           true_priority as true_value, client_predicted_priority as predicted_value
+    from "warehouse"."main"."int_steps_joined"
+    where model_name is not null
+
+    union all
+
+    select model_name, task, 'category' as field,
+           true_category as true_value, client_predicted_category as predicted_value
+    from "warehouse"."main"."int_steps_joined"
+    where model_name is not null
+
+    union all
+
+    select model_name, task, 'route' as field,
+           true_route as true_value, client_predicted_route as predicted_value
+    from "warehouse"."main"."int_steps_joined"
+    where model_name is not null
+)
+
+select
+    model_name,
+    task,
+    field,
+    true_value,
+    predicted_value,
+    count(*) as n
+from base
+group by 1, 2, 3, 4, 5
+    );
+  
+  
+[0m16:53:50.533160 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_reward_components"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."fct_reward_components__dbt_tmp"
+  
+    as (
+      -- Unpacks reward_components (a JSON string column) into individual
+-- numeric columns via json_extract_string(...)::double.
+--
+-- EXPECTED, NOT A BUG: streak_bonus / dependency_bonus / coherence_bonus
+-- will read near-zero across most rows if the data was generated by
+-- inference.py as-is (reset() before every single graded email wipes
+-- multi-step state -- see WAREHOUSE.md "Known findings", #1). Note that
+-- phishing_bonus / phishing_miss_penalty were also flat-zero for an
+-- unrelated reason (a _sample_episode() bug that dropped the phishing
+-- email from every episode) -- that one has since been fixed; see
+-- WAREHOUSE.md finding #2 for before/after evidence.
+
+select
+    episode_id,
+    env_step,
+    email_id,
+    model_name,
+    task,
+    shaped_reward,
+    json_extract_string(reward_components, '$.base_score')::double                  as base_score,
+    json_extract_string(reward_components, '$.urgency_multiplier')::double          as urgency_multiplier,
+    json_extract_string(reward_components, '$.streak_bonus')::double                as streak_bonus,
+    json_extract_string(reward_components, '$.overload_penalty')::double            as overload_penalty,
+    json_extract_string(reward_components, '$.response_time_penalty')::double       as response_time_penalty,
+    json_extract_string(reward_components, '$.escalation_multiplier_delta')::double as escalation_multiplier_delta,
+    json_extract_string(reward_components, '$.phishing_bonus')::double              as phishing_bonus,
+    json_extract_string(reward_components, '$.phishing_miss_penalty')::double       as phishing_miss_penalty,
+    json_extract_string(reward_components, '$.dependency_bonus')::double            as dependency_bonus,
+    json_extract_string(reward_components, '$.coherence_bonus')::double             as coherence_bonus,
+    env_dt as dt
+from "warehouse"."main"."int_steps_joined"
+    );
+  
+  
+[0m16:53:50.566650 [debug] [Thread-1 (]: SQL status: OK in 0.036 seconds
+[0m16:53:50.570435 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m16:53:50.571525 [debug] [Thread-4 (]: SQL status: OK in 0.037 seconds
+[0m16:53:50.572525 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_model_leaderboard: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_model_leaderboard"} */
+alter table "warehouse"."main"."agg_model_leaderboard__dbt_tmp" rename to "agg_model_leaderboard"
+[0m16:53:50.572525 [debug] [Thread-2 (]: SQL status: OK in 0.046 seconds
+[0m16:53:50.572525 [debug] [Thread-3 (]: SQL status: OK in 0.039 seconds
+[0m16:53:50.575720 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m16:53:50.578141 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m16:53:50.578141 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m16:53:50.581056 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m16:53:50.581056 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_reward_components"} */
+alter table "warehouse"."main"."fct_reward_components__dbt_tmp" rename to "fct_reward_components"
+[0m16:53:50.583062 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+alter table "warehouse"."main"."agg_episode_summary__dbt_tmp" rename to "agg_episode_summary"
+[0m16:53:50.588583 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_model_leaderboard: COMMIT
+[0m16:53:50.588583 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_confusion_matrix"} */
+alter table "warehouse"."main"."fct_confusion_matrix__dbt_tmp" rename to "fct_confusion_matrix"
+[0m16:53:50.590591 [debug] [Thread-4 (]: SQL status: OK in 0.001 seconds
+[0m16:53:50.592324 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m16:53:50.593648 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m16:53:50.595659 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: COMMIT
+[0m16:53:50.595659 [debug] [Thread-3 (]: SQL status: OK in 0.003 seconds
+[0m16:53:50.599365 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_episode_summary: COMMIT
+[0m16:53:50.601030 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_model_leaderboard: COMMIT
+[0m16:53:50.603198 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m16:53:50.604706 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: COMMIT
+[0m16:53:50.606714 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m16:53:50.608156 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: COMMIT
+[0m16:53:50.609212 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m16:53:50.609212 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m16:53:50.610961 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_episode_summary: COMMIT
+[0m16:53:50.610961 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: COMMIT
+[0m16:53:50.614561 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m16:53:50.614561 [debug] [Thread-4 (]: SQL status: OK in 0.004 seconds
+[0m16:53:50.617624 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_model_leaderboard: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_model_leaderboard"} */
+
+      drop table if exists "warehouse"."main"."agg_model_leaderboard__dbt_backup" cascade
+    
+[0m16:53:50.618837 [debug] [Thread-2 (]: SQL status: OK in 0.002 seconds
+[0m16:53:50.620587 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m16:53:50.622597 [debug] [Thread-3 (]: SQL status: OK in 0.005 seconds
+[0m16:53:50.624501 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m16:53:50.624501 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m16:53:50.624501 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_reward_components"} */
+
+      drop table if exists "warehouse"."main"."fct_reward_components__dbt_backup" cascade
+    
+[0m16:53:50.629276 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m16:53:50.629276 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+      drop table if exists "warehouse"."main"."agg_episode_summary__dbt_backup" cascade
+    
+[0m16:53:50.629276 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_model_leaderboard: Close
+[0m16:53:50.633981 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_confusion_matrix"} */
+
+      drop table if exists "warehouse"."main"."fct_confusion_matrix__dbt_backup" cascade
+    
+[0m16:53:50.635186 [debug] [Thread-4 (]: SQL status: OK in 0.001 seconds
+[0m16:53:50.636295 [debug] [Thread-2 (]: SQL status: OK in 0.000 seconds
+[0m16:53:50.637401 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128EB141D90>]}
+[0m16:53:50.640009 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: Close
+[0m16:53:50.640009 [debug] [Thread-3 (]: SQL status: OK in 0.002 seconds
+[0m16:53:50.640009 [debug] [Thread-2 (]: On model.email_rl_warehouse.agg_episode_summary: Close
+[0m16:53:50.640009 [info ] [Thread-1 (]: 5 of 7 OK created sql table model main.agg_model_leaderboard ................... [[32mOK[0m in 0.19s]
+[0m16:53:50.645312 [debug] [Thread-4 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128EB150D50>]}
+[0m16:53:50.646981 [debug] [Thread-3 (]: On model.email_rl_warehouse.fct_confusion_matrix: Close
+[0m16:53:50.646981 [debug] [Thread-2 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128EB109790>]}
+[0m16:53:50.646981 [debug] [Thread-1 (]: Finished running node model.email_rl_warehouse.agg_model_leaderboard
+[0m16:53:50.646981 [info ] [Thread-4 (]: 7 of 7 OK created sql table model main.fct_reward_components ................... [[32mOK[0m in 0.20s]
+[0m16:53:50.651972 [debug] [Thread-3 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'bd79af41-58fc-4c38-b680-c490e1e91143', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E96E1450>]}
+[0m16:53:50.653962 [info ] [Thread-2 (]: 4 of 7 OK created sql table model main.agg_episode_summary ..................... [[32mOK[0m in 0.20s]
+[0m16:53:50.655899 [debug] [Thread-4 (]: Finished running node model.email_rl_warehouse.fct_reward_components
+[0m16:53:50.657685 [info ] [Thread-3 (]: 6 of 7 OK created sql table model main.fct_confusion_matrix .................... [[32mOK[0m in 0.20s]
+[0m16:53:50.658686 [debug] [Thread-2 (]: Finished running node model.email_rl_warehouse.agg_episode_summary
+[0m16:53:50.658686 [debug] [Thread-3 (]: Finished running node model.email_rl_warehouse.fct_confusion_matrix
+[0m16:53:50.661108 [debug] [MainThread]: Using duckdb connection "master"
+[0m16:53:50.661108 [debug] [MainThread]: On master: BEGIN
+[0m16:53:50.661108 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m16:53:50.661108 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m16:53:50.666067 [debug] [MainThread]: On master: COMMIT
+[0m16:53:50.666067 [debug] [MainThread]: Using duckdb connection "master"
+[0m16:53:50.666067 [debug] [MainThread]: On master: COMMIT
+[0m16:53:50.667891 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m16:53:50.669899 [debug] [MainThread]: On master: Close
+[0m16:53:50.669899 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m16:53:50.671527 [debug] [MainThread]: Connection 'create_warehouse_main' was properly closed.
+[0m16:53:50.673118 [debug] [MainThread]: Connection 'list_warehouse_main' was properly closed.
+[0m16:53:50.673118 [debug] [MainThread]: Connection 'model.email_rl_warehouse.agg_model_leaderboard' was properly closed.
+[0m16:53:50.674658 [debug] [MainThread]: Connection 'model.email_rl_warehouse.agg_episode_summary' was properly closed.
+[0m16:53:50.675183 [debug] [MainThread]: Connection 'model.email_rl_warehouse.fct_reward_components' was properly closed.
+[0m16:53:50.676260 [debug] [MainThread]: Connection 'model.email_rl_warehouse.fct_confusion_matrix' was properly closed.
+[0m16:53:50.676260 [info ] [MainThread]: 
+[0m16:53:50.677259 [info ] [MainThread]: Finished running 4 table models, 3 view models in 0 hours 0 minutes and 0.74 seconds (0.74s).
+[0m16:53:50.679559 [debug] [MainThread]: Command end result
+[0m16:53:50.723036 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m16:53:50.731142 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m16:53:50.732451 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m16:53:50.746197 [debug] [MainThread]: Wrote artifact RunExecutionResult to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\run_results.json
+[0m16:53:50.746197 [info ] [MainThread]: 
+[0m16:53:50.747199 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m16:53:50.748197 [info ] [MainThread]: 
+[0m16:53:50.749195 [info ] [MainThread]: Done. PASS=7 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=7
+[0m16:53:50.751196 [debug] [MainThread]: Command `dbt run` succeeded at 16:53:50.750197 after 3.13 seconds
+[0m16:53:50.751196 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E937F710>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E93A0E50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E93A0CD0>]}
+[0m16:53:50.752195 [debug] [MainThread]: Flushing usage events
+[0m16:53:52.438610 [debug] [MainThread]: An error was encountered while trying to flush usage events

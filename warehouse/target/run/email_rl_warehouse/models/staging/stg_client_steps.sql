@@ -27,6 +27,8 @@ select
     llm_latency_ms,
     session_id,
     error,
+    parse_ok,
+    raw_response_snippet,
     dt
 from source
   );

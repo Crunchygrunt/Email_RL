@@ -69,26 +69,76 @@ zero code changes; only `.env` needs to change.
 
 **Recommended: Groq** (`console.groq.com`, no credit card required) --
 fast (300-1,000 tok/s on purpose-built inference hardware, so a full
-multi-episode run doesn't take forever), a strong free-tier model tuned
-for structured/agentic output, and free-tier usage isn't flagged for
-model training the way some alternatives are.
+multi-episode run doesn't take forever) and free-tier usage isn't flagged
+for model training the way some alternatives are.
+
+**Do not use a hidden-reasoning model (e.g. `openai/gpt-oss-120b`) on this
+harness.** Confirmed the hard way: these models can spend their entire
+`max_tokens` budget on an invisible reasoning channel before writing any
+visible answer, returning a genuine HTTP 200 with empty `content` --
+indistinguishable from a rate limit or connection failure except that
+`diagnose_llm.py` reports `SUCCESS` with nothing after it. Raising
+`MAX_TOKENS` does **not** reliably fix this -- in one test, going from 500
+to 2000 made it *worse* (10/10 empty responses instead of a partial mix),
+because the model just reasons longer with more room rather than reasoning
+the same amount and using the rest for the answer. `inference.py`'s
+`_call_llm` never sets `reasoning_effort`/`include_reasoning`, and it's
+frozen, so there's no clean way to cap reasoning depth short of
+monkeypatching the function itself. Simplest fix: don't use a
+hidden-reasoning model here.
 
 ```
 API_BASE_URL=https://api.groq.com/openai/v1
-MODEL_NAME=openai/gpt-oss-120b
+MODEL_NAME=llama-3.3-70b-versatile
 HF_TOKEN=<your Groq API key>
 ```
 
 (`HF_TOKEN` as a name is a holdover from the original hackathon setup --
 it's not validated against any particular key format, any provider's API
-key works there.) `llama-3.3-70b-versatile` on the same endpoint is a
-solid fallback if `gpt-oss-120b` ever gets rate-limited or deprecated.
+key works there.)
+
+**Free-tier rate limits differ a lot by model, and it matters which task
+you're running** (confirmed against Groq's published limits page):
+
+| model | RPM | RPD | TPM | TPD |
+|---|---|---|---|---|
+| `llama-3.3-70b-versatile` | 30 | 1,000 | 12,000 | 100,000 |
+| `llama-3.1-8b-instant` | higher | 14,400 | comparable/higher | 500,000 |
+
+`llama-3.3-70b-versatile`'s 12K TPM ceiling is fine for the four
+short-output tasks (spam-detection, priority-classification, full-triage,
+critical-escalation -- just three XML tags), but is a **sustained, not
+occasional**, wall for `action-orchestrator` and `threat-assessment`,
+which both require a real JSON `action_plan`/`threat_report` in the
+output. Confirmed empirically: even with `run_episodes.py`'s retry/backoff
+(see below), individual steps needed the full 5s+15s+30s retry sequence
+just to get a real response, and some still failed all three retries.
+
+**If you hit this on those two tasks specifically**, you have two options:
+
+1. Slow down and stay on `llama-3.3-70b-versatile` for a single-model
+   comparison across all six tasks:
+   ```bash
+   python run_episodes.py --episodes 4 --tasks action-orchestrator,threat-assessment --request-delay 12
+   ```
+   (`--request-delay` paces LLM calls; 12s keeps you comfortably under the
+   12K TPM ceiling for this task's heavier per-call token cost -- the
+   default 1s pacing, tuned for the lighter tasks, is nowhere near enough
+   here.)
+2. Switch `MODEL_NAME` to `llama-3.1-8b-instant` for just these two tasks,
+   which has a meaningfully larger free-tier quota (14,400 RPD / 500K TPD
+   vs. 1,000 RPD / 100K TPD). **This project's own dataset uses this
+   option** -- see "Rate limits and the two-model split" below for why
+   that's a documented, deliberate choice rather than an inconsistency.
 
 **Whatever provider you use, run `python diagnose_llm.py` before
-`run_episodes.py`** and confirm it prints `SUCCESS`. This has caught two
-separate real failures already (an exhausted API key, and a `.env`
-override that silently didn't apply) that otherwise looked identical to
-"the model just isn't very compliant" -- see "Parser robustness" below.
+`run_episodes.py`** and confirm it prints `SUCCESS` *and* a non-empty raw
+response. `SUCCESS` alone isn't enough -- see the hidden-reasoning-model
+warning above. This has now caught three separate real failures that
+otherwise looked identical to "the model just isn't very compliant": an
+exhausted API key, a `.env` override that silently didn't apply, and a
+reasoning model quietly burning its budget -- see "Parser robustness"
+below.
 
 ### 1. Generate telemetry
 
@@ -160,8 +210,10 @@ duckdb warehouse.duckdb
   priority/category/route, grouped by `model_name` x `task`.
 - `marts/agg_model_leaderboard.sql` -- accuracy per field, perfect-match
   rate, phishing catch rate, per `model_name` x `task`.
-- `marts/agg_episode_summary.sql` -- per-episode rollups. **Lower
-  confidence mart** -- see findings below.
+- `marts/agg_episode_summary.sql` -- per-episode rollups, including
+  `reached_done`/`emails_remaining_at_cutoff` (see finding #6). **Lower
+  confidence mart** for episode *length* specifically -- see finding #1
+  below -- but the completion-status columns are correct regardless.
 
 ## Parser robustness: `_parse_action`'s silent XML-only fallback masked two real LLM-connectivity failures
 
@@ -197,6 +249,88 @@ gotcha: `load_dotenv()` does not override an already-exported shell
 environment variable, so editing `.env` after having exported
 `MODEL_NAME`/`HF_TOKEN` directly in the same shell session earlier will
 silently have no effect.
+
+### A real regression, caught by the data itself, not by reading the code
+
+At one point, a copy of `run_episodes.py` in active use had silently
+reverted to calling `inference._parse_action` directly -- the exact strict
+XML-only parser this section describes replacing -- despite this file
+already documenting `_parse_action_lenient()` as the fix. The regression
+wasn't visible from the run's console output alone (no exceptions, no
+crash); it was caught by querying `client_steps` telemetry directly:
+`error` was `NULL` on 100% of 240 rows (should be informative on the ones
+that fell back), and the literal fallback triple `low`/`spam`/`trash`
+appeared on 100% of rows for the harder tasks (full-triage,
+critical-escalation, action-orchestrator, threat-assessment) -- statistically
+impossible if those were genuine classifications given the same email
+distribution showed only ~15% real spam in the easier tasks. Restored and
+re-verified against realistic malformed outputs (markdown-bold, plain
+`Key: value`, loose prose, and a real JSON `action_plan` block) before
+trusting it again. Lesson worth keeping: documentation describing a fix
+is not evidence the fix shipped -- query the actual telemetry the code
+produced.
+
+## Rate limits, dropped connections, and the two-model split
+
+Two separate failure modes showed up once real multi-episode runs got
+long enough, and `run_episodes.py` now handles both -- but neither is
+free, and both are worth understanding rather than just trusting the
+retry logic blindly.
+
+**Empty LLM responses mid-run (`_call_llm_with_retry`).** `_call_llm`
+swallows every exception and returns `""`, so an empty response could be
+a genuine rate limit, a dropped connection to the provider, or (as above)
+a reasoning model burning its budget. `run_episodes.py` now retries an
+empty response with a 5s -> 15s -> 30s backoff before accepting it as
+real, plus a small proactive pacing delay between every call
+(`--request-delay`, default 1s) to avoid tripping the ceiling in the first
+place. The default is tuned for the four short-output tasks; it is **not**
+enough for `action-orchestrator`/`threat-assessment` on a tightly
+TPM-capped model -- see the rate-limit table above.
+
+**Dropped WebSocket connections (`main()`'s retry loop).** A long run can
+lose its connection mid-episode
+(`websockets.exceptions.ConnectionClosedError` / `OSError` /
+`asyncio.TimeoutError`) for reasons unrelated to the LLM provider entirely
+-- confirmed once to be the local connection between the client and the
+project's own `uvicorn` server dropping, not a Groq-side failure.
+`run_episode()` calls are now wrapped in a retry loop: on a connection
+error, wait 10s and reconnect with a fresh WebSocket session (the failed
+episode restarts from step 1 -- steps already logged before the drop stay
+in the telemetry), up to 3 attempts, then log the episode as skipped and
+**continue with the rest of the run** rather than crashing the whole
+script.
+
+**One concrete, plausible cause of that dropped connection, worth ruling
+out before assuming it's random flakiness:** if you're running the server
+with `uvicorn --reload`, WatchFiles watches the *entire* project
+directory by default, including `data/raw/`, which the server's own
+telemetry sink writes a new line into on every single step. It's possible
+for the reloader to see its own telemetry write as a "code change" and
+restart the server process mid-request. **Don't use `--reload` for an
+actual data-collection run** -- it's a development convenience, not
+something you want fighting a long eval run:
+```bash
+uvicorn server.app:app --host 0.0.0.0 --port 8000   # no --reload
+```
+
+**Rate limits and the two-model split.** This project's own collected
+dataset uses `llama-3.3-70b-versatile` for spam-detection,
+priority-classification, full-triage, and critical-escalation, but
+`llama-3.1-8b-instant` for action-orchestrator and threat-assessment --
+specifically because the latter two tasks' JSON output pushed
+consistently against `llama-3.3-70b-versatile`'s 12K TPM free-tier
+ceiling (see the rate-limit table above), while `llama-3.1-8b-instant`'s
+much larger free-tier budget handled them cleanly. This is a **deliberate,
+evidence-based choice**, not an inconsistency: `model_name` is preserved
+per-row through `client_steps` -> `int_steps_joined` ->
+`agg_model_leaderboard`, so the leaderboard never silently blends the two
+models' results together. If you want a clean single-model comparison
+across all six tasks instead, re-run those two tasks on
+`llama-3.3-70b-versatile` with a much longer pacing delay:
+```bash
+python run_episodes.py --episodes 4 --tasks action-orchestrator,threat-assessment --request-delay 12
+```
 
 ## Known findings (confirmed by running the actual, unmodified-arithmetic environment)
 
@@ -364,6 +498,85 @@ observation access does. Not triggered by the warehouse pipeline itself
 inside the trusted server process), but worth knowing if you build
 anything else against the raw observation object.
 
+### 4. Run the server locally, not on a hosted Space, for this pipeline
+
+Considered and rejected: deploying the FastAPI server to a free-tier
+Hugging Face Space instead of running it locally. Free Spaces are limited
+to 16GB RAM, 2 CPU cores and 50GB of **non-persistent** disk by default --
+persistent storage is a paid add-on. Since this whole pipeline assumes
+`event_sink.py`'s JSONL lands on a filesystem `compact_to_parquet.py` and
+`dbt` can both read locally, a hosted Space would mean either paying for
+persistent storage (against this project's free-tooling constraint) or
+re-architecting the sink to push to a Hugging Face Dataset instead of
+local disk -- real additional work, not a config change. Local also avoids
+Space cold-starts corrupting `llm_latency_ms` telemetry. Worth revisiting
+once the pipeline itself is a finished, stable artifact and the goal
+shifts to "make the environment a public demo" rather than "build and
+debug the data pipeline."
+
+**A real, related mistake this caused:** for a while, the client was
+pointed at a remote Space URL (`EMAIL_RL_SERVER_URL` was set once,
+somewhere, and outlived its usefulness -- `load_dotenv()` not overriding
+an already-exported shell variable, again) while the server the developer
+was actually watching and editing ran locally and never received any
+traffic. The symptom was `env_steps` telemetry staying empty indefinitely
+even after the CWD/path fix below was applied and looked correct in
+isolation -- the server code was never wrong, it just never got called.
+Confirmed by adding a startup print of the resolved `SERVER_URL` /
+telemetry root to both processes and comparing them side by side.
+
+### 5. Column aliasing in `int_steps_joined` -- easy to guess wrong when querying by hand
+
+Both `env_steps` and `client_steps` log their own `step` and `done`
+fields, so `int_steps_joined.sql` disambiguates them: the raw JSONL/mart
+column names are `env_step` / `client_step` and `env_done` / `client_done`,
+not bare `step` / `done`. Run `DESCRIBE main.int_steps_joined` before
+writing an ad-hoc query against this mart rather than assuming a name --
+this tripped up more than one debugging session here.
+
+### 6. `agg_episode_summary` couldn't distinguish a clean finish from a step-cap cutoff -- fixed
+
+`n_steps` / `final_step` alone can't tell "episode reached its natural
+end" apart from "the client's fixed `MAX_STEPS` cut it off while the
+environment's own queue had grown past that." Both can read `n_steps=10`.
+This matters because of the escalation-injection mechanic (see finding #1
+above): every missed urgent/high email inserts a follow-up 2 positions
+ahead, so the environment's real queue can grow well past 10 mid-episode.
+
+Confirmed on a real single-episode run: `emails_remaining` traced across
+steps 1-10 showed the queue growing from 10 to 13 emails (three separate
+overload penalties firing, at steps 3, 4, and 8), with `done=False` on
+every single logged step -- the client stopped at its own step cap with 2
+of 13 emails never graded, not because the episode finished.
+
+**Fix:** `agg_episode_summary` now includes `reached_done` and
+`emails_remaining_at_cutoff`, sourced from the *last* logged step of each
+episode (via `qualify row_number() over (partition by episode_id order by
+env_step desc) = 1`), so a step-cap cutoff and a genuine finish are no
+longer silently averaged together on the leaderboard.
+
+### 7. Parquet schema drift across days with an all-null column -- fixed
+
+`compact_to_parquet.py` used to let `pyarrow` infer each day's schema
+from that day's batch alone. A day where `action_plan`/`threat_report`
+happened to be `None` in every row (any run of the four non-JSON tasks)
+got those columns typed as something other than string -- confirmed as
+`INTEGER` via `DESCRIBE main.int_steps_joined` -- while a day that
+actually populated them typed `VARCHAR`. `read_parquet(glob,
+hive_partitioning=true)` then has to reconcile `INTEGER` vs `VARCHAR` for
+the same column across files.
+
+**Fix:** both streams now have an explicit, pinned `pyarrow.schema(...)`
+in `compact_to_parquet.py`, and every row is normalized to exactly that
+schema's field list before being handed to `pa.Table.from_pylist(...,
+schema=...)` -- missing fields (an older JSONL file predating a newer
+telemetry field) default to `None` rather than erroring, and unexpected
+fields (a newer telemetry field this schema hasn't been updated for yet)
+print a warning rather than silently vanishing or crashing the batch job.
+`cluster_id` got the same fix pre-emptively -- it's `None` on the ~80% of
+emails outside a dependency cluster, the identical failure mode waiting
+to happen on a day with no clustered emails.
+
 ## Example questions this warehouse can answer
 
 ```sql
@@ -383,6 +596,15 @@ from fct_reward_components;
 
 -- Confirm finding #1 yourself: episode length distribution
 select n_steps, count(*) as n_episodes from agg_episode_summary group by 1 order by 1;
+
+-- Confirm finding #6 yourself: how often does an episode actually finish
+-- vs. get cut off mid-escalation-spiral by the client's step cap?
+select
+    reached_done,
+    count(*) as n_episodes,
+    avg(emails_remaining_at_cutoff) as avg_emails_left_when_cut_off
+from agg_episode_summary
+group by 1;
 
 -- Confirm the phishing fix yourself: roughly 1 in 10 graded emails should
 -- now be phishing (was exactly 0% before the fix, regardless of harness mode)
@@ -404,7 +626,18 @@ from stg_env_steps;
   permissions, an unexpected argument) is caught, logged to stderr, and
   swallowed -- it will never break a graded RL step or an eval run, but it
   also means telemetry gaps are silent unless you're watching stderr.
-- **`agg_episode_summary` is lower-confidence** given finding #1 above --
-  it's correct for whatever episode structure actually occurred, but that
-  structure is currently "1 email" for anything produced by unmodified
-  `inference.py`.
+- **`agg_episode_summary`'s `n_steps`/`final_step` is lower-confidence for
+  episode *length* specifically**, given finding #1 above -- it's correct
+  for whatever episode structure actually occurred, but that structure is
+  currently "1 email" for anything produced by unmodified `inference.py`.
+  Its `reached_done`/`emails_remaining_at_cutoff` columns (finding #6) are
+  not affected by this and are trustworthy regardless.
+- **Two different models across tasks in this project's own dataset.**
+  action-orchestrator/threat-assessment were collected on
+  `llama-3.1-8b-instant`, not `llama-3.3-70b-versatile` like the other
+  four tasks, due to free-tier rate limits -- see "Rate limits and the
+  two-model split" above. `model_name` is preserved per-row so nothing is
+  silently blended, but don't read `agg_model_leaderboard` as one model's
+  performance across all six tasks without checking `model_name` first.
+
+  

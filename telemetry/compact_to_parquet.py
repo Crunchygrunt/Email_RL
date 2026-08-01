@@ -52,6 +52,101 @@ _JSON_STRING_FIELDS = {
     "client_steps": (),
 }
 
+# Explicit per-stream Parquet schemas.
+#
+# Why: pa.Table.from_pylist() infers each column's type from the values
+# present in THAT batch. A day's file where a field happens to be None in
+# every row -- e.g. action_plan/threat_report on a spam-detection-only
+# run, which never populates them -- gets typed as whatever pyarrow's
+# all-null fallback is, which showed up here as INTEGER. A later day's
+# file, once that field IS populated (action-orchestrator, say), gets
+# typed VARCHAR -- and DuckDB's read_parquet(glob, hive_partitioning=true)
+# then has to reconcile INTEGER vs VARCHAR for the same column across
+# files. Pinning the schema here means every file gets the same type
+# regardless of what happened to be non-null that day.
+_ENV_STEPS_SCHEMA = pa.schema([
+    ("event_type",           pa.string()),
+    ("logged_at",            pa.string()),
+    ("episode_id",           pa.string()),
+    ("step",                 pa.int64()),
+    ("email_id",             pa.string()),
+    ("predicted_priority",   pa.string()),
+    ("predicted_category",   pa.string()),
+    ("predicted_route",      pa.string()),
+    ("true_priority",        pa.string()),
+    ("true_category",        pa.string()),
+    ("true_route",           pa.string()),
+    ("is_business_critical", pa.bool_()),
+    ("is_phishing",          pa.bool_()),
+    ("cluster_id",           pa.string()),  # also all-null on non-cluster days -- same bug, same fix
+    ("is_escalation",        pa.bool_()),
+    ("priority_ok",          pa.bool_()),
+    ("category_ok",          pa.bool_()),
+    ("route_ok",             pa.bool_()),
+    ("is_perfect",           pa.bool_()),
+    ("base_score",           pa.float64()),
+    ("urgency_multiplier",   pa.float64()),
+    ("reward_components",    pa.string()),  # JSON string -- see _prepare_rows
+    ("shaped_reward",        pa.float64()),
+    ("current_streak",       pa.int64()),
+    ("done",                 pa.bool_()),
+    ("stateless_http_mode",  pa.bool_()),
+    ("emails_remaining",     pa.int64()),
+    ("dt",                   pa.string()),
+])
+
+_CLIENT_STEPS_SCHEMA = pa.schema([
+    ("event_type",           pa.string()),
+    ("logged_at",            pa.string()),
+    ("model_name",           pa.string()),
+    ("task",                 pa.string()),
+    ("step",                 pa.int64()),
+    ("email_id",             pa.string()),
+    ("predicted_priority",   pa.string()),
+    ("predicted_category",   pa.string()),
+    ("predicted_route",      pa.string()),
+    ("action_plan",          pa.string()),  # the reported bug: pinned so it's never inferred as INTEGER
+    ("threat_report",        pa.string()),  # same
+    ("task_reward",          pa.float64()),
+    ("done",                 pa.bool_()),
+    ("llm_latency_ms",       pa.float64()),
+    ("session_id",           pa.string()),
+    ("error",                pa.string()),
+    ("parse_ok",             pa.bool_()),
+    ("raw_response_snippet", pa.string()),
+    ("dt",                   pa.string()),
+])
+
+_SCHEMAS = {"env_steps": _ENV_STEPS_SCHEMA, "client_steps": _CLIENT_STEPS_SCHEMA}
+
+
+def _normalize_rows(rows: List[Dict[str, Any]], schema: "pa.Schema", stream: str, path: Path) -> List[Dict[str, Any]]:
+    """
+    Align each row dict to exactly schema.names before handing it to
+    pyarrow: fill any schema field absent from a row with None (handles
+    JSONL written by an older event_sink.py that predates a field), and
+    warn -- once per file, not per row -- about any keys present in the
+    data but missing from the pinned schema (usually means event_sink.py
+    grew a new field this schema hasn't been updated to match). Either
+    way this never crashes the compaction job; it just tells you loudly
+    what it dropped or defaulted.
+    """
+    known = set(schema.names)
+    unexpected: set = set()
+    normalized = []
+    for row in rows:
+        unexpected |= (set(row.keys()) - known)
+        normalized.append({name: row.get(name) for name in schema.names})
+    if unexpected:
+        print(
+            f"[{stream}] WARNING: {path} has field(s) not in the pinned "
+            f"schema, dropped from Parquet: {sorted(unexpected)}. If these "
+            f"are new, intentional telemetry fields, add them to the "
+            f"_ENV_STEPS_SCHEMA / _CLIENT_STEPS_SCHEMA in this file.",
+            file=sys.stderr,
+        )
+    return normalized
+
 
 def _find_uncompacted_files(stream_dir: Path) -> List[Path]:
     """Every dt=*/events.jsonl file under stream_dir not already archived."""
@@ -104,7 +199,9 @@ def _compact_stream(data_root: Path, lake_root: Path, stream: str) -> int:
             print(f"[{stream}] {path} had 0 usable rows, archiving without writing")
         else:
             rows = _prepare_rows(events, dt, stream)
-            table = pa.Table.from_pylist(rows)
+            schema = _SCHEMAS[stream]
+            rows = _normalize_rows(rows, schema, stream, path)
+            table = pa.Table.from_pylist(rows, schema=schema)
             pq.write_to_dataset(
                 table,
                 root_path=str(lake_root / stream),
@@ -141,3 +238,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    
