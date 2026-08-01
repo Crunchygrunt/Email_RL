@@ -110,6 +110,7 @@ class EmailTriageEnv:
     def _parse(self, payload: dict) -> _StepResult:
         obs_data = payload.get("observation", {})
         observation = EmailTriageObservation(
+            
             email_id              = obs_data.get("email_id", ""),
             email_subject         = obs_data.get("email_subject", ""),
             email_sender          = obs_data.get("email_sender", ""),
@@ -140,11 +141,16 @@ class EmailTriageEnv:
 # ---------------------------------------------------------------------------
 # Environment variables -- per hackathon guidelines
 # ---------------------------------------------------------------------------
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+# API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 # API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
+API_BASE_URL = os.getenv("API_BASE_URL", "https://api.groq.com/openai/v1")
 
-MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
+# MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
 # MODEL_NAME   = os.getenv("MODEL_NAME",   "qwen/qwen-2.5-72b-instruct")
+
+# MODEL_NAME   = os.getenv("MODEL_NAME",   "llama-3.3-70b-versatile")
+# MODEL_NAME   = os.getenv("MODEL_NAME",   "openai/gpt-oss-120b")
+MODEL_NAME   = os.getenv("MODEL_NAME",   "llama-3.1-8b-instant")
 
 HF_TOKEN     = os.getenv("HF_TOKEN")
 SERVER_URL   = os.getenv("EMAIL_RL_SERVER_URL", "http://localhost:8000")

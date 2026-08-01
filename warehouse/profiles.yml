@@ -1,0 +1,8 @@
+email_rl_warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      # Relative to the `warehouse/` directory dbt is run from.
+      path: warehouse.duckdb
+      threads: 4

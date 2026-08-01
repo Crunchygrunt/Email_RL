@@ -54,6 +54,7 @@ from __future__ import annotations
 import random
 import re
 from dataclasses import dataclass
+import traceback
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
 
@@ -81,7 +82,13 @@ except ImportError:
         EmailTriageObservation,
     )
 
+try:
+    from .. import telemetry
+except ImportError:
+    import telemetry
 
+print(f"[env] telemetry loaded from: {telemetry.event_sink.__file__}")
+print(f"[env] telemetry writing to:  {telemetry.event_sink._DATA_ROOT}")
 # ---------------------------------------------------------------------------
 # Synthetic email templates
 # ---------------------------------------------------------------------------
@@ -839,24 +846,32 @@ class EmailTriageEnvironment(Environment):
             self._streak = 0
 
         # === SHAPED REWARD COMPUTATION ===
+        # component_* variables below exist for telemetry only (see
+        # telemetry/event_sink.py). They do not change the arithmetic or
+        # order of operations from the original implementation.
 
         # 1. Base score (now includes partial credit for near-misses)
         urgency_mult = URGENCY_BONUS.get(true_p, 1.0)
-        shaped_reward = grade.base_score * urgency_mult
+        base_score = grade.base_score
+        shaped_reward = base_score * urgency_mult
 
         # 2. Streak bonus (sustained accuracy)
+        component_streak_bonus = 0.0
         if self._streak >= self.STREAK_THRESHOLD:
-            shaped_reward += self.STREAK_BONUS
+            component_streak_bonus = self.STREAK_BONUS
+            shaped_reward += component_streak_bonus
 
         # 3. Asymmetric overload penalty (missing urgent is catastrophic)
+        component_overload_penalty = 0.0
         if true_p in ("urgent", "high") and pred_p in ("low", "medium"):
             # Penalty scales with severity of the miss
             if true_p == "urgent" and pred_p == "low":
-                shaped_reward -= self.OVERLOAD_PENALTY * 1.5  # worst case
+                component_overload_penalty = self.OVERLOAD_PENALTY * 1.5  # worst case
             elif true_p == "urgent" and pred_p == "medium":
-                shaped_reward -= self.OVERLOAD_PENALTY * 1.2
+                component_overload_penalty = self.OVERLOAD_PENALTY * 1.2
             else:
-                shaped_reward -= self.OVERLOAD_PENALTY
+                component_overload_penalty = self.OVERLOAD_PENALTY
+            shaped_reward -= component_overload_penalty
 
             # CREATIVITY 3: inject escalation consequence
             if (self._current_idx + 2 < len(self._email_queue)
@@ -869,47 +884,60 @@ class EmailTriageEnvironment(Environment):
                 self._email_queue.insert(insert_pos, esc_email)
 
         # 4. Response time pressure (urgent emails penalized by queue position)
+        component_response_time_penalty = 0.0
         if true_p == "urgent" and self._current_idx > 3:
             # Urgent email processed late in the queue loses value
-            position_penalty = (self._current_idx - 3) * self.RESPONSE_TIME_DECAY
-            shaped_reward -= position_penalty
+            component_response_time_penalty = (self._current_idx - 3) * self.RESPONSE_TIME_DECAY
+            shaped_reward -= component_response_time_penalty
         elif true_p == "high" and self._current_idx > 6:
-            position_penalty = (self._current_idx - 6) * self.RESPONSE_TIME_DECAY * 0.5
-            shaped_reward -= position_penalty
+            component_response_time_penalty = (self._current_idx - 6) * self.RESPONSE_TIME_DECAY * 0.5
+            shaped_reward -= component_response_time_penalty
 
         # 5. Escalation multiplier on injected angry follow-ups
         esc_mult = current_email.get("escalation_multiplier", 1.0)
+        component_escalation_multiplier_delta = 0.0
         if esc_mult > 1.0 and not grade.is_perfect:
+            _pre_escalation_reward = shaped_reward
             shaped_reward *= (1.0 / esc_mult)
+            component_escalation_multiplier_delta = shaped_reward - _pre_escalation_reward
 
         # 6. Phishing detection bonus/penalty
         is_phishing = current_email.get("is_phishing", False)
+        component_phishing_bonus = 0.0
+        component_phishing_miss_penalty = 0.0
         if is_phishing:
             pred_cat = action.category.strip().lower()
             pred_route = action.route.strip().lower()
             if pred_cat == "security" and pred_route == "security_team":
                 # Correctly identified phishing -- bonus
-                shaped_reward += self.SENDER_TRUST_BONUS
+                component_phishing_bonus = self.SENDER_TRUST_BONUS
+                shaped_reward += component_phishing_bonus
                 # Extra bonus if sender domain looks suspicious
                 sender = current_email.get("sender", "")
                 sender_domain = sender.split("@")[-1] if "@" in sender else ""
                 if any(sender_domain.endswith(tld) for tld in _SUSPICIOUS_TLDS):
-                    shaped_reward += self.SENDER_TRUST_BONUS * 0.5
+                    _extra_bonus = self.SENDER_TRUST_BONUS * 0.5
+                    component_phishing_bonus += _extra_bonus
+                    shaped_reward += _extra_bonus
             else:
                 # Missed phishing -- significant penalty
-                shaped_reward -= self.PHISHING_MISS_PENALTY
+                component_phishing_miss_penalty = self.PHISHING_MISS_PENALTY
+                shaped_reward -= component_phishing_miss_penalty
 
         # 7. Cross-email dependency bonus
         cluster_id = current_email.get("cluster_id")
+        component_dependency_bonus = 0.0
         if cluster_id:
             self._cluster_routes.setdefault(cluster_id, [])
             self._cluster_routes[cluster_id].append(action.route.strip().lower())
             routes_in_cluster = self._cluster_routes[cluster_id]
             if len(routes_in_cluster) >= 2:
                 if len(set(routes_in_cluster)) == 1:
-                    shaped_reward += self.DEPENDENCY_BONUS
+                    component_dependency_bonus = self.DEPENDENCY_BONUS
+                    shaped_reward += component_dependency_bonus
 
         # 8. Batch coherence bonus (on final email of episode)
+        component_coherence_bonus = 0.0
         self._current_idx += 1
         done = self._stateless_http_mode or (self._current_idx >= len(self._email_queue))
 
@@ -925,12 +953,60 @@ class EmailTriageEnvironment(Environment):
                 distribution_diff += abs(pred_ratio - true_ratio)
             # distribution_diff ranges 0 (perfect) to 2 (worst)
             coherence_score = max(0.0, 1.0 - distribution_diff)
-            shaped_reward += self.COHERENCE_BONUS * coherence_score
+            component_coherence_bonus = self.COHERENCE_BONUS * coherence_score
+            shaped_reward += component_coherence_bonus
 
         shaped_reward = round(shaped_reward, 4)
         self._total_shaped_reward += shaped_reward
 
         next_email = current_email if done else self._email_queue[self._current_idx]
+
+        # -- Telemetry (best-effort; must never affect the RL step) --------
+        try:
+            reward_components = {
+                "base_score":                  base_score,
+                "urgency_multiplier":          urgency_mult,
+                "streak_bonus":                component_streak_bonus,
+                "overload_penalty":            component_overload_penalty,
+                "response_time_penalty":       component_response_time_penalty,
+                "escalation_multiplier_delta": component_escalation_multiplier_delta,
+                "phishing_bonus":              component_phishing_bonus,
+                "phishing_miss_penalty":       component_phishing_miss_penalty,
+                "dependency_bonus":            component_dependency_bonus,
+                "coherence_bonus":             component_coherence_bonus,
+            }
+            print(">>> About to call log_env_step")
+            telemetry.event_sink.log_env_step(
+                episode_id=self._state.episode_id,
+                step=self._state.step_count,
+                email_id=current_email["email_id"],
+                predicted_priority=pred_p,
+                predicted_category=action.category.strip().lower(),
+                predicted_route=action.route.strip().lower(),
+                true_priority=true_p,
+                true_category=current_email["category"],
+                true_route=current_email["route"],
+                is_business_critical=current_email.get("is_business_critical", False),
+                is_phishing=is_phishing,
+                cluster_id=cluster_id,
+                is_escalation=current_email.get("is_escalation", False),
+                priority_ok=grade.priority_ok,
+                category_ok=grade.category_ok,
+                route_ok=grade.route_ok,
+                is_perfect=grade.is_perfect,
+                base_score=base_score,
+                urgency_multiplier=urgency_mult,
+                reward_components=reward_components,
+                shaped_reward=shaped_reward,
+                current_streak=self._streak,
+                done=done,
+                stateless_http_mode=self._stateless_http_mode,
+                emails_remaining=max(0, len(self._email_queue) - self._current_idx - 1),
+            )
+        except Exception as _telemetry_exc:  # noqa: BLE001 -- fail open, never break a step
+            import sys as _sys
+            print(f"[telemetry] WARNING: log_env_step failed: {_telemetry_exc}", file=_sys.stderr)
+
 
         return self._make_observation(
             next_email,
@@ -970,8 +1046,18 @@ class EmailTriageEnvironment(Environment):
         cluster = random.choice(_DEPENDENCY_CLUSTERS)
         cluster_emails = [_generate_cluster_email(entry) for entry in cluster]
 
-        if len(selected) > 0:
-            selected.pop()
+        # BUGFIX (see WAREHOUSE.md "Known findings"): this must remove one of
+        # the 7 standard-category emails added in step (1) above -- those
+        # occupy indices 0..len(CATEGORIES)-1 at this point, since nothing
+        # has reordered the list yet. The original `selected.pop()` removed
+        # the overall LAST item instead, which by this point in the function
+        # is always the phishing email just appended in step (3), not a
+        # standard email -- so every episode silently ended up with 0
+        # phishing emails. Popping index len(CATEGORIES) - 1 targets the
+        # last *standard* email, matching what the comment above always said
+        # this was supposed to do.
+        if len(selected) >= len(CATEGORIES):
+            selected.pop(len(CATEGORIES) - 1)
         selected.extend(cluster_emails)
 
         # Trim or pad to EPISODE_LENGTH

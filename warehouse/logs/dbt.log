@@ -1,0 +1,356 @@
+[0m18:15:49.919322 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C5181C0150>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51826EA50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51826F610>]}
+
+
+============================== 18:15:49.921535 | 01517da0-f79a-42b0-9863-f9dcb6fb1950 ==============================
+[0m18:15:49.921535 [info ] [MainThread]: Running with dbt=1.12.0
+[0m18:15:49.921535 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'no_print': 'None', 'version_check': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'maximum_seed_size_mib': '1', 'printer_width': '80', 'write_json': 'True', 'empty': 'False', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'profiles_dir': '.', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'invocation_command': 'dbt run --profiles-dir .', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': 'C:\\Users\\Yuvraj Singh\\OneDrive\\Desktop\\Email_OpenEnv\\Email_RL\\warehouse\\logs'}
+[0m18:15:50.897028 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '01517da0-f79a-42b0-9863-f9dcb6fb1950', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C5183BCA50>]}
+[0m18:15:51.000874 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '01517da0-f79a-42b0-9863-f9dcb6fb1950', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51377AAD0>]}
+[0m18:15:51.008665 [info ] [MainThread]: Registered adapter: duckdb=1.10.1
+[0m18:15:51.507018 [debug] [MainThread]: checksum: f0d9819fa8ee4563bd15d8de06517e98ba4ac797156a47baad28b9341f2427ea, vars: {}, profile: email_rl_warehouse, target: dev, version: 1.12.0
+[0m18:15:51.507018 [info ] [MainThread]: Unable to do partial parsing because saved manifest not found. Starting full parse.
+[0m18:15:51.507018 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'partial_parser', 'label': '01517da0-f79a-42b0-9863-f9dcb6fb1950', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51884BCD0>]}
+[0m18:15:54.878779 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '01517da0-f79a-42b0-9863-f9dcb6fb1950', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51868D2D0>]}
+[0m18:15:54.979957 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m18:15:55.000922 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m18:15:55.047577 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m18:15:55.085425 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '01517da0-f79a-42b0-9863-f9dcb6fb1950', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C518C77E10>]}
+[0m18:15:55.085425 [info ] [MainThread]: Found 7 models, 486 macros
+[0m18:15:55.085425 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '01517da0-f79a-42b0-9863-f9dcb6fb1950', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C518C6A2D0>]}
+[0m18:15:55.085425 [info ] [MainThread]: 
+[0m18:15:55.085425 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m18:15:55.091266 [info ] [MainThread]: 
+[0m18:15:55.091266 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m18:15:55.100447 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse'
+[0m18:15:59.697296 [debug] [ThreadPool]: Using duckdb connection "list_warehouse"
+[0m18:15:59.697296 [debug] [ThreadPool]: On list_warehouse: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse"} */
+
+    
+    select schema_name
+    from system.information_schema.schemata
+    
+    where lower(catalog_name) = '"warehouse"'
+    
+  
+  
+[0m18:15:59.697296 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m18:15:59.770216 [debug] [ThreadPool]: SQL status: OK in 0.067 seconds
+[0m18:15:59.773304 [debug] [ThreadPool]: On list_warehouse: Close
+[0m18:15:59.774409 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_warehouse, now create_warehouse_main)
+[0m18:15:59.776965 [debug] [ThreadPool]: Creating schema "database: "warehouse"
+schema: "main"
+"
+[0m18:15:59.776965 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m18:15:59.776965 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+        select type from duckdb_databases()
+        where lower(database_name)='warehouse'
+        and type='sqlite'
+    
+  
+[0m18:15:59.776965 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m18:15:59.785273 [debug] [ThreadPool]: SQL status: OK in 0.003 seconds
+[0m18:15:59.787927 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m18:15:59.787927 [debug] [ThreadPool]: On create_warehouse_main: BEGIN
+[0m18:15:59.790989 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m18:15:59.792238 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m18:15:59.792238 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+    
+        create schema if not exists "warehouse"."main"
+    
+[0m18:15:59.796188 [debug] [ThreadPool]: SQL status: OK in 0.002 seconds
+[0m18:15:59.796188 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m18:15:59.796188 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m18:15:59.798194 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m18:15:59.798194 [debug] [ThreadPool]: SQL status: OK in 0.000 seconds
+[0m18:15:59.798194 [debug] [ThreadPool]: On create_warehouse_main: Close
+[0m18:15:59.800220 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse_main'
+[0m18:15:59.806483 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m18:15:59.806483 [debug] [ThreadPool]: On list_warehouse_main: BEGIN
+[0m18:15:59.806483 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m18:15:59.808816 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m18:15:59.808816 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m18:15:59.810273 [debug] [ThreadPool]: On list_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse_main"} */
+select
+      'warehouse' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'warehouse'
+  
+[0m18:15:59.823492 [debug] [ThreadPool]: SQL status: OK in 0.014 seconds
+[0m18:15:59.826529 [debug] [ThreadPool]: On list_warehouse_main: ROLLBACK
+[0m18:15:59.826529 [debug] [ThreadPool]: Failed to rollback 'list_warehouse_main'
+[0m18:15:59.826529 [debug] [ThreadPool]: On list_warehouse_main: Close
+[0m18:15:59.826529 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '01517da0-f79a-42b0-9863-f9dcb6fb1950', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51868C150>]}
+[0m18:15:59.826529 [debug] [MainThread]: Using duckdb connection "master"
+[0m18:15:59.826529 [debug] [MainThread]: On master: BEGIN
+[0m18:15:59.826529 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m18:15:59.826529 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m18:15:59.826529 [debug] [MainThread]: On master: COMMIT
+[0m18:15:59.826529 [debug] [MainThread]: Using duckdb connection "master"
+[0m18:15:59.826529 [debug] [MainThread]: On master: COMMIT
+[0m18:15:59.826529 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m18:15:59.826529 [debug] [MainThread]: On master: Close
+[0m18:15:59.875387 [debug] [Thread-1 (]: Began running node model.email_rl_warehouse.stg_client_steps
+[0m18:15:59.875387 [debug] [Thread-2 (]: Began running node model.email_rl_warehouse.stg_env_steps
+[0m18:15:59.878197 [info ] [Thread-1 (]: 1 of 7 START sql view model main.stg_client_steps .............................. [RUN]
+[0m18:15:59.878197 [info ] [Thread-2 (]: 2 of 7 START sql view model main.stg_env_steps ................................. [RUN]
+[0m18:15:59.880124 [debug] [Thread-1 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.stg_client_steps'
+[0m18:15:59.880124 [debug] [Thread-2 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.stg_env_steps'
+[0m18:15:59.882451 [debug] [Thread-1 (]: Began compiling node model.email_rl_warehouse.stg_client_steps
+[0m18:15:59.882451 [debug] [Thread-2 (]: Began compiling node model.email_rl_warehouse.stg_env_steps
+[0m18:15:59.891025 [debug] [Thread-1 (]: Writing injected SQL for node "model.email_rl_warehouse.stg_client_steps"
+[0m18:15:59.894445 [debug] [Thread-2 (]: Writing injected SQL for node "model.email_rl_warehouse.stg_env_steps"
+[0m18:15:59.898861 [debug] [Thread-2 (]: Began executing node model.email_rl_warehouse.stg_env_steps
+[0m18:15:59.898861 [debug] [Thread-1 (]: Began executing node model.email_rl_warehouse.stg_client_steps
+[0m18:15:59.922845 [debug] [Thread-2 (]: Writing runtime sql for node "model.email_rl_warehouse.stg_env_steps"
+[0m18:15:59.922845 [debug] [Thread-1 (]: Writing runtime sql for node "model.email_rl_warehouse.stg_client_steps"
+[0m18:15:59.940059 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m18:15:59.941389 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: BEGIN
+[0m18:15:59.941389 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m18:15:59.942388 [debug] [Thread-2 (]: Opening a new connection, currently in state init
+[0m18:15:59.943382 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: BEGIN
+[0m18:15:59.944424 [debug] [Thread-2 (]: SQL status: OK in 0.002 seconds
+[0m18:15:59.944424 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m18:15:59.945504 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m18:15:59.945504 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m18:15:59.946898 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+
+  
+  create view "warehouse"."main"."stg_env_steps__dbt_tmp" as (
+    -- Thin select off the raw Parquet lake for server-side env_steps events
+-- (logged from inside EmailTriageEnvironment.step() -- see
+-- telemetry/event_sink.py::log_env_step).
+--
+-- hive_partitioning=true turns the dt=YYYY-MM-DD folder name into a
+-- queryable `dt` column automatically. Each row also carries its own `dt`
+-- field written at log time (see event_sink.py) -- harmless duplication,
+-- kept as a cross-check in case partition-folder naming ever drifts from
+-- the logged timestamp.
+
+with source as (
+    select *
+    from read_parquet('../data/lake/env_steps/dt=*/*.parquet', hive_partitioning = true)
+)
+
+select
+    event_type,
+    logged_at,
+    episode_id,
+    step,
+    email_id,
+    predicted_priority,
+    predicted_category,
+    predicted_route,
+    true_priority,
+    true_category,
+    true_route,
+    is_business_critical,
+    is_phishing,
+    cluster_id,
+    is_escalation,
+    priority_ok,
+    category_ok,
+    route_ok,
+    is_perfect,
+    base_score,
+    urgency_multiplier,
+    reward_components,   -- JSON string; unpacked in marts/fct_reward_components.sql
+    shaped_reward,
+    current_streak,
+    done,
+    stateless_http_mode,
+    emails_remaining,
+    dt
+from source
+  );
+
+[0m18:15:59.947921 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m18:15:59.948926 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+
+  
+  create view "warehouse"."main"."stg_client_steps__dbt_tmp" as (
+    -- Thin select off the raw Parquet lake for client-side client_steps events
+-- (logged from inside inference.py's run_task() -- see
+-- telemetry/event_sink.py::log_client_step).
+
+with source as (
+    select *
+    from read_parquet('../data/lake/client_steps/dt=*/*.parquet', hive_partitioning = true)
+)
+
+select
+    event_type,
+    logged_at,
+    model_name,
+    task,
+    step,
+    email_id,
+    predicted_priority,
+    predicted_category,
+    predicted_route,
+    action_plan,
+    threat_report,
+    task_reward,
+    done,
+    llm_latency_ms,
+    session_id,
+    error,
+    dt
+from source
+  );
+
+[0m18:15:59.965700 [debug] [Thread-2 (]: DuckDB adapter: duckdb error: IO Error: No files found that match the pattern "../data/lake/env_steps/dt=*/*.parquet"
+
+LINE 17:     from read_parquet('../data/lake/env_steps/dt=*/*.parquet', hive_...
+                  ^
+[0m18:15:59.966699 [debug] [Thread-2 (]: DuckDB adapter: Error running SQL: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+
+  
+  create view "warehouse"."main"."stg_env_steps__dbt_tmp" as (
+    -- Thin select off the raw Parquet lake for server-side env_steps events
+-- (logged from inside EmailTriageEnvironment.step() -- see
+-- telemetry/event_sink.py::log_env_step).
+--
+-- hive_partitioning=true turns the dt=YYYY-MM-DD folder name into a
+-- queryable `dt` column automatically. Each row also carries its own `dt`
+-- field written at log time (see event_sink.py) -- harmless duplication,
+-- kept as a cross-check in case partition-folder naming ever drifts from
+-- the logged timestamp.
+
+with source as (
+    select *
+    from read_parquet('../data/lake/env_steps/dt=*/*.parquet', hive_partitioning = true)
+)
+
+select
+    event_type,
+    logged_at,
+    episode_id,
+    step,
+    email_id,
+    predicted_priority,
+    predicted_category,
+    predicted_route,
+    true_priority,
+    true_category,
+    true_route,
+    is_business_critical,
+    is_phishing,
+    cluster_id,
+    is_escalation,
+    priority_ok,
+    category_ok,
+    route_ok,
+    is_perfect,
+    base_score,
+    urgency_multiplier,
+    reward_components,   -- JSON string; unpacked in marts/fct_reward_components.sql
+    shaped_reward,
+    current_streak,
+    done,
+    stateless_http_mode,
+    emails_remaining,
+    dt
+from source
+  );
+
+[0m18:15:59.967702 [debug] [Thread-2 (]: DuckDB adapter: Rolling back transaction.
+[0m18:15:59.968702 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: ROLLBACK
+[0m18:15:59.972230 [debug] [Thread-2 (]: Failed to rollback 'model.email_rl_warehouse.stg_env_steps'
+[0m18:15:59.973233 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: Close
+[0m18:15:59.974347 [debug] [Thread-1 (]: SQL status: OK in 0.026 seconds
+[0m18:15:59.977487 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m18:15:59.977487 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+alter view "warehouse"."main"."stg_client_steps__dbt_tmp" rename to "stg_client_steps"
+[0m18:15:59.984992 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m18:15:59.990386 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: COMMIT
+[0m18:15:59.990386 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m18:15:59.990386 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: COMMIT
+[0m18:16:00.006327 [debug] [Thread-1 (]: SQL status: OK in 0.005 seconds
+[0m18:16:00.013931 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m18:16:00.013931 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+
+      drop view if exists "warehouse"."main"."stg_client_steps__dbt_backup" cascade
+    
+[0m18:16:00.015939 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m18:16:00.020846 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: Close
+[0m18:16:00.020846 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '01517da0-f79a-42b0-9863-f9dcb6fb1950', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C518C32D10>]}
+[0m18:16:00.026331 [info ] [Thread-1 (]: 1 of 7 OK created sql view model main.stg_client_steps ......................... [[32mOK[0m in 0.14s]
+[0m18:16:00.026835 [debug] [Thread-1 (]: Finished running node model.email_rl_warehouse.stg_client_steps
+[0m18:16:00.047986 [debug] [Thread-2 (]: Runtime Error in model stg_env_steps (models\staging\stg_env_steps.sql)
+  IO Error: No files found that match the pattern "../data/lake/env_steps/dt=*/*.parquet"
+  
+  LINE 17:     from read_parquet('../data/lake/env_steps/dt=*/*.parquet', hive_...
+                    ^
+[0m18:16:00.047986 [debug] [Thread-2 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '01517da0-f79a-42b0-9863-f9dcb6fb1950', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51A005850>]}
+[0m18:16:00.047986 [error] [Thread-2 (]: 2 of 7 ERROR creating sql view model main.stg_env_steps ........................ [[31mERROR[0m in 0.17s]
+[0m18:16:00.047986 [debug] [Thread-2 (]: Finished running node model.email_rl_warehouse.stg_env_steps
+[0m18:16:00.052041 [debug] [Thread-7 (]: Marking all children of 'model.email_rl_warehouse.stg_env_steps' to be skipped because of status 'error'.  Reason: Runtime Error in model stg_env_steps (models\staging\stg_env_steps.sql)
+  IO Error: No files found that match the pattern "../data/lake/env_steps/dt=*/*.parquet"
+  
+  LINE 17:     from read_parquet('../data/lake/env_steps/dt=*/*.parquet', hive_...
+                    ^.
+[0m18:16:00.053534 [debug] [Thread-4 (]: Began running node model.email_rl_warehouse.int_steps_joined
+[0m18:16:00.056431 [info ] [Thread-4 (]: 3 of 7 SKIP relation main.int_steps_joined ..................................... [[33mSKIP[0m]
+[0m18:16:00.056753 [debug] [Thread-4 (]: Finished running node model.email_rl_warehouse.int_steps_joined
+[0m18:16:00.058880 [debug] [Thread-1 (]: Began running node model.email_rl_warehouse.agg_episode_summary
+[0m18:16:00.059904 [debug] [Thread-2 (]: Began running node model.email_rl_warehouse.agg_model_leaderboard
+[0m18:16:00.060904 [debug] [Thread-3 (]: Began running node model.email_rl_warehouse.fct_confusion_matrix
+[0m18:16:00.060904 [debug] [Thread-4 (]: Began running node model.email_rl_warehouse.fct_reward_components
+[0m18:16:00.061903 [info ] [Thread-1 (]: 4 of 7 SKIP relation main.agg_episode_summary .................................. [[33mSKIP[0m]
+[0m18:16:00.063704 [info ] [Thread-2 (]: 5 of 7 SKIP relation main.agg_model_leaderboard ................................ [[33mSKIP[0m]
+[0m18:16:00.064805 [info ] [Thread-3 (]: 6 of 7 SKIP relation main.fct_confusion_matrix ................................. [[33mSKIP[0m]
+[0m18:16:00.065536 [info ] [Thread-4 (]: 7 of 7 SKIP relation main.fct_reward_components ................................ [[33mSKIP[0m]
+[0m18:16:00.066802 [debug] [Thread-1 (]: Finished running node model.email_rl_warehouse.agg_episode_summary
+[0m18:16:00.067862 [debug] [Thread-2 (]: Finished running node model.email_rl_warehouse.agg_model_leaderboard
+[0m18:16:00.068858 [debug] [Thread-3 (]: Finished running node model.email_rl_warehouse.fct_confusion_matrix
+[0m18:16:00.069858 [debug] [Thread-4 (]: Finished running node model.email_rl_warehouse.fct_reward_components
+[0m18:16:00.073379 [debug] [MainThread]: Using duckdb connection "master"
+[0m18:16:00.074386 [debug] [MainThread]: On master: BEGIN
+[0m18:16:00.074386 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m18:16:00.076378 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m18:16:00.077378 [debug] [MainThread]: On master: COMMIT
+[0m18:16:00.078479 [debug] [MainThread]: Using duckdb connection "master"
+[0m18:16:00.079681 [debug] [MainThread]: On master: COMMIT
+[0m18:16:00.080679 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m18:16:00.082391 [debug] [MainThread]: On master: Close
+[0m18:16:00.083804 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m18:16:00.084819 [debug] [MainThread]: Connection 'create_warehouse_main' was properly closed.
+[0m18:16:00.085814 [debug] [MainThread]: Connection 'list_warehouse_main' was properly closed.
+[0m18:16:00.087025 [debug] [MainThread]: Connection 'model.email_rl_warehouse.stg_client_steps' was properly closed.
+[0m18:16:00.087025 [debug] [MainThread]: Connection 'model.email_rl_warehouse.stg_env_steps' was properly closed.
+[0m18:16:00.088027 [info ] [MainThread]: 
+[0m18:16:00.089027 [info ] [MainThread]: Finished running 4 table models, 3 view models in 0 hours 0 minutes and 5.00 seconds (5.00s).
+[0m18:16:00.092027 [debug] [MainThread]: Command end result
+[0m18:16:00.154727 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m18:16:00.160703 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m18:16:00.165924 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m18:16:00.175695 [debug] [MainThread]: Wrote artifact RunExecutionResult to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\run_results.json
+[0m18:16:00.175695 [info ] [MainThread]: 
+[0m18:16:00.178029 [info ] [MainThread]: [31mCompleted with 1 error, 0 partial successes, and 0 warnings:[0m
+[0m18:16:00.178029 [info ] [MainThread]: 
+[0m18:16:00.180845 [error] [MainThread]: [[31mERROR[0m]: in model stg_env_steps (models\staging\stg_env_steps.sql)
+[0m18:16:00.180845 [error] [MainThread]:   Runtime Error in model stg_env_steps (models\staging\stg_env_steps.sql)
+  IO Error: No files found that match the pattern "../data/lake/env_steps/dt=*/*.parquet"
+  
+  LINE 17:     from read_parquet('../data/lake/env_steps/dt=*/*.parquet', hive_...
+                    ^
+[0m18:16:00.180845 [info ] [MainThread]: 
+[0m18:16:00.180845 [info ] [MainThread]:   compiled code at target\compiled\email_rl_warehouse\models\staging\stg_env_steps.sql
+[0m18:16:00.184835 [info ] [MainThread]: 
+[0m18:16:00.185902 [info ] [MainThread]: Done. PASS=1 WARN=0 ERROR=1 SKIP=5 NO-OP=0 REUSED=0 TOTAL=7
+[0m18:16:00.188867 [debug] [MainThread]: Command `dbt run` failed at 18:16:00.188867 after 10.45 seconds
+[0m18:16:00.189894 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51826E110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51826E7D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C51826F810>]}
+[0m18:16:00.191492 [debug] [MainThread]: Flushing usage events
+[0m18:16:01.533346 [debug] [MainThread]: An error was encountered while trying to flush usage events

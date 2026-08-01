@@ -1,0 +1,7 @@
+# Warehouse pipeline dependencies -- compaction + dbt/DuckDB.
+# Deliberately kept OUT of the core server's requirements.txt: these are
+# only needed to run telemetry/compact_to_parquet.py and dbt, not to run
+# the graded RL environment
+pyarrow>=14.0.0
+duckdb>=0.10.0
+dbt-duckdb>=1.7.0

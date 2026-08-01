@@ -1,0 +1,24 @@
+name: 'email_rl_warehouse'
+version: '1.0.0'
+config-version: 2
+
+profile: 'email_rl_warehouse'
+
+model-paths: ["models"]
+clean-targets: ["target"]
+
+vars:
+  # Paths are relative to the `warehouse/` directory (where dbt is run
+  # from). The Parquet lake lives at Email_RL/data/lake/, a sibling of
+  # warehouse/, produced by telemetry/compact_to_parquet.py.
+  env_steps_glob: "../data/lake/env_steps/dt=*/*.parquet"
+  client_steps_glob: "../data/lake/client_steps/dt=*/*.parquet"
+
+models:
+  email_rl_warehouse:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
