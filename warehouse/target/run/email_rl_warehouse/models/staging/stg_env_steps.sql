@@ -44,6 +44,9 @@ select
     done,
     stateless_http_mode,
     emails_remaining,
+    template_pool,          -- data quality gate Layer 1/3: which template pool generated this email
+    template_idx,           -- nullable (cluster emails are identified by cluster_id instead)
+    email_quality_flags,    -- JSON list string; data quality gate Layer 2 runtime invariant checks
     dt
 from source
   );

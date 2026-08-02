@@ -1,0 +1,36 @@
+name: Data Quality Gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "server/Email_RL_environment.py"
+      - "models.py"
+      - "quality/**"
+      - ".github/workflows/data-quality.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "server/Email_RL_environment.py"
+      - "models.py"
+      - "quality/**"
+      - ".github/workflows/data-quality.yml"
+  workflow_dispatch: {}
+
+jobs:
+  validate-synthetic-emails:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install server dependencies
+        run: pip install -r server/requirements.txt
+
+      - name: Run synthetic email quality gate (Layer 1)
+        run: python quality/validate_synthetic_emails.py
+
+        

@@ -1,0 +1,22 @@
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  -- Business-critical emails are always constructed with
+-- true_route='human_review' regardless of category (see _generate_email()
+-- in server/Email_RL_environment.py). Any row violating that is either a
+-- generator regression or a telemetry-field mixup.
+
+select *
+from "warehouse"."main"."stg_env_steps"
+where is_business_critical = true
+  and true_route != 'human_review'
+  
+  
+      
+    ) dbt_internal_test

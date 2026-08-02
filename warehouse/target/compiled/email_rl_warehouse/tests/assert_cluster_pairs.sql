@@ -7,7 +7,7 @@ select
     episode_id,
     cluster_id,
     count(*) as n_rows
-from {{ ref('stg_env_steps') }}
+from "warehouse"."main"."stg_env_steps"
 where cluster_id is not null
 group by episode_id, cluster_id
 having count(*) > 2

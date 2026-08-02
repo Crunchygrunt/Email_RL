@@ -2325,3 +2325,2374 @@ parsing.
 [0m18:56:20.183072 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F68002690>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F67EDE050>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F67EDF810>]}
 [0m18:56:20.183072 [debug] [MainThread]: Flushing usage events
 [0m18:56:21.918891 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m22:20:38.703895 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C108DDC7D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10D81FC50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10D9A0990>]}
+
+
+============================== 22:20:38.708028 | 3791b9a0-af04-44d5-8462-6f0e3415e078 ==============================
+[0m22:20:38.708028 [info ] [MainThread]: Running with dbt=1.12.0
+[0m22:20:38.719565 [debug] [MainThread]: running dbt with arguments {'maximum_seed_size_mib': '1', 'no_print': 'None', 'static_parser': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'version_check': 'True', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'False', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': '.', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'invocation_command': 'dbt run --profiles-dir .', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': 'C:\\Users\\Yuvraj Singh\\OneDrive\\Desktop\\Email_OpenEnv\\Email_RL\\warehouse\\logs'}
+[0m22:20:39.931707 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10DA61DD0>]}
+[0m22:20:40.107725 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C108DEB550>]}
+[0m22:20:40.123648 [info ] [MainThread]: Registered adapter: duckdb=1.10.1
+[0m22:20:40.922670 [debug] [MainThread]: checksum: f0d9819fa8ee4563bd15d8de06517e98ba4ac797156a47baad28b9341f2427ea, vars: {}, profile: email_rl_warehouse, target: dev, version: 1.12.0
+[0m22:20:41.466326 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 6 files added, 2 files changed.
+[0m22:20:41.466326 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://tests\assert_phishing_consistency.sql
+[0m22:20:41.475356 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://tests\assert_cluster_pairs.sql
+[0m22:20:41.476997 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://tests\assert_category_balance.sql
+[0m22:20:41.476997 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://tests\assert_critical_consistency.sql
+[0m22:20:41.476997 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://models\staging\schema.yml
+[0m22:20:41.479446 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://models\marts\agg_data_quality.sql
+[0m22:20:41.480993 [debug] [MainThread]: Partial parsing: updated file: email_rl_warehouse://models\intermediate\int_steps_joined.sql
+[0m22:20:41.480993 [debug] [MainThread]: Partial parsing: updated file: email_rl_warehouse://models\staging\stg_env_steps.sql
+[0m22:20:43.084793 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10B4BC690>]}
+[0m22:20:43.435118 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m22:20:43.514632 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m22:20:43.647445 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m22:20:43.704534 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10F673110>]}
+[0m22:20:43.706549 [info ] [MainThread]: Found 8 models, 14 data tests, 486 macros
+[0m22:20:43.706549 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10F71B5D0>]}
+[0m22:20:43.715985 [info ] [MainThread]: 
+[0m22:20:43.715985 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m22:20:43.721306 [info ] [MainThread]: 
+[0m22:20:43.722129 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m22:20:43.738892 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse'
+[0m22:20:51.056322 [debug] [ThreadPool]: Using duckdb connection "list_warehouse"
+[0m22:20:51.069871 [debug] [ThreadPool]: On list_warehouse: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse"} */
+
+    
+    select schema_name
+    from system.information_schema.schemata
+    
+    where lower(catalog_name) = '"warehouse"'
+    
+  
+  
+[0m22:20:51.069871 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m22:20:51.183617 [debug] [ThreadPool]: SQL status: OK in 0.121 seconds
+[0m22:20:51.197567 [debug] [ThreadPool]: On list_warehouse: Close
+[0m22:20:51.197567 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_warehouse, now create_warehouse_main)
+[0m22:20:51.197567 [debug] [ThreadPool]: Creating schema "database: "warehouse"
+schema: "main"
+"
+[0m22:20:51.229030 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m22:20:51.229030 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+        select type from duckdb_databases()
+        where lower(database_name)='warehouse'
+        and type='sqlite'
+    
+  
+[0m22:20:51.229030 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m22:20:51.229030 [debug] [ThreadPool]: SQL status: OK in 0.005 seconds
+[0m22:20:51.245230 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m22:20:51.245230 [debug] [ThreadPool]: On create_warehouse_main: BEGIN
+[0m22:20:51.245230 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m22:20:51.245230 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m22:20:51.245230 [debug] [ThreadPool]: On create_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "create_warehouse_main"} */
+
+    
+    
+        create schema if not exists "warehouse"."main"
+    
+[0m22:20:51.261284 [debug] [ThreadPool]: SQL status: OK in 0.004 seconds
+[0m22:20:51.261284 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m22:20:51.261284 [debug] [ThreadPool]: Using duckdb connection "create_warehouse_main"
+[0m22:20:51.261284 [debug] [ThreadPool]: On create_warehouse_main: COMMIT
+[0m22:20:51.261284 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m22:20:51.261284 [debug] [ThreadPool]: On create_warehouse_main: Close
+[0m22:20:51.280282 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse_main'
+[0m22:20:51.294810 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m22:20:51.294810 [debug] [ThreadPool]: On list_warehouse_main: BEGIN
+[0m22:20:51.294810 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m22:20:51.309760 [debug] [ThreadPool]: SQL status: OK in 0.003 seconds
+[0m22:20:51.309760 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m22:20:51.309760 [debug] [ThreadPool]: On list_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse_main"} */
+select
+      'warehouse' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'warehouse'
+  
+[0m22:20:51.350949 [debug] [ThreadPool]: SQL status: OK in 0.034 seconds
+[0m22:20:51.354991 [debug] [ThreadPool]: On list_warehouse_main: ROLLBACK
+[0m22:20:51.452191 [debug] [ThreadPool]: Failed to rollback 'list_warehouse_main'
+[0m22:20:51.452191 [debug] [ThreadPool]: On list_warehouse_main: Close
+[0m22:20:51.452191 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10F6B3FD0>]}
+[0m22:20:51.452191 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:20:51.452191 [debug] [MainThread]: On master: BEGIN
+[0m22:20:51.468372 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m22:20:51.468372 [debug] [MainThread]: SQL status: OK in 0.003 seconds
+[0m22:20:51.468372 [debug] [MainThread]: On master: COMMIT
+[0m22:20:51.468372 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:20:51.468372 [debug] [MainThread]: On master: COMMIT
+[0m22:20:51.468372 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:20:51.468372 [debug] [MainThread]: On master: Close
+[0m22:20:51.500427 [debug] [Thread-1 (]: Began running node model.email_rl_warehouse.stg_client_steps
+[0m22:20:51.500427 [debug] [Thread-2 (]: Began running node model.email_rl_warehouse.stg_env_steps
+[0m22:20:51.500427 [info ] [Thread-1 (]: 1 of 8 START sql view model main.stg_client_steps .............................. [RUN]
+[0m22:20:51.511308 [info ] [Thread-2 (]: 2 of 8 START sql view model main.stg_env_steps ................................. [RUN]
+[0m22:20:51.511308 [debug] [Thread-1 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.stg_client_steps'
+[0m22:20:51.517500 [debug] [Thread-2 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.stg_env_steps'
+[0m22:20:51.522509 [debug] [Thread-1 (]: Began compiling node model.email_rl_warehouse.stg_client_steps
+[0m22:20:51.524592 [debug] [Thread-2 (]: Began compiling node model.email_rl_warehouse.stg_env_steps
+[0m22:20:51.549038 [debug] [Thread-1 (]: Writing injected SQL for node "model.email_rl_warehouse.stg_client_steps"
+[0m22:20:51.683108 [debug] [Thread-2 (]: Writing injected SQL for node "model.email_rl_warehouse.stg_env_steps"
+[0m22:20:51.683108 [debug] [Thread-1 (]: Began executing node model.email_rl_warehouse.stg_client_steps
+[0m22:20:51.691266 [debug] [Thread-2 (]: Began executing node model.email_rl_warehouse.stg_env_steps
+[0m22:20:51.749923 [debug] [Thread-1 (]: Writing runtime sql for node "model.email_rl_warehouse.stg_client_steps"
+[0m22:20:51.760912 [debug] [Thread-2 (]: Writing runtime sql for node "model.email_rl_warehouse.stg_env_steps"
+[0m22:20:51.760912 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m22:20:51.765203 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m22:20:51.766228 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: BEGIN
+[0m22:20:51.766228 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: BEGIN
+[0m22:20:51.768373 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m22:20:51.768373 [debug] [Thread-2 (]: Opening a new connection, currently in state init
+[0m22:20:51.768373 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:20:51.772460 [debug] [Thread-2 (]: SQL status: OK in 0.003 seconds
+[0m22:20:51.772460 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m22:20:51.772460 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m22:20:51.774503 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+
+  
+  create view "warehouse"."main"."stg_client_steps__dbt_tmp" as (
+    -- Thin select off the raw Parquet lake for client-side client_steps events
+-- (logged from inside inference.py's run_task() -- see
+-- telemetry/event_sink.py::log_client_step).
+
+with source as (
+    select *
+    from read_parquet('../data/lake/client_steps/dt=*/*.parquet', hive_partitioning = true)
+)
+
+select
+    event_type,
+    logged_at,
+    model_name,
+    task,
+    step,
+    email_id,
+    predicted_priority,
+    predicted_category,
+    predicted_route,
+    action_plan,
+    threat_report,
+    task_reward,
+    done,
+    llm_latency_ms,
+    session_id,
+    error,
+    parse_ok,
+    raw_response_snippet,
+    dt
+from source
+  );
+
+[0m22:20:51.776361 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+
+  
+  create view "warehouse"."main"."stg_env_steps__dbt_tmp" as (
+    -- Thin select off the raw Parquet lake for server-side env_steps events
+-- (logged from inside EmailTriageEnvironment.step() -- see
+-- telemetry/event_sink.py::log_env_step).
+--
+-- hive_partitioning=true turns the dt=YYYY-MM-DD folder name into a
+-- queryable `dt` column automatically. Each row also carries its own `dt`
+-- field written at log time (see event_sink.py) -- harmless duplication,
+-- kept as a cross-check in case partition-folder naming ever drifts from
+-- the logged timestamp.
+
+with source as (
+    select *
+    from read_parquet('../data/lake/env_steps/dt=*/*.parquet', hive_partitioning = true)
+)
+
+select
+    event_type,
+    logged_at,
+    episode_id,
+    step,
+    email_id,
+    predicted_priority,
+    predicted_category,
+    predicted_route,
+    true_priority,
+    true_category,
+    true_route,
+    is_business_critical,
+    is_phishing,
+    cluster_id,
+    is_escalation,
+    priority_ok,
+    category_ok,
+    route_ok,
+    is_perfect,
+    base_score,
+    urgency_multiplier,
+    reward_components,   -- JSON string; unpacked in marts/fct_reward_components.sql
+    shaped_reward,
+    current_streak,
+    done,
+    stateless_http_mode,
+    emails_remaining,
+    template_pool,          -- data quality gate Layer 1/3: which template pool generated this email
+    template_idx,           -- nullable (cluster emails are identified by cluster_id instead)
+    email_quality_flags,    -- JSON list string; data quality gate Layer 2 runtime invariant checks
+    dt
+from source
+  );
+
+[0m22:20:51.811317 [debug] [Thread-1 (]: SQL status: OK in 0.034 seconds
+[0m22:20:51.811317 [debug] [Thread-2 (]: SQL status: OK in 0.034 seconds
+[0m22:20:51.817761 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m22:20:51.817761 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m22:20:51.826233 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+alter view "warehouse"."main"."stg_client_steps__dbt_tmp" rename to "stg_client_steps"
+[0m22:20:51.827244 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+alter view "warehouse"."main"."stg_env_steps__dbt_tmp" rename to "stg_env_steps"
+[0m22:20:51.827244 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m22:20:51.832742 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m22:20:51.850571 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: COMMIT
+[0m22:20:51.850571 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: COMMIT
+[0m22:20:51.850571 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m22:20:51.850571 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m22:20:51.850571 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: COMMIT
+[0m22:20:51.859895 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: COMMIT
+[0m22:20:51.859895 [debug] [Thread-2 (]: SQL status: OK in 0.005 seconds
+[0m22:20:51.868257 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.stg_env_steps"
+[0m22:20:51.875317 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_env_steps"} */
+
+      drop view if exists "warehouse"."main"."stg_env_steps__dbt_backup" cascade
+    
+[0m22:20:51.868257 [debug] [Thread-1 (]: SQL status: OK in 0.013 seconds
+[0m22:20:51.876569 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.stg_client_steps"
+[0m22:20:51.876569 [debug] [Thread-2 (]: SQL status: OK in 0.005 seconds
+[0m22:20:51.876569 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.stg_client_steps"} */
+
+      drop view if exists "warehouse"."main"."stg_client_steps__dbt_backup" cascade
+    
+[0m22:20:51.886235 [debug] [Thread-2 (]: On model.email_rl_warehouse.stg_env_steps: Close
+[0m22:20:51.891285 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:20:51.894414 [debug] [Thread-1 (]: On model.email_rl_warehouse.stg_client_steps: Close
+[0m22:20:51.894414 [debug] [Thread-2 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10F71A750>]}
+[0m22:20:51.894414 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10E4BD490>]}
+[0m22:20:51.894414 [info ] [Thread-2 (]: 2 of 8 OK created sql view model main.stg_env_steps ............................ [[32mOK[0m in 0.37s]
+[0m22:20:51.894414 [info ] [Thread-1 (]: 1 of 8 OK created sql view model main.stg_client_steps ......................... [[32mOK[0m in 0.38s]
+[0m22:20:51.894414 [debug] [Thread-2 (]: Finished running node model.email_rl_warehouse.stg_env_steps
+[0m22:20:51.894414 [debug] [Thread-1 (]: Finished running node model.email_rl_warehouse.stg_client_steps
+[0m22:20:51.907268 [debug] [Thread-4 (]: Began running node model.email_rl_warehouse.agg_data_quality
+[0m22:20:51.909302 [debug] [Thread-2 (]: Began running node model.email_rl_warehouse.int_steps_joined
+[0m22:20:51.910995 [info ] [Thread-4 (]: 3 of 8 START sql table model main.agg_data_quality ............................. [RUN]
+[0m22:20:51.913344 [info ] [Thread-2 (]: 4 of 8 START sql view model main.int_steps_joined .............................. [RUN]
+[0m22:20:51.915752 [debug] [Thread-4 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.agg_data_quality'
+[0m22:20:51.917274 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly model.email_rl_warehouse.stg_env_steps, now model.email_rl_warehouse.int_steps_joined)
+[0m22:20:51.917274 [debug] [Thread-4 (]: Began compiling node model.email_rl_warehouse.agg_data_quality
+[0m22:20:51.917274 [debug] [Thread-2 (]: Began compiling node model.email_rl_warehouse.int_steps_joined
+[0m22:20:51.925696 [debug] [Thread-4 (]: Writing injected SQL for node "model.email_rl_warehouse.agg_data_quality"
+[0m22:20:51.933163 [debug] [Thread-2 (]: Writing injected SQL for node "model.email_rl_warehouse.int_steps_joined"
+[0m22:20:51.936019 [debug] [Thread-4 (]: Began executing node model.email_rl_warehouse.agg_data_quality
+[0m22:20:51.938034 [debug] [Thread-2 (]: Began executing node model.email_rl_warehouse.int_steps_joined
+[0m22:20:51.984518 [debug] [Thread-4 (]: Writing runtime sql for node "model.email_rl_warehouse.agg_data_quality"
+[0m22:20:51.992552 [debug] [Thread-2 (]: Writing runtime sql for node "model.email_rl_warehouse.int_steps_joined"
+[0m22:20:51.995547 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.agg_data_quality"
+[0m22:20:51.999704 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m22:20:52.000719 [debug] [Thread-4 (]: On model.email_rl_warehouse.agg_data_quality: BEGIN
+[0m22:20:52.002731 [debug] [Thread-2 (]: On model.email_rl_warehouse.int_steps_joined: BEGIN
+[0m22:20:52.002731 [debug] [Thread-4 (]: Opening a new connection, currently in state init
+[0m22:20:52.005265 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m22:20:52.005265 [debug] [Thread-4 (]: SQL status: OK in 0.002 seconds
+[0m22:20:52.007275 [debug] [Thread-2 (]: SQL status: OK in 0.003 seconds
+[0m22:20:52.009347 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.agg_data_quality"
+[0m22:20:52.009856 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m22:20:52.009856 [debug] [Thread-4 (]: On model.email_rl_warehouse.agg_data_quality: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_data_quality"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."agg_data_quality__dbt_tmp"
+  
+    as (
+      -- Generator / data-quality health metrics over the full collected
+-- dataset. Complements the pass/fail dbt tests in warehouse/tests/ (which
+-- only tell you IF something's wrong) with actual numbers to look at: how
+-- often email_quality_flags fires, which specific invariants get
+-- violated and how often, and how evenly the synthetic email template
+-- pool is actually being sampled across every real collection run (not
+-- just a one-off validate_synthetic_emails.py sampling pass).
+--
+-- Two grains in one mart, unioned together under `metric_type` so both
+-- are queryable from a single table:
+--   'quality_flag_summary' -- one row: overall violation rate
+--   'quality_flag_type'    -- one row per distinct flag string, with count
+--   'template_reuse'       -- one row per (template_pool, template_idx),
+--                              with how many times it was actually served
+
+with base as (
+    select *
+    from "warehouse"."main"."stg_env_steps"
+),
+
+flag_summary as (
+    select
+        'quality_flag_summary'  as metric_type,
+        cast(null as varchar)   as metric_key,
+        count(*)                as total_rows,
+        count(*) filter (
+            where email_quality_flags is not null
+              and email_quality_flags != '[]'
+        )                       as n_rows,
+        cast(null as varchar)   as template_pool,
+        cast(null as integer)   as template_idx
+    from base
+),
+
+flags_exploded as (
+    select unnest(from_json(email_quality_flags, '["VARCHAR"]')) as flag
+    from base
+    where email_quality_flags is not null
+      and email_quality_flags != '[]'
+),
+
+flag_type_counts as (
+    select
+        'quality_flag_type'     as metric_type,
+        flag                    as metric_key,
+        cast(null as bigint)    as total_rows,
+        count(*)                as n_rows,
+        cast(null as varchar)   as template_pool,
+        cast(null as integer)   as template_idx
+    from flags_exploded
+    group by flag
+),
+
+template_reuse as (
+    select
+        'template_reuse'        as metric_type,
+        template_pool || ':' || cast(template_idx as varchar) as metric_key,
+        cast(null as bigint)    as total_rows,
+        count(*)                as n_rows,
+        template_pool,
+        template_idx
+    from base
+    where template_pool is not null
+      and template_idx is not null
+    group by template_pool, template_idx
+)
+
+select * from flag_summary
+union all
+select * from flag_type_counts
+union all
+select * from template_reuse
+    );
+  
+  
+[0m22:20:52.013196 [debug] [Thread-2 (]: On model.email_rl_warehouse.int_steps_joined: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.int_steps_joined"} */
+
+  
+  create view "warehouse"."main"."int_steps_joined__dbt_tmp" as (
+    -- Joins client_steps onto env_steps by email_id -- see WAREHOUSE.md
+-- "Join key" section for why email_id (not episode_id/session_id) is the
+-- primary key across these two streams.
+--
+-- LEFT JOIN, not INNER: env_steps is authoritative. Every graded email
+-- produces an env_step row regardless of who called step() or whether
+-- client-side telemetry logged successfully (event_sink is fail-open by
+-- design, so a client_steps write can silently fail without breaking the
+-- run). An INNER JOIN would silently drop those rows instead of surfacing
+-- them as env-only.
+
+select
+    env.episode_id,
+    env.step                 as env_step,
+    env.email_id,
+    env.predicted_priority   as env_predicted_priority,
+    env.predicted_category   as env_predicted_category,
+    env.predicted_route      as env_predicted_route,
+    env.true_priority,
+    env.true_category,
+    env.true_route,
+    env.is_business_critical,
+    env.is_phishing,
+    env.cluster_id,
+    env.is_escalation,
+    env.priority_ok,
+    env.category_ok,
+    env.route_ok,
+    env.is_perfect,
+    env.base_score,
+    env.urgency_multiplier,
+    env.reward_components,
+    env.shaped_reward,
+    env.current_streak,
+    env.done                 as env_done,
+    env.stateless_http_mode,
+    env.emails_remaining,
+    env.template_pool,
+    env.template_idx,
+    env.email_quality_flags,
+    env.dt                   as env_dt,
+    cli.model_name,
+    cli.task,
+    cli.step                 as client_step,
+    cli.predicted_priority   as client_predicted_priority,
+    cli.predicted_category   as client_predicted_category,
+    cli.predicted_route      as client_predicted_route,
+    cli.action_plan,
+    cli.threat_report,
+    cli.task_reward,
+    cli.llm_latency_ms,
+    cli.session_id,
+    cli.error                as client_error,
+    cli.dt                   as client_dt
+from "warehouse"."main"."stg_env_steps" env
+left join "warehouse"."main"."stg_client_steps" cli
+    on env.email_id = cli.email_id
+  );
+
+[0m22:20:52.022555 [debug] [Thread-2 (]: SQL status: OK in 0.007 seconds
+[0m22:20:52.030402 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m22:20:52.033176 [debug] [Thread-2 (]: On model.email_rl_warehouse.int_steps_joined: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.int_steps_joined"} */
+alter view "warehouse"."main"."int_steps_joined__dbt_tmp" rename to "int_steps_joined"
+[0m22:20:52.035329 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m22:20:52.037002 [debug] [Thread-2 (]: On model.email_rl_warehouse.int_steps_joined: COMMIT
+[0m22:20:52.037002 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m22:20:52.041542 [debug] [Thread-2 (]: On model.email_rl_warehouse.int_steps_joined: COMMIT
+[0m22:20:52.044155 [debug] [Thread-2 (]: SQL status: OK in 0.002 seconds
+[0m22:20:52.049604 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.int_steps_joined"
+[0m22:20:52.049604 [debug] [Thread-2 (]: On model.email_rl_warehouse.int_steps_joined: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.int_steps_joined"} */
+
+      drop view if exists "warehouse"."main"."int_steps_joined__dbt_backup" cascade
+    
+[0m22:20:52.052243 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m22:20:52.052243 [debug] [Thread-2 (]: On model.email_rl_warehouse.int_steps_joined: Close
+[0m22:20:52.057779 [debug] [Thread-2 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10F7F93D0>]}
+[0m22:20:52.059236 [info ] [Thread-2 (]: 4 of 8 OK created sql view model main.int_steps_joined ......................... [[32mOK[0m in 0.14s]
+[0m22:20:52.061051 [debug] [Thread-2 (]: Finished running node model.email_rl_warehouse.int_steps_joined
+[0m22:20:52.063633 [debug] [Thread-1 (]: Began running node model.email_rl_warehouse.agg_episode_summary
+[0m22:20:52.063633 [debug] [Thread-3 (]: Began running node model.email_rl_warehouse.agg_model_leaderboard
+[0m22:20:52.064982 [debug] [Thread-2 (]: Began running node model.email_rl_warehouse.fct_confusion_matrix
+[0m22:20:52.069029 [debug] [Thread-4 (]: SQL status: OK in 0.054 seconds
+[0m22:20:52.066865 [info ] [Thread-1 (]: 5 of 8 START sql table model main.agg_episode_summary .......................... [RUN]
+[0m22:20:52.072774 [info ] [Thread-3 (]: 6 of 8 START sql table model main.agg_model_leaderboard ........................ [RUN]
+[0m22:20:52.072774 [info ] [Thread-2 (]: 7 of 8 START sql table model main.fct_confusion_matrix ......................... [RUN]
+[0m22:20:52.076331 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.agg_data_quality"
+[0m22:20:52.076331 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.email_rl_warehouse.stg_client_steps, now model.email_rl_warehouse.agg_episode_summary)
+[0m22:20:52.076331 [debug] [Thread-3 (]: Acquiring new duckdb connection 'model.email_rl_warehouse.agg_model_leaderboard'
+[0m22:20:52.076331 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly model.email_rl_warehouse.int_steps_joined, now model.email_rl_warehouse.fct_confusion_matrix)
+[0m22:20:52.076331 [debug] [Thread-4 (]: On model.email_rl_warehouse.agg_data_quality: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_data_quality"} */
+alter table "warehouse"."main"."agg_data_quality__dbt_tmp" rename to "agg_data_quality"
+[0m22:20:52.086039 [debug] [Thread-1 (]: Began compiling node model.email_rl_warehouse.agg_episode_summary
+[0m22:20:52.086039 [debug] [Thread-3 (]: Began compiling node model.email_rl_warehouse.agg_model_leaderboard
+[0m22:20:52.086039 [debug] [Thread-2 (]: Began compiling node model.email_rl_warehouse.fct_confusion_matrix
+[0m22:20:52.094509 [debug] [Thread-1 (]: Writing injected SQL for node "model.email_rl_warehouse.agg_episode_summary"
+[0m22:20:52.094509 [debug] [Thread-4 (]: SQL status: OK in 0.007 seconds
+[0m22:20:52.099951 [debug] [Thread-3 (]: Writing injected SQL for node "model.email_rl_warehouse.agg_model_leaderboard"
+[0m22:20:52.104260 [debug] [Thread-2 (]: Writing injected SQL for node "model.email_rl_warehouse.fct_confusion_matrix"
+[0m22:20:52.118770 [debug] [Thread-4 (]: On model.email_rl_warehouse.agg_data_quality: COMMIT
+[0m22:20:52.121283 [debug] [Thread-1 (]: Began executing node model.email_rl_warehouse.agg_episode_summary
+[0m22:20:52.121794 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.agg_data_quality"
+[0m22:20:52.125717 [debug] [Thread-3 (]: Began executing node model.email_rl_warehouse.agg_model_leaderboard
+[0m22:20:52.126349 [debug] [Thread-2 (]: Began executing node model.email_rl_warehouse.fct_confusion_matrix
+[0m22:20:52.130369 [debug] [Thread-1 (]: Writing runtime sql for node "model.email_rl_warehouse.agg_episode_summary"
+[0m22:20:52.130369 [debug] [Thread-4 (]: On model.email_rl_warehouse.agg_data_quality: COMMIT
+[0m22:20:52.142550 [debug] [Thread-3 (]: Writing runtime sql for node "model.email_rl_warehouse.agg_model_leaderboard"
+[0m22:20:52.148482 [debug] [Thread-2 (]: Writing runtime sql for node "model.email_rl_warehouse.fct_confusion_matrix"
+[0m22:20:52.150235 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m22:20:52.153409 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m22:20:52.155742 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: BEGIN
+[0m22:20:52.155742 [debug] [Thread-4 (]: SQL status: OK in 0.006 seconds
+[0m22:20:52.155742 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m22:20:52.158276 [debug] [Thread-3 (]: On model.email_rl_warehouse.agg_model_leaderboard: BEGIN
+[0m22:20:52.158276 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:20:52.158276 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.agg_data_quality"
+[0m22:20:52.158276 [debug] [Thread-2 (]: On model.email_rl_warehouse.fct_confusion_matrix: BEGIN
+[0m22:20:52.158276 [debug] [Thread-3 (]: Opening a new connection, currently in state init
+[0m22:20:52.167407 [debug] [Thread-1 (]: SQL status: OK in 0.007 seconds
+[0m22:20:52.167407 [debug] [Thread-4 (]: On model.email_rl_warehouse.agg_data_quality: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_data_quality"} */
+
+      drop table if exists "warehouse"."main"."agg_data_quality__dbt_backup" cascade
+    
+[0m22:20:52.167407 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m22:20:52.172072 [debug] [Thread-3 (]: SQL status: OK in 0.007 seconds
+[0m22:20:52.172072 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m22:20:52.174081 [debug] [Thread-4 (]: SQL status: OK in 0.001 seconds
+[0m22:20:52.175855 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m22:20:52.176228 [debug] [Thread-2 (]: SQL status: OK in 0.006 seconds
+[0m22:20:52.176228 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."agg_episode_summary__dbt_tmp"
+  
+    as (
+      -- Per-episode rollups.
+--
+-- LOWER CONFIDENCE MART: given the reset-per-email finding in
+-- WAREHOUSE.md, most "episodes" produced by running inference.py as-is
+-- are exactly one email long, so n_steps will mostly read 1 here. This
+-- mart is still correct for whatever episode structure actually occurred
+-- -- full multi-email episodes if you drive the server directly (or fix
+-- run_task's reset-per-email pattern), single-email "episodes" if you ran
+-- inference.py unmodified.
+--
+-- reached_done / emails_remaining_at_cutoff (added after the
+-- escalation-injection finding -- see WAREHOUSE.md): the environment can
+-- grow its own email queue mid-episode (every missed urgent/high email
+-- injects a follow-up escalation 2 positions ahead), but run_episodes.py
+-- stops at a fixed MAX_STEPS regardless of whether the queue has grown
+-- past that. n_steps / final_step alone can't distinguish "episode
+-- genuinely finished" from "client gave up mid-escalation-spiral with
+-- emails still queued" -- both can show n_steps=10. reached_done and
+-- emails_remaining_at_cutoff, taken from the LAST logged step of each
+-- episode, make that distinction explicit instead of silently averaging
+-- the two outcomes together on the leaderboard.
+--
+-- Note: this is env_done (int_steps_joined aliases the env-side `done`
+-- to disambiguate it from client_steps' own `done` field) -- NOT the
+-- client's done, which just reflects run_episodes.py's local MAX_STEPS
+-- cutoff rather than the environment's real completion state.
+
+with last_step as (
+    select
+        episode_id,
+        env_done          as reached_done,
+        emails_remaining  as emails_remaining_at_cutoff
+    from "warehouse"."main"."int_steps_joined"
+    qualify row_number() over (
+        partition by episode_id
+        order by env_step desc
+    ) = 1
+)
+
+select
+    s.episode_id,
+    min(s.env_dt)                     as episode_dt,
+    count(*)                          as n_steps,
+    sum(s.shaped_reward)              as total_shaped_reward,
+    avg(s.shaped_reward)              as avg_shaped_reward,
+    max(s.current_streak)             as max_streak,
+    bool_or(s.is_business_critical)   as had_business_critical_email,
+    bool_or(s.is_phishing)            as had_phishing_email,
+    max(s.env_step)                   as final_step,
+    any_value(l.reached_done)         as reached_done,
+    any_value(l.emails_remaining_at_cutoff) as emails_remaining_at_cutoff
+from "warehouse"."main"."int_steps_joined" s
+join last_step l using (episode_id)
+group by 1
+order by episode_dt, episode_id
+    );
+  
+  
+[0m22:20:52.176228 [debug] [Thread-4 (]: On model.email_rl_warehouse.agg_data_quality: Close
+[0m22:20:52.176228 [debug] [Thread-3 (]: On model.email_rl_warehouse.agg_model_leaderboard: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_model_leaderboard"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."agg_model_leaderboard__dbt_tmp"
+  
+    as (
+      -- Accuracy per field, perfect-match rate, and phishing catch rate, per
+-- model_name x task.
+--
+-- phishing_catch_rate is populated now that the _sample_episode() bug
+-- that dropped phishing emails from every episode has been fixed (see
+-- WAREHOUSE.md finding #2). If you're rebuilding this against telemetry
+-- generated before that fix, expect n_phishing_emails_seen = 0 and
+-- phishing_catch_rate = NULL instead -- that reflects the data, not this
+-- mart.
+
+select
+    model_name,
+    task,
+    count(*)                                          as n_graded_emails,
+    avg(case when priority_ok then 1.0 else 0.0 end)  as priority_accuracy,
+    avg(case when category_ok then 1.0 else 0.0 end)  as category_accuracy,
+    avg(case when route_ok    then 1.0 else 0.0 end)  as route_accuracy,
+    avg(case when is_perfect  then 1.0 else 0.0 end)  as perfect_match_rate,
+    avg(task_reward)                                  as avg_task_reward,
+    sum(case when is_phishing then 1 else 0 end)      as n_phishing_emails_seen,
+    avg(
+        case when is_phishing
+             then case when category_ok and route_ok then 1.0 else 0.0 end
+        end
+    )                                                  as phishing_catch_rate
+from "warehouse"."main"."int_steps_joined"
+where model_name is not null
+group by 1, 2
+order by model_name, task
+    );
+  
+  
+[0m22:20:52.184278 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m22:20:52.187078 [debug] [Thread-4 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C109626CD0>]}
+[0m22:20:52.191102 [debug] [Thread-2 (]: On model.email_rl_warehouse.fct_confusion_matrix: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_confusion_matrix"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."fct_confusion_matrix__dbt_tmp"
+  
+    as (
+      -- Predicted-vs-true counts across priority/category/route, grouped by
+-- model_name x task. Uses the client-reported prediction (what the LLM
+-- actually output for that task's action space); rows with no client_steps
+-- match (model_name is null) are excluded here since there's no prediction
+-- to compare -- see fct_reward_components / int_steps_joined for the
+-- env-only view of those rows.
+
+with base as (
+    select model_name, task, 'priority' as field,
+           true_priority as true_value, client_predicted_priority as predicted_value
+    from "warehouse"."main"."int_steps_joined"
+    where model_name is not null
+
+    union all
+
+    select model_name, task, 'category' as field,
+           true_category as true_value, client_predicted_category as predicted_value
+    from "warehouse"."main"."int_steps_joined"
+    where model_name is not null
+
+    union all
+
+    select model_name, task, 'route' as field,
+           true_route as true_value, client_predicted_route as predicted_value
+    from "warehouse"."main"."int_steps_joined"
+    where model_name is not null
+)
+
+select
+    model_name,
+    task,
+    field,
+    true_value,
+    predicted_value,
+    count(*) as n
+from base
+group by 1, 2, 3, 4, 5
+    );
+  
+  
+[0m22:20:52.194601 [info ] [Thread-4 (]: 3 of 8 OK created sql table model main.agg_data_quality ........................ [[32mOK[0m in 0.27s]
+[0m22:20:52.198624 [debug] [Thread-4 (]: Finished running node model.email_rl_warehouse.agg_data_quality
+[0m22:20:52.199908 [debug] [Thread-4 (]: Began running node model.email_rl_warehouse.fct_reward_components
+[0m22:20:52.202930 [info ] [Thread-4 (]: 8 of 8 START sql table model main.fct_reward_components ........................ [RUN]
+[0m22:20:52.205660 [debug] [Thread-4 (]: Re-using an available connection from the pool (formerly model.email_rl_warehouse.agg_data_quality, now model.email_rl_warehouse.fct_reward_components)
+[0m22:20:52.206678 [debug] [Thread-4 (]: Began compiling node model.email_rl_warehouse.fct_reward_components
+[0m22:20:52.214765 [debug] [Thread-4 (]: Writing injected SQL for node "model.email_rl_warehouse.fct_reward_components"
+[0m22:20:52.219016 [debug] [Thread-4 (]: Began executing node model.email_rl_warehouse.fct_reward_components
+[0m22:20:52.229440 [debug] [Thread-4 (]: Writing runtime sql for node "model.email_rl_warehouse.fct_reward_components"
+[0m22:20:52.233208 [debug] [Thread-3 (]: SQL status: OK in 0.044 seconds
+[0m22:20:52.241241 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m22:20:52.243181 [debug] [Thread-3 (]: On model.email_rl_warehouse.agg_model_leaderboard: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_model_leaderboard"} */
+alter table "warehouse"."main"."agg_model_leaderboard__dbt_tmp" rename to "agg_model_leaderboard"
+[0m22:20:52.244530 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m22:20:52.244530 [debug] [Thread-1 (]: SQL status: OK in 0.061 seconds
+[0m22:20:52.247392 [debug] [Thread-2 (]: SQL status: OK in 0.052 seconds
+[0m22:20:52.249858 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: BEGIN
+[0m22:20:52.251873 [debug] [Thread-3 (]: SQL status: OK in 0.002 seconds
+[0m22:20:52.257643 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m22:20:52.264903 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m22:20:52.264903 [debug] [Thread-4 (]: Opening a new connection, currently in state closed
+[0m22:20:52.269446 [debug] [Thread-3 (]: On model.email_rl_warehouse.agg_model_leaderboard: COMMIT
+[0m22:20:52.271456 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+alter table "warehouse"."main"."agg_episode_summary__dbt_tmp" rename to "agg_episode_summary"
+[0m22:20:52.271456 [debug] [Thread-2 (]: On model.email_rl_warehouse.fct_confusion_matrix: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_confusion_matrix"} */
+alter table "warehouse"."main"."fct_confusion_matrix__dbt_tmp" rename to "fct_confusion_matrix"
+[0m22:20:52.273468 [debug] [Thread-4 (]: SQL status: OK in 0.008 seconds
+[0m22:20:52.275871 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m22:20:52.278462 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:20:52.280475 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m22:20:52.280475 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m22:20:52.282487 [debug] [Thread-3 (]: On model.email_rl_warehouse.agg_model_leaderboard: COMMIT
+[0m22:20:52.284498 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: COMMIT
+[0m22:20:52.288541 [debug] [Thread-2 (]: On model.email_rl_warehouse.fct_confusion_matrix: COMMIT
+[0m22:20:52.293546 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_reward_components"} */
+
+  
+    
+    
+
+    create  table
+      "warehouse"."main"."fct_reward_components__dbt_tmp"
+  
+    as (
+      -- Unpacks reward_components (a JSON string column) into individual
+-- numeric columns via json_extract_string(...)::double.
+--
+-- EXPECTED, NOT A BUG: streak_bonus / dependency_bonus / coherence_bonus
+-- will read near-zero across most rows if the data was generated by
+-- inference.py as-is (reset() before every single graded email wipes
+-- multi-step state -- see WAREHOUSE.md "Known findings", #1). Note that
+-- phishing_bonus / phishing_miss_penalty were also flat-zero for an
+-- unrelated reason (a _sample_episode() bug that dropped the phishing
+-- email from every episode) -- that one has since been fixed; see
+-- WAREHOUSE.md finding #2 for before/after evidence.
+
+select
+    episode_id,
+    env_step,
+    email_id,
+    model_name,
+    task,
+    shaped_reward,
+    json_extract_string(reward_components, '$.base_score')::double                  as base_score,
+    json_extract_string(reward_components, '$.urgency_multiplier')::double          as urgency_multiplier,
+    json_extract_string(reward_components, '$.streak_bonus')::double                as streak_bonus,
+    json_extract_string(reward_components, '$.overload_penalty')::double            as overload_penalty,
+    json_extract_string(reward_components, '$.response_time_penalty')::double       as response_time_penalty,
+    json_extract_string(reward_components, '$.escalation_multiplier_delta')::double as escalation_multiplier_delta,
+    json_extract_string(reward_components, '$.phishing_bonus')::double              as phishing_bonus,
+    json_extract_string(reward_components, '$.phishing_miss_penalty')::double       as phishing_miss_penalty,
+    json_extract_string(reward_components, '$.dependency_bonus')::double            as dependency_bonus,
+    json_extract_string(reward_components, '$.coherence_bonus')::double             as coherence_bonus,
+    env_dt as dt
+from "warehouse"."main"."int_steps_joined"
+    );
+  
+  
+[0m22:20:52.293546 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m22:20:52.295808 [debug] [Thread-3 (]: SQL status: OK in 0.002 seconds
+[0m22:20:52.297362 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m22:20:52.297362 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: COMMIT
+[0m22:20:52.303369 [debug] [Thread-3 (]: Using duckdb connection "model.email_rl_warehouse.agg_model_leaderboard"
+[0m22:20:52.303369 [debug] [Thread-2 (]: On model.email_rl_warehouse.fct_confusion_matrix: COMMIT
+[0m22:20:52.307655 [debug] [Thread-3 (]: On model.email_rl_warehouse.agg_model_leaderboard: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_model_leaderboard"} */
+
+      drop table if exists "warehouse"."main"."agg_model_leaderboard__dbt_backup" cascade
+    
+[0m22:20:52.309461 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:20:52.315096 [debug] [Thread-1 (]: Using duckdb connection "model.email_rl_warehouse.agg_episode_summary"
+[0m22:20:52.315096 [debug] [Thread-3 (]: SQL status: OK in 0.005 seconds
+[0m22:20:52.319083 [debug] [Thread-2 (]: SQL status: OK in 0.007 seconds
+[0m22:20:52.320093 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.agg_episode_summary"} */
+
+      drop table if exists "warehouse"."main"."agg_episode_summary__dbt_backup" cascade
+    
+[0m22:20:52.324606 [debug] [Thread-3 (]: On model.email_rl_warehouse.agg_model_leaderboard: Close
+[0m22:20:52.325897 [debug] [Thread-4 (]: SQL status: OK in 0.028 seconds
+[0m22:20:52.327554 [debug] [Thread-2 (]: Using duckdb connection "model.email_rl_warehouse.fct_confusion_matrix"
+[0m22:20:52.332875 [debug] [Thread-3 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10E3F51D0>]}
+[0m22:20:52.332875 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:20:52.335880 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m22:20:52.346017 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_reward_components"} */
+alter table "warehouse"."main"."fct_reward_components__dbt_tmp" rename to "fct_reward_components"
+[0m22:20:52.348030 [debug] [Thread-4 (]: SQL status: OK in 0.001 seconds
+[0m22:20:52.335880 [debug] [Thread-2 (]: On model.email_rl_warehouse.fct_confusion_matrix: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_confusion_matrix"} */
+
+      drop table if exists "warehouse"."main"."fct_confusion_matrix__dbt_backup" cascade
+    
+[0m22:20:52.362211 [debug] [Thread-2 (]: SQL status: OK in 0.001 seconds
+[0m22:20:52.366236 [debug] [Thread-2 (]: On model.email_rl_warehouse.fct_confusion_matrix: Close
+[0m22:20:52.368248 [debug] [Thread-2 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10E4B61D0>]}
+[0m22:20:52.335880 [info ] [Thread-3 (]: 6 of 8 OK created sql table model main.agg_model_leaderboard ................... [[32mOK[0m in 0.25s]
+[0m22:20:52.354351 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: COMMIT
+[0m22:20:52.374286 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m22:20:52.376085 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: COMMIT
+[0m22:20:52.372274 [debug] [Thread-3 (]: Finished running node model.email_rl_warehouse.agg_model_leaderboard
+[0m22:20:52.344003 [debug] [Thread-1 (]: On model.email_rl_warehouse.agg_episode_summary: Close
+[0m22:20:52.388423 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10F5992D0>]}
+[0m22:20:52.370262 [info ] [Thread-2 (]: 7 of 8 OK created sql table model main.fct_confusion_matrix .................... [[32mOK[0m in 0.29s]
+[0m22:20:52.411386 [debug] [Thread-2 (]: Finished running node model.email_rl_warehouse.fct_confusion_matrix
+[0m22:20:52.430644 [debug] [Thread-4 (]: SQL status: OK in 0.052 seconds
+[0m22:20:52.390437 [info ] [Thread-1 (]: 5 of 8 OK created sql table model main.agg_episode_summary ..................... [[32mOK[0m in 0.31s]
+[0m22:20:52.439114 [debug] [Thread-4 (]: Using duckdb connection "model.email_rl_warehouse.fct_reward_components"
+[0m22:20:52.442667 [debug] [Thread-1 (]: Finished running node model.email_rl_warehouse.agg_episode_summary
+[0m22:20:52.445446 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "model.email_rl_warehouse.fct_reward_components"} */
+
+      drop table if exists "warehouse"."main"."fct_reward_components__dbt_backup" cascade
+    
+[0m22:20:52.449485 [debug] [Thread-4 (]: SQL status: OK in 0.001 seconds
+[0m22:20:52.453511 [debug] [Thread-4 (]: On model.email_rl_warehouse.fct_reward_components: Close
+[0m22:20:52.455525 [debug] [Thread-4 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '3791b9a0-af04-44d5-8462-6f0e3415e078', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10F826F90>]}
+[0m22:20:52.459168 [info ] [Thread-4 (]: 8 of 8 OK created sql table model main.fct_reward_components ................... [[32mOK[0m in 0.25s]
+[0m22:20:52.468994 [debug] [Thread-4 (]: Finished running node model.email_rl_warehouse.fct_reward_components
+[0m22:20:52.474043 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:20:52.476268 [debug] [MainThread]: On master: BEGIN
+[0m22:20:52.476268 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m22:20:52.478309 [debug] [MainThread]: SQL status: OK in 0.002 seconds
+[0m22:20:52.480324 [debug] [MainThread]: On master: COMMIT
+[0m22:20:52.482339 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:20:52.483354 [debug] [MainThread]: On master: COMMIT
+[0m22:20:52.485551 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m22:20:52.485551 [debug] [MainThread]: On master: Close
+[0m22:20:52.488751 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m22:20:52.490059 [debug] [MainThread]: Connection 'create_warehouse_main' was properly closed.
+[0m22:20:52.490059 [debug] [MainThread]: Connection 'list_warehouse_main' was properly closed.
+[0m22:20:52.493288 [debug] [MainThread]: Connection 'model.email_rl_warehouse.agg_episode_summary' was properly closed.
+[0m22:20:52.493288 [debug] [MainThread]: Connection 'model.email_rl_warehouse.fct_confusion_matrix' was properly closed.
+[0m22:20:52.495298 [debug] [MainThread]: Connection 'model.email_rl_warehouse.fct_reward_components' was properly closed.
+[0m22:20:52.495298 [debug] [MainThread]: Connection 'model.email_rl_warehouse.agg_model_leaderboard' was properly closed.
+[0m22:20:52.497310 [info ] [MainThread]: 
+[0m22:20:52.498713 [info ] [MainThread]: Finished running 5 table models, 3 view models in 0 hours 0 minutes and 8.78 seconds (8.78s).
+[0m22:20:52.501475 [debug] [MainThread]: Command end result
+[0m22:20:52.607698 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m22:20:52.614544 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m22:20:52.625391 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m22:20:52.644693 [debug] [MainThread]: Wrote artifact RunExecutionResult to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\run_results.json
+[0m22:20:52.644693 [info ] [MainThread]: 
+[0m22:20:52.644693 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m22:20:52.649653 [info ] [MainThread]: 
+[0m22:20:52.651052 [info ] [MainThread]: Done. PASS=8 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=8
+[0m22:20:52.652871 [debug] [MainThread]: Command `dbt run` succeeded at 22:20:52.652871 after 14.19 seconds
+[0m22:20:52.655138 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10DA14190>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C10DA16590>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C108DDE3D0>]}
+[0m22:20:52.655138 [debug] [MainThread]: Flushing usage events
+[0m22:20:55.075512 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m22:22:18.278429 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D7FB6990>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D7F00510>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D7FAFC50>]}
+
+
+============================== 22:22:18.288785 | 1611fcce-c819-4bab-b8b4-7bca62d21c93 ==============================
+[0m22:22:18.288785 [info ] [MainThread]: Running with dbt=1.12.0
+[0m22:22:18.288785 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'maximum_seed_size_mib': '1', 'target_path': 'None', 'printer_width': '80', 'write_json': 'True', 'empty': 'None', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': '.', 'invocation_command': 'dbt test --profiles-dir .', 'hints_enabled': 'True', 'use_colors': 'True', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'log_path': 'C:\\Users\\Yuvraj Singh\\OneDrive\\Desktop\\Email_OpenEnv\\Email_RL\\warehouse\\logs'}
+[0m22:22:18.727207 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '1611fcce-c819-4bab-b8b4-7bca62d21c93', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D83135D0>]}
+[0m22:22:18.871691 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '1611fcce-c819-4bab-b8b4-7bca62d21c93', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D34A9BD0>]}
+[0m22:22:18.871691 [info ] [MainThread]: Registered adapter: duckdb=1.10.1
+[0m22:22:19.273297 [debug] [MainThread]: checksum: f0d9819fa8ee4563bd15d8de06517e98ba4ac797156a47baad28b9341f2427ea, vars: {}, profile: email_rl_warehouse, target: dev, version: 1.12.0
+[0m22:22:19.654344 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 0 files changed.
+[0m22:22:19.654344 [debug] [MainThread]: Nothing changed, skipping partial parsing.
+[0m22:22:19.654344 [debug] [MainThread]: Partial parsing enabled, no changes found, skipping parsing
+[0m22:22:19.671164 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '1611fcce-c819-4bab-b8b4-7bca62d21c93', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D80226D0>]}
+[0m22:22:19.888704 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m22:22:19.904481 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m22:22:19.968203 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m22:22:20.038751 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '1611fcce-c819-4bab-b8b4-7bca62d21c93', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D8375490>]}
+[0m22:22:20.038751 [info ] [MainThread]: Found 8 models, 14 data tests, 486 macros
+[0m22:22:20.043008 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '1611fcce-c819-4bab-b8b4-7bca62d21c93', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D405F750>]}
+[0m22:22:20.053846 [info ] [MainThread]: 
+[0m22:22:20.055077 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m22:22:20.055077 [info ] [MainThread]: 
+[0m22:22:20.061601 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m22:22:20.077432 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse_main'
+[0m22:22:20.245701 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m22:22:20.246945 [debug] [ThreadPool]: On list_warehouse_main: BEGIN
+[0m22:22:20.246945 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m22:22:20.308585 [debug] [ThreadPool]: SQL status: OK in 0.064 seconds
+[0m22:22:20.308585 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m22:22:20.313440 [debug] [ThreadPool]: On list_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse_main"} */
+select
+      'warehouse' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'warehouse'
+  
+[0m22:22:20.324452 [debug] [ThreadPool]: SQL status: OK in 0.011 seconds
+[0m22:22:20.324452 [debug] [ThreadPool]: On list_warehouse_main: ROLLBACK
+[0m22:22:20.324452 [debug] [ThreadPool]: Failed to rollback 'list_warehouse_main'
+[0m22:22:20.324452 [debug] [ThreadPool]: On list_warehouse_main: Close
+[0m22:22:20.324452 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '1611fcce-c819-4bab-b8b4-7bca62d21c93', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D870DB90>]}
+[0m22:22:20.340433 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:22:20.341694 [debug] [MainThread]: On master: BEGIN
+[0m22:22:20.341694 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m22:22:20.341694 [debug] [MainThread]: SQL status: OK in 0.002 seconds
+[0m22:22:20.345614 [debug] [MainThread]: On master: COMMIT
+[0m22:22:20.345614 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:22:20.347863 [debug] [MainThread]: On master: COMMIT
+[0m22:22:20.349875 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m22:22:20.349875 [debug] [MainThread]: On master: Close
+[0m22:22:20.356212 [debug] [Thread-1 (]: Began running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e
+[0m22:22:20.356212 [debug] [Thread-2 (]: Began running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326
+[0m22:22:20.356212 [debug] [Thread-3 (]: Began running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785
+[0m22:22:20.356212 [debug] [Thread-4 (]: Began running node test.email_rl_warehouse.assert_category_balance
+[0m22:22:20.356212 [info ] [Thread-1 (]: 1 of 14 START test accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security  [RUN]
+[0m22:22:20.356212 [info ] [Thread-2 (]: 2 of 14 START test accepted_values_stg_env_steps_true_priority__low__medium__high__urgent  [RUN]
+[0m22:22:20.356212 [info ] [Thread-3 (]: 3 of 14 START test accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review  [RUN]
+[0m22:22:20.370457 [info ] [Thread-4 (]: 4 of 14 START test assert_category_balance ..................................... [RUN]
+[0m22:22:20.373631 [debug] [Thread-1 (]: Acquiring new duckdb connection 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e'
+[0m22:22:20.373631 [debug] [Thread-2 (]: Acquiring new duckdb connection 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326'
+[0m22:22:20.377820 [debug] [Thread-3 (]: Acquiring new duckdb connection 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785'
+[0m22:22:20.381315 [debug] [Thread-4 (]: Acquiring new duckdb connection 'test.email_rl_warehouse.assert_category_balance'
+[0m22:22:20.381315 [debug] [Thread-1 (]: Began compiling node test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e
+[0m22:22:20.381315 [debug] [Thread-2 (]: Began compiling node test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326
+[0m22:22:20.385920 [debug] [Thread-3 (]: Began compiling node test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785
+[0m22:22:20.387069 [debug] [Thread-4 (]: Began compiling node test.email_rl_warehouse.assert_category_balance
+[0m22:22:20.582863 [debug] [Thread-2 (]: Writing injected SQL for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326"
+[0m22:22:20.565431 [debug] [Thread-1 (]: Writing injected SQL for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e"
+[0m22:22:20.645473 [debug] [Thread-4 (]: Writing injected SQL for node "test.email_rl_warehouse.assert_category_balance"
+[0m22:22:20.718796 [debug] [Thread-3 (]: Writing injected SQL for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785"
+[0m22:22:20.736634 [debug] [Thread-2 (]: Began executing node test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326
+[0m22:22:20.740670 [debug] [Thread-1 (]: Began executing node test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e
+[0m22:22:20.804341 [debug] [Thread-4 (]: Began executing node test.email_rl_warehouse.assert_category_balance
+[0m22:22:20.782910 [debug] [Thread-3 (]: Began executing node test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785
+[0m22:22:20.836201 [debug] [Thread-2 (]: Writing runtime sql for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326"
+[0m22:22:20.841563 [debug] [Thread-1 (]: Writing runtime sql for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e"
+[0m22:22:20.847596 [debug] [Thread-4 (]: Writing runtime sql for node "test.email_rl_warehouse.assert_category_balance"
+[0m22:22:20.853632 [debug] [Thread-3 (]: Writing runtime sql for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785"
+[0m22:22:20.857476 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326"
+[0m22:22:20.859490 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e"
+[0m22:22:20.861502 [debug] [Thread-2 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326: BEGIN
+[0m22:22:20.863150 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.assert_category_balance"
+[0m22:22:20.864532 [debug] [Thread-1 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e: BEGIN
+[0m22:22:20.865577 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785"
+[0m22:22:20.865577 [debug] [Thread-2 (]: Opening a new connection, currently in state init
+[0m22:22:20.867377 [debug] [Thread-4 (]: On test.email_rl_warehouse.assert_category_balance: BEGIN
+[0m22:22:20.867377 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m22:22:20.870305 [debug] [Thread-3 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785: BEGIN
+[0m22:22:20.870305 [debug] [Thread-2 (]: SQL status: OK in 0.006 seconds
+[0m22:22:20.870305 [debug] [Thread-4 (]: Opening a new connection, currently in state init
+[0m22:22:20.870305 [debug] [Thread-1 (]: SQL status: OK in 0.006 seconds
+[0m22:22:20.875531 [debug] [Thread-3 (]: Opening a new connection, currently in state init
+[0m22:22:20.875531 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326"
+[0m22:22:20.875531 [debug] [Thread-4 (]: SQL status: OK in 0.005 seconds
+[0m22:22:20.878982 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e"
+[0m22:22:20.878982 [debug] [Thread-3 (]: SQL status: OK in 0.005 seconds
+[0m22:22:20.878982 [debug] [Thread-2 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+with all_values as (
+
+    select
+        true_priority as value_field,
+        count(*) as n_records
+
+    from "warehouse"."main"."stg_env_steps"
+    group by true_priority
+
+)
+
+select *
+from all_values
+where value_field not in (
+    'low','medium','high','urgent'
+)
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:20.882188 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.assert_category_balance"
+[0m22:22:20.883250 [debug] [Thread-1 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+with all_values as (
+
+    select
+        true_category as value_field,
+        count(*) as n_records
+
+    from "warehouse"."main"."stg_env_steps"
+    group by true_category
+
+)
+
+select *
+from all_values
+where value_field not in (
+    'spam','newsletter','support','sales','internal','billing','security'
+)
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:20.883250 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785"
+[0m22:22:20.885249 [debug] [Thread-4 (]: On test.email_rl_warehouse.assert_category_balance: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.assert_category_balance"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  -- Regression guard for a real bug found and fixed in
+-- server/Email_RL_environment.py: _sample_episode() used to always drop
+-- the same standard category ("security") from every single episode, so
+-- it was never represented in any collected data (confirmed empirically:
+-- 0/300 sampled episodes). This test fails if any of the 7 standard
+-- categories drops below 5% of standard-slot rows in the WHOLE collected
+-- dataset -- loose enough to tolerate normal sampling variance (each
+-- category is expected at ~14.3%), tight enough to catch a total or
+-- near-total omission like the original bug.
+--
+-- Only evaluated once there's a reasonably sized dataset (>50 standard
+-- rows), so a handful of debug episodes doesn't produce a flaky failure.
+-- "Standard" rows exclude phishing (always mislabeled true_category=
+-- 'security' by design) and cluster/critical rows, which aren't part of
+-- the per-category sampling this test is guarding.
+--
+-- IMPORTANT: a category with ZERO occurrences never produces a row from
+-- a plain GROUP BY -- which is exactly the failure mode this test exists
+-- to catch. All 7 categories are enumerated explicitly and LEFT JOINed
+-- against the observed counts so a fully-absent category still shows up
+-- as n=0 instead of silently not appearing at all.
+
+with all_categories as (
+    select unnest(['spam', 'newsletter', 'support', 'sales', 'internal', 'billing', 'security']) as true_category
+),
+standard_rows as (
+    select true_category
+    from "warehouse"."main"."stg_env_steps"
+    where not is_phishing
+      and not is_business_critical
+      and cluster_id is null
+),
+category_counts as (
+    select
+        all_categories.true_category,
+        count(standard_rows.true_category) as n
+    from all_categories
+    left join standard_rows
+        on all_categories.true_category = standard_rows.true_category
+    group by all_categories.true_category
+),
+total as (
+    select count(*) as total_n from standard_rows
+)
+select category_counts.true_category, category_counts.n, total.total_n
+from category_counts, total
+where total.total_n > 50
+  and category_counts.n < 0.05 * total.total_n
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:20.886941 [debug] [Thread-3 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+with all_values as (
+
+    select
+        true_route as value_field,
+        count(*) as n_records
+
+    from "warehouse"."main"."stg_env_steps"
+    group by true_route
+
+)
+
+select *
+from all_values
+where value_field not in (
+    'inbox','archive','support_team','sales_team','security_team','billing_team','trash','human_review'
+)
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:20.890260 [debug] [Thread-2 (]: SQL status: OK in 0.007 seconds
+[0m22:22:20.892271 [debug] [Thread-1 (]: SQL status: OK in 0.006 seconds
+[0m22:22:20.900304 [debug] [Thread-2 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326: ROLLBACK
+[0m22:22:20.902329 [debug] [Thread-3 (]: SQL status: OK in 0.012 seconds
+[0m22:22:20.903820 [debug] [Thread-4 (]: SQL status: OK in 0.014 seconds
+[0m22:22:20.907109 [debug] [Thread-1 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e: ROLLBACK
+[0m22:22:20.907109 [debug] [Thread-2 (]: Failed to rollback 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326'
+[0m22:22:20.910841 [debug] [Thread-3 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785: ROLLBACK
+[0m22:22:20.914952 [debug] [Thread-4 (]: On test.email_rl_warehouse.assert_category_balance: ROLLBACK
+[0m22:22:20.916518 [debug] [Thread-1 (]: Failed to rollback 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e'
+[0m22:22:20.916518 [debug] [Thread-2 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326: Close
+[0m22:22:20.919718 [debug] [Thread-3 (]: Failed to rollback 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785'
+[0m22:22:20.919718 [debug] [Thread-4 (]: Failed to rollback 'test.email_rl_warehouse.assert_category_balance'
+[0m22:22:20.919718 [debug] [Thread-1 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e: Close
+[0m22:22:20.924283 [info ] [Thread-2 (]: 2 of 14 PASS accepted_values_stg_env_steps_true_priority__low__medium__high__urgent  [[32mPASS[0m in 0.55s]
+[0m22:22:20.924793 [debug] [Thread-3 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785: Close
+[0m22:22:20.924793 [debug] [Thread-4 (]: On test.email_rl_warehouse.assert_category_balance: Close
+[0m22:22:20.927929 [info ] [Thread-1 (]: 1 of 14 PASS accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security  [[32mPASS[0m in 0.56s]
+[0m22:22:20.929892 [debug] [Thread-2 (]: Finished running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326
+[0m22:22:20.932091 [info ] [Thread-3 (]: 3 of 14 PASS accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review  [[32mPASS[0m in 0.55s]
+[0m22:22:20.932091 [info ] [Thread-4 (]: 4 of 14 PASS assert_category_balance ........................................... [[32mPASS[0m in 0.55s]
+[0m22:22:20.934682 [debug] [Thread-1 (]: Finished running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e
+[0m22:22:20.934682 [debug] [Thread-2 (]: Began running node test.email_rl_warehouse.assert_cluster_pairs
+[0m22:22:20.934682 [debug] [Thread-3 (]: Finished running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785
+[0m22:22:20.939228 [debug] [Thread-4 (]: Finished running node test.email_rl_warehouse.assert_category_balance
+[0m22:22:20.939772 [debug] [Thread-1 (]: Began running node test.email_rl_warehouse.assert_critical_consistency
+[0m22:22:20.939772 [info ] [Thread-2 (]: 5 of 14 START test assert_cluster_pairs ........................................ [RUN]
+[0m22:22:20.942617 [debug] [Thread-3 (]: Began running node test.email_rl_warehouse.assert_phishing_consistency
+[0m22:22:20.944043 [debug] [Thread-4 (]: Began running node test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245
+[0m22:22:20.945743 [info ] [Thread-1 (]: 6 of 14 START test assert_critical_consistency ................................. [RUN]
+[0m22:22:20.947319 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326, now test.email_rl_warehouse.assert_cluster_pairs)
+[0m22:22:20.947319 [info ] [Thread-3 (]: 7 of 14 START test assert_phishing_consistency ................................. [RUN]
+[0m22:22:20.950404 [info ] [Thread-4 (]: 8 of 14 START test not_null_stg_client_steps_email_id .......................... [RUN]
+[0m22:22:20.950404 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e, now test.email_rl_warehouse.assert_critical_consistency)
+[0m22:22:20.952573 [debug] [Thread-2 (]: Began compiling node test.email_rl_warehouse.assert_cluster_pairs
+[0m22:22:20.952573 [debug] [Thread-3 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785, now test.email_rl_warehouse.assert_phishing_consistency)
+[0m22:22:20.955389 [debug] [Thread-4 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.assert_category_balance, now test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245)
+[0m22:22:20.955389 [debug] [Thread-1 (]: Began compiling node test.email_rl_warehouse.assert_critical_consistency
+[0m22:22:20.955389 [debug] [Thread-2 (]: Writing injected SQL for node "test.email_rl_warehouse.assert_cluster_pairs"
+[0m22:22:20.963409 [debug] [Thread-3 (]: Began compiling node test.email_rl_warehouse.assert_phishing_consistency
+[0m22:22:20.964023 [debug] [Thread-4 (]: Began compiling node test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245
+[0m22:22:20.966158 [debug] [Thread-1 (]: Writing injected SQL for node "test.email_rl_warehouse.assert_critical_consistency"
+[0m22:22:20.973716 [debug] [Thread-3 (]: Writing injected SQL for node "test.email_rl_warehouse.assert_phishing_consistency"
+[0m22:22:20.981617 [debug] [Thread-2 (]: Began executing node test.email_rl_warehouse.assert_cluster_pairs
+[0m22:22:21.001864 [debug] [Thread-4 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245"
+[0m22:22:21.005892 [debug] [Thread-2 (]: Writing runtime sql for node "test.email_rl_warehouse.assert_cluster_pairs"
+[0m22:22:21.007905 [debug] [Thread-1 (]: Began executing node test.email_rl_warehouse.assert_critical_consistency
+[0m22:22:21.009918 [debug] [Thread-3 (]: Began executing node test.email_rl_warehouse.assert_phishing_consistency
+[0m22:22:21.015020 [debug] [Thread-1 (]: Writing runtime sql for node "test.email_rl_warehouse.assert_critical_consistency"
+[0m22:22:21.015020 [debug] [Thread-4 (]: Began executing node test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245
+[0m22:22:21.020146 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.assert_cluster_pairs"
+[0m22:22:21.020146 [debug] [Thread-3 (]: Writing runtime sql for node "test.email_rl_warehouse.assert_phishing_consistency"
+[0m22:22:21.029016 [debug] [Thread-4 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245"
+[0m22:22:21.031709 [debug] [Thread-2 (]: On test.email_rl_warehouse.assert_cluster_pairs: BEGIN
+[0m22:22:21.031709 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.assert_critical_consistency"
+[0m22:22:21.033985 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m22:22:21.036400 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.assert_phishing_consistency"
+[0m22:22:21.038036 [debug] [Thread-1 (]: On test.email_rl_warehouse.assert_critical_consistency: BEGIN
+[0m22:22:21.038036 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245"
+[0m22:22:21.038036 [debug] [Thread-2 (]: SQL status: OK in 0.006 seconds
+[0m22:22:21.041961 [debug] [Thread-3 (]: On test.email_rl_warehouse.assert_phishing_consistency: BEGIN
+[0m22:22:21.041961 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:22:21.046440 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245: BEGIN
+[0m22:22:21.048415 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.assert_cluster_pairs"
+[0m22:22:21.048415 [debug] [Thread-3 (]: Opening a new connection, currently in state closed
+[0m22:22:21.051204 [debug] [Thread-1 (]: SQL status: OK in 0.007 seconds
+[0m22:22:21.053205 [debug] [Thread-4 (]: Opening a new connection, currently in state closed
+[0m22:22:21.055233 [debug] [Thread-2 (]: On test.email_rl_warehouse.assert_cluster_pairs: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.assert_cluster_pairs"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  -- Every dependency cluster is authored as exactly 2 linked emails (see
+-- _DEPENDENCY_CLUSTERS in server/Email_RL_environment.py). A dbt test
+-- passes when the query returns ZERO rows -- so this returns any
+-- (episode_id, cluster_id) pair that does NOT have exactly 2 rows.
+
+select
+    episode_id,
+    cluster_id,
+    count(*) as n_rows
+from "warehouse"."main"."stg_env_steps"
+where cluster_id is not null
+group by episode_id, cluster_id
+having count(*) != 2
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:21.055233 [debug] [Thread-3 (]: SQL status: OK in 0.007 seconds
+[0m22:22:21.057810 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.assert_critical_consistency"
+[0m22:22:21.059821 [debug] [Thread-4 (]: SQL status: OK in 0.007 seconds
+[0m22:22:21.061008 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.assert_phishing_consistency"
+[0m22:22:21.063999 [debug] [Thread-1 (]: On test.email_rl_warehouse.assert_critical_consistency: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.assert_critical_consistency"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  -- Business-critical emails are always constructed with
+-- true_route='human_review' regardless of category (see _generate_email()
+-- in server/Email_RL_environment.py). Any row violating that is either a
+-- generator regression or a telemetry-field mixup.
+
+select *
+from "warehouse"."main"."stg_env_steps"
+where is_business_critical = true
+  and true_route != 'human_review'
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:21.066002 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245"
+[0m22:22:21.067377 [debug] [Thread-3 (]: On test.email_rl_warehouse.assert_phishing_consistency: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.assert_phishing_consistency"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  -- Phishing emails are always constructed with true_category='security' and
+-- true_route='security_team' (see _generate_email() in
+-- server/Email_RL_environment.py). Any row violating that is either a
+-- generator regression or a telemetry-field mixup.
+
+select *
+from "warehouse"."main"."stg_env_steps"
+where is_phishing = true
+  and (true_category != 'security' or true_route != 'security_team')
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:21.070127 [debug] [Thread-2 (]: SQL status: OK in 0.009 seconds
+[0m22:22:21.072144 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select email_id
+from "warehouse"."main"."stg_client_steps"
+where email_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:21.076060 [debug] [Thread-2 (]: On test.email_rl_warehouse.assert_cluster_pairs: ROLLBACK
+[0m22:22:21.077545 [debug] [Thread-1 (]: SQL status: OK in 0.007 seconds
+[0m22:22:21.077545 [debug] [Thread-2 (]: Failed to rollback 'test.email_rl_warehouse.assert_cluster_pairs'
+[0m22:22:21.081959 [debug] [Thread-3 (]: SQL status: OK in 0.008 seconds
+[0m22:22:21.081959 [debug] [Thread-4 (]: SQL status: OK in 0.004 seconds
+[0m22:22:21.083520 [debug] [Thread-1 (]: On test.email_rl_warehouse.assert_critical_consistency: ROLLBACK
+[0m22:22:21.083520 [debug] [Thread-2 (]: On test.email_rl_warehouse.assert_cluster_pairs: Close
+[0m22:22:21.092448 [debug] [Thread-3 (]: On test.email_rl_warehouse.assert_phishing_consistency: ROLLBACK
+[0m22:22:21.096471 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245: ROLLBACK
+[0m22:22:21.098482 [debug] [Thread-1 (]: Failed to rollback 'test.email_rl_warehouse.assert_critical_consistency'
+[0m22:22:21.098482 [error] [Thread-2 (]: 5 of 14 FAIL 4 assert_cluster_pairs ............................................ [[31mFAIL 4[0m in 0.15s]
+[0m22:22:21.101662 [debug] [Thread-3 (]: Failed to rollback 'test.email_rl_warehouse.assert_phishing_consistency'
+[0m22:22:21.103675 [debug] [Thread-4 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245'
+[0m22:22:21.103675 [debug] [Thread-1 (]: On test.email_rl_warehouse.assert_critical_consistency: Close
+[0m22:22:21.103675 [debug] [Thread-2 (]: Finished running node test.email_rl_warehouse.assert_cluster_pairs
+[0m22:22:21.103675 [debug] [Thread-3 (]: On test.email_rl_warehouse.assert_phishing_consistency: Close
+[0m22:22:21.103675 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245: Close
+[0m22:22:21.103675 [info ] [Thread-1 (]: 6 of 14 PASS assert_critical_consistency ....................................... [[32mPASS[0m in 0.15s]
+[0m22:22:21.110978 [debug] [Thread-2 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5
+[0m22:22:21.112241 [info ] [Thread-3 (]: 7 of 14 PASS assert_phishing_consistency ....................................... [[32mPASS[0m in 0.16s]
+[0m22:22:21.115729 [info ] [Thread-4 (]: 8 of 14 PASS not_null_stg_client_steps_email_id ................................ [[32mPASS[0m in 0.16s]
+[0m22:22:21.117744 [debug] [Thread-1 (]: Finished running node test.email_rl_warehouse.assert_critical_consistency
+[0m22:22:21.119755 [info ] [Thread-2 (]: 9 of 14 START test not_null_stg_env_steps_email_id ............................. [RUN]
+[0m22:22:21.121974 [debug] [Thread-3 (]: Finished running node test.email_rl_warehouse.assert_phishing_consistency
+[0m22:22:21.121974 [debug] [Thread-4 (]: Finished running node test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245
+[0m22:22:21.121974 [debug] [Thread-1 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8
+[0m22:22:21.127998 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.assert_cluster_pairs, now test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5)
+[0m22:22:21.127998 [debug] [Thread-3 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c
+[0m22:22:21.131889 [debug] [Thread-4 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007
+[0m22:22:21.131889 [info ] [Thread-1 (]: 10 of 14 START test not_null_stg_env_steps_episode_id .......................... [RUN]
+[0m22:22:21.134532 [debug] [Thread-2 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5
+[0m22:22:21.136296 [info ] [Thread-3 (]: 11 of 14 START test not_null_stg_env_steps_step ................................ [RUN]
+[0m22:22:21.139868 [info ] [Thread-4 (]: 12 of 14 START test not_null_stg_env_steps_true_category ....................... [RUN]
+[0m22:22:21.139868 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.assert_critical_consistency, now test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8)
+[0m22:22:21.152754 [debug] [Thread-2 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5"
+[0m22:22:21.152754 [debug] [Thread-3 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.assert_phishing_consistency, now test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c)
+[0m22:22:21.152754 [debug] [Thread-4 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245, now test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007)
+[0m22:22:21.161270 [debug] [Thread-1 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8
+[0m22:22:21.163963 [debug] [Thread-3 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c
+[0m22:22:21.165610 [debug] [Thread-4 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007
+[0m22:22:21.165610 [debug] [Thread-2 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5
+[0m22:22:21.180625 [debug] [Thread-1 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8"
+[0m22:22:21.197485 [debug] [Thread-3 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c"
+[0m22:22:21.218602 [debug] [Thread-4 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007"
+[0m22:22:21.224551 [debug] [Thread-2 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5"
+[0m22:22:21.226461 [debug] [Thread-1 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8
+[0m22:22:21.234233 [debug] [Thread-1 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8"
+[0m22:22:21.236247 [debug] [Thread-3 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c
+[0m22:22:21.238259 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5"
+[0m22:22:21.240016 [debug] [Thread-4 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007
+[0m22:22:21.245849 [debug] [Thread-3 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c"
+[0m22:22:21.249306 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8"
+[0m22:22:21.249306 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5: BEGIN
+[0m22:22:21.253453 [debug] [Thread-4 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007"
+[0m22:22:21.253453 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8: BEGIN
+[0m22:22:21.258575 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m22:22:21.258575 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c"
+[0m22:22:21.261821 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:22:21.264253 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007"
+[0m22:22:21.264253 [debug] [Thread-2 (]: SQL status: OK in 0.007 seconds
+[0m22:22:21.264253 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c: BEGIN
+[0m22:22:21.264253 [debug] [Thread-1 (]: SQL status: OK in 0.007 seconds
+[0m22:22:21.264253 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007: BEGIN
+[0m22:22:21.264253 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5"
+[0m22:22:21.272281 [debug] [Thread-3 (]: Opening a new connection, currently in state closed
+[0m22:22:21.272281 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8"
+[0m22:22:21.275078 [debug] [Thread-4 (]: Opening a new connection, currently in state closed
+[0m22:22:21.275078 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select email_id
+from "warehouse"."main"."stg_env_steps"
+where email_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:21.279555 [debug] [Thread-3 (]: SQL status: OK in 0.007 seconds
+[0m22:22:21.280531 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select episode_id
+from "warehouse"."main"."stg_env_steps"
+where episode_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:21.281682 [debug] [Thread-4 (]: SQL status: OK in 0.007 seconds
+[0m22:22:21.281682 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c"
+[0m22:22:21.286639 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007"
+[0m22:22:21.288650 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select step
+from "warehouse"."main"."stg_env_steps"
+where step is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:21.288650 [debug] [Thread-2 (]: SQL status: OK in 0.006 seconds
+[0m22:22:21.290748 [debug] [Thread-1 (]: SQL status: OK in 0.005 seconds
+[0m22:22:21.291255 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select true_category
+from "warehouse"."main"."stg_env_steps"
+where true_category is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:21.293264 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5: ROLLBACK
+[0m22:22:21.295472 [debug] [Thread-3 (]: SQL status: OK in 0.004 seconds
+[0m22:22:21.297552 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8: ROLLBACK
+[0m22:22:21.297552 [debug] [Thread-2 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5'
+[0m22:22:21.303815 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c: ROLLBACK
+[0m22:22:21.305668 [debug] [Thread-4 (]: SQL status: OK in 0.006 seconds
+[0m22:22:21.305668 [debug] [Thread-1 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8'
+[0m22:22:21.307938 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5: Close
+[0m22:22:21.307938 [debug] [Thread-3 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c'
+[0m22:22:21.313098 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007: ROLLBACK
+[0m22:22:21.314353 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8: Close
+[0m22:22:21.314353 [info ] [Thread-2 (]: 9 of 14 PASS not_null_stg_env_steps_email_id ................................... [[32mPASS[0m in 0.19s]
+[0m22:22:21.316444 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c: Close
+[0m22:22:21.318299 [debug] [Thread-4 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007'
+[0m22:22:21.319974 [info ] [Thread-1 (]: 10 of 14 PASS not_null_stg_env_steps_episode_id ................................ [[32mPASS[0m in 0.18s]
+[0m22:22:21.322656 [debug] [Thread-2 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5
+[0m22:22:21.322656 [info ] [Thread-3 (]: 11 of 14 PASS not_null_stg_env_steps_step ...................................... [[32mPASS[0m in 0.17s]
+[0m22:22:21.324830 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007: Close
+[0m22:22:21.324830 [debug] [Thread-1 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8
+[0m22:22:21.329123 [debug] [Thread-2 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0
+[0m22:22:21.330291 [debug] [Thread-3 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c
+[0m22:22:21.330291 [info ] [Thread-4 (]: 12 of 14 PASS not_null_stg_env_steps_true_category ............................. [[32mPASS[0m in 0.18s]
+[0m22:22:21.333269 [debug] [Thread-1 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530
+[0m22:22:21.334854 [info ] [Thread-2 (]: 13 of 14 START test not_null_stg_env_steps_true_priority ....................... [RUN]
+[0m22:22:21.338090 [debug] [Thread-4 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007
+[0m22:22:21.338090 [info ] [Thread-1 (]: 14 of 14 START test not_null_stg_env_steps_true_route .......................... [RUN]
+[0m22:22:21.340804 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5, now test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0)
+[0m22:22:21.343825 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8, now test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530)
+[0m22:22:21.344845 [debug] [Thread-2 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0
+[0m22:22:21.345854 [debug] [Thread-1 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530
+[0m22:22:21.364454 [debug] [Thread-2 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0"
+[0m22:22:21.385351 [debug] [Thread-1 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530"
+[0m22:22:21.385351 [debug] [Thread-2 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0
+[0m22:22:21.395358 [debug] [Thread-1 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530
+[0m22:22:21.395358 [debug] [Thread-2 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0"
+[0m22:22:21.400558 [debug] [Thread-1 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530"
+[0m22:22:21.403561 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0"
+[0m22:22:21.403561 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0: BEGIN
+[0m22:22:21.408304 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530"
+[0m22:22:21.408304 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m22:22:21.410182 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530: BEGIN
+[0m22:22:21.411938 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:22:21.413947 [debug] [Thread-2 (]: SQL status: OK in 0.005 seconds
+[0m22:22:21.413947 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m22:22:21.417153 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0"
+[0m22:22:21.419727 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530"
+[0m22:22:21.421741 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select true_priority
+from "warehouse"."main"."stg_env_steps"
+where true_priority is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:21.421741 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select true_route
+from "warehouse"."main"."stg_env_steps"
+where true_route is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:22:21.429217 [debug] [Thread-2 (]: SQL status: OK in 0.004 seconds
+[0m22:22:21.430347 [debug] [Thread-1 (]: SQL status: OK in 0.005 seconds
+[0m22:22:21.434758 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0: ROLLBACK
+[0m22:22:21.439240 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530: ROLLBACK
+[0m22:22:21.440953 [debug] [Thread-2 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0'
+[0m22:22:21.442614 [debug] [Thread-1 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530'
+[0m22:22:21.444357 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0: Close
+[0m22:22:21.446012 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530: Close
+[0m22:22:21.448466 [info ] [Thread-2 (]: 13 of 14 PASS not_null_stg_env_steps_true_priority ............................. [[32mPASS[0m in 0.11s]
+[0m22:22:21.450959 [info ] [Thread-1 (]: 14 of 14 PASS not_null_stg_env_steps_true_route ................................ [[32mPASS[0m in 0.11s]
+[0m22:22:21.454006 [debug] [Thread-2 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0
+[0m22:22:21.456226 [debug] [Thread-1 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530
+[0m22:22:21.461506 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:22:21.461506 [debug] [MainThread]: On master: BEGIN
+[0m22:22:21.464580 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m22:22:21.466893 [debug] [MainThread]: SQL status: OK in 0.002 seconds
+[0m22:22:21.467965 [debug] [MainThread]: On master: COMMIT
+[0m22:22:21.469975 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:22:21.472355 [debug] [MainThread]: On master: COMMIT
+[0m22:22:21.474715 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:22:21.476427 [debug] [MainThread]: On master: Close
+[0m22:22:21.481293 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m22:22:21.483724 [debug] [MainThread]: Connection 'list_warehouse_main' was properly closed.
+[0m22:22:21.485156 [debug] [MainThread]: Connection 'test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530' was properly closed.
+[0m22:22:21.485156 [debug] [MainThread]: Connection 'test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0' was properly closed.
+[0m22:22:21.487169 [debug] [MainThread]: Connection 'test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c' was properly closed.
+[0m22:22:21.489183 [debug] [MainThread]: Connection 'test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007' was properly closed.
+[0m22:22:21.489183 [info ] [MainThread]: 
+[0m22:22:21.491196 [info ] [MainThread]: Finished running 14 data tests in 0 hours 0 minutes and 1.43 seconds (1.43s).
+[0m22:22:21.502338 [debug] [MainThread]: Command end result
+[0m22:22:21.586533 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m22:22:21.600668 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m22:22:21.606449 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m22:22:21.618190 [debug] [MainThread]: Wrote artifact RunExecutionResult to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\run_results.json
+[0m22:22:21.618190 [info ] [MainThread]: 
+[0m22:22:21.618190 [info ] [MainThread]: [31mCompleted with 1 error, 0 partial successes, and 0 warnings:[0m
+[0m22:22:21.618190 [info ] [MainThread]: 
+[0m22:22:21.633889 [error] [MainThread]: [[31mERROR[0m]: in test assert_cluster_pairs (tests\assert_cluster_pairs.sql)
+[0m22:22:21.635055 [error] [MainThread]:   Got 4 results, configured to fail if != 0
+[0m22:22:21.635055 [info ] [MainThread]: 
+[0m22:22:21.638852 [info ] [MainThread]:   compiled code at target\compiled\email_rl_warehouse\tests\assert_cluster_pairs.sql
+[0m22:22:21.641914 [info ] [MainThread]: 
+[0m22:22:21.641914 [info ] [MainThread]: Done. PASS=13 WARN=0 ERROR=1 SKIP=0 NO-OP=0 REUSED=0 TOTAL=14
+[0m22:22:21.647350 [debug] [MainThread]: Command `dbt test` failed at 22:22:21.647350 after 3.59 seconds
+[0m22:22:21.647350 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D7FAE010>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D7FAE590>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000177D7FAF850>]}
+[0m22:22:21.650854 [debug] [MainThread]: Flushing usage events
+[0m22:22:23.445413 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m22:52:32.194947 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554EB36D10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554EB2FC50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554EB2EB90>]}
+
+
+============================== 22:52:32.208742 | d50b3331-7aa1-4f17-b902-981ca9612fee ==============================
+[0m22:52:32.208742 [info ] [MainThread]: Running with dbt=1.12.0
+[0m22:52:32.210168 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'no_print': 'None', 'maximum_seed_size_mib': '1', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'version_check': 'True', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': '.', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'invocation_command': 'dbt test --profiles-dir .', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': 'C:\\Users\\Yuvraj Singh\\OneDrive\\Desktop\\Email_OpenEnv\\Email_RL\\warehouse\\logs'}
+[0m22:52:33.626295 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'd50b3331-7aa1-4f17-b902-981ca9612fee', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554ECB9490>]}
+[0m22:52:33.865856 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'd50b3331-7aa1-4f17-b902-981ca9612fee', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554A0394D0>]}
+[0m22:52:33.883805 [info ] [MainThread]: Registered adapter: duckdb=1.10.1
+[0m22:52:34.470830 [debug] [MainThread]: checksum: f0d9819fa8ee4563bd15d8de06517e98ba4ac797156a47baad28b9341f2427ea, vars: {}, profile: email_rl_warehouse, target: dev, version: 1.12.0
+[0m22:52:34.979910 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 1 files changed.
+[0m22:52:34.979910 [debug] [MainThread]: Partial parsing: updated file: email_rl_warehouse://tests\assert_cluster_pairs.sql
+[0m22:52:35.327312 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': 'd50b3331-7aa1-4f17-b902-981ca9612fee', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554C7BA310>]}
+[0m22:52:35.575082 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m22:52:35.585797 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m22:52:35.668027 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m22:52:35.746827 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': 'd50b3331-7aa1-4f17-b902-981ca9612fee', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554F60C690>]}
+[0m22:52:35.751580 [info ] [MainThread]: Found 8 models, 14 data tests, 486 macros
+[0m22:52:35.751580 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'd50b3331-7aa1-4f17-b902-981ca9612fee', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554F28A290>]}
+[0m22:52:35.751580 [info ] [MainThread]: 
+[0m22:52:35.762535 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m22:52:35.764930 [info ] [MainThread]: 
+[0m22:52:35.769762 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m22:52:35.789642 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_warehouse_main'
+[0m22:52:36.108355 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m22:52:36.108355 [debug] [ThreadPool]: On list_warehouse_main: BEGIN
+[0m22:52:36.108355 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m22:52:36.203279 [debug] [ThreadPool]: SQL status: OK in 0.097 seconds
+[0m22:52:36.203279 [debug] [ThreadPool]: Using duckdb connection "list_warehouse_main"
+[0m22:52:36.203279 [debug] [ThreadPool]: On list_warehouse_main: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "connection_name": "list_warehouse_main"} */
+select
+      'warehouse' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'warehouse'
+  
+[0m22:52:36.330854 [debug] [ThreadPool]: SQL status: OK in 0.128 seconds
+[0m22:52:36.355868 [debug] [ThreadPool]: On list_warehouse_main: ROLLBACK
+[0m22:52:36.357881 [debug] [ThreadPool]: Failed to rollback 'list_warehouse_main'
+[0m22:52:36.362509 [debug] [ThreadPool]: On list_warehouse_main: Close
+[0m22:52:36.362509 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'd50b3331-7aa1-4f17-b902-981ca9612fee', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554ECC0650>]}
+[0m22:52:36.362509 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:52:36.378200 [debug] [MainThread]: On master: BEGIN
+[0m22:52:36.378200 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m22:52:36.378200 [debug] [MainThread]: SQL status: OK in 0.003 seconds
+[0m22:52:36.378200 [debug] [MainThread]: On master: COMMIT
+[0m22:52:36.378200 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:52:36.392014 [debug] [MainThread]: On master: COMMIT
+[0m22:52:36.396055 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:52:36.396055 [debug] [MainThread]: On master: Close
+[0m22:52:36.416624 [debug] [Thread-1 (]: Began running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e
+[0m22:52:36.425894 [debug] [Thread-3 (]: Began running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785
+[0m22:52:36.425894 [debug] [Thread-2 (]: Began running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326
+[0m22:52:36.425894 [debug] [Thread-4 (]: Began running node test.email_rl_warehouse.assert_category_balance
+[0m22:52:36.425894 [info ] [Thread-1 (]: 1 of 14 START test accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security  [RUN]
+[0m22:52:36.425894 [info ] [Thread-3 (]: 3 of 14 START test accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review  [RUN]
+[0m22:52:36.425894 [info ] [Thread-2 (]: 2 of 14 START test accepted_values_stg_env_steps_true_priority__low__medium__high__urgent  [RUN]
+[0m22:52:36.425894 [info ] [Thread-4 (]: 4 of 14 START test assert_category_balance ..................................... [RUN]
+[0m22:52:36.441646 [debug] [Thread-1 (]: Acquiring new duckdb connection 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e'
+[0m22:52:36.449773 [debug] [Thread-3 (]: Acquiring new duckdb connection 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785'
+[0m22:52:36.452892 [debug] [Thread-2 (]: Acquiring new duckdb connection 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326'
+[0m22:52:36.458234 [debug] [Thread-4 (]: Acquiring new duckdb connection 'test.email_rl_warehouse.assert_category_balance'
+[0m22:52:36.459659 [debug] [Thread-1 (]: Began compiling node test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e
+[0m22:52:36.461865 [debug] [Thread-3 (]: Began compiling node test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785
+[0m22:52:36.461865 [debug] [Thread-2 (]: Began compiling node test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326
+[0m22:52:36.466639 [debug] [Thread-4 (]: Began compiling node test.email_rl_warehouse.assert_category_balance
+[0m22:52:36.817745 [debug] [Thread-1 (]: Writing injected SQL for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e"
+[0m22:52:36.849815 [debug] [Thread-2 (]: Writing injected SQL for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326"
+[0m22:52:36.849815 [debug] [Thread-3 (]: Writing injected SQL for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785"
+[0m22:52:36.867940 [debug] [Thread-4 (]: Writing injected SQL for node "test.email_rl_warehouse.assert_category_balance"
+[0m22:52:36.873258 [debug] [Thread-1 (]: Began executing node test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e
+[0m22:52:36.876038 [debug] [Thread-2 (]: Began executing node test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326
+[0m22:52:36.879387 [debug] [Thread-3 (]: Began executing node test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785
+[0m22:52:36.913110 [debug] [Thread-4 (]: Began executing node test.email_rl_warehouse.assert_category_balance
+[0m22:52:36.977153 [debug] [Thread-1 (]: Writing runtime sql for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e"
+[0m22:52:36.977153 [debug] [Thread-2 (]: Writing runtime sql for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326"
+[0m22:52:36.988815 [debug] [Thread-3 (]: Writing runtime sql for node "test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785"
+[0m22:52:36.994554 [debug] [Thread-4 (]: Writing runtime sql for node "test.email_rl_warehouse.assert_category_balance"
+[0m22:52:36.996566 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e"
+[0m22:52:36.998792 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326"
+[0m22:52:37.002201 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785"
+[0m22:52:37.002201 [debug] [Thread-1 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e: BEGIN
+[0m22:52:37.005566 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.assert_category_balance"
+[0m22:52:37.005566 [debug] [Thread-2 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326: BEGIN
+[0m22:52:37.008679 [debug] [Thread-3 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785: BEGIN
+[0m22:52:37.010691 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m22:52:37.012704 [debug] [Thread-4 (]: On test.email_rl_warehouse.assert_category_balance: BEGIN
+[0m22:52:37.014713 [debug] [Thread-2 (]: Opening a new connection, currently in state init
+[0m22:52:37.016725 [debug] [Thread-3 (]: Opening a new connection, currently in state init
+[0m22:52:37.018738 [debug] [Thread-1 (]: SQL status: OK in 0.009 seconds
+[0m22:52:37.020751 [debug] [Thread-4 (]: Opening a new connection, currently in state init
+[0m22:52:37.022765 [debug] [Thread-2 (]: SQL status: OK in 0.008 seconds
+[0m22:52:37.024520 [debug] [Thread-3 (]: SQL status: OK in 0.008 seconds
+[0m22:52:37.026531 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e"
+[0m22:52:37.026531 [debug] [Thread-4 (]: SQL status: OK in 0.007 seconds
+[0m22:52:37.026531 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326"
+[0m22:52:37.026531 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785"
+[0m22:52:37.032203 [debug] [Thread-1 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+with all_values as (
+
+    select
+        true_category as value_field,
+        count(*) as n_records
+
+    from "warehouse"."main"."stg_env_steps"
+    group by true_category
+
+)
+
+select *
+from all_values
+where value_field not in (
+    'spam','newsletter','support','sales','internal','billing','security'
+)
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.032203 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.assert_category_balance"
+[0m22:52:37.032203 [debug] [Thread-2 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+with all_values as (
+
+    select
+        true_priority as value_field,
+        count(*) as n_records
+
+    from "warehouse"."main"."stg_env_steps"
+    group by true_priority
+
+)
+
+select *
+from all_values
+where value_field not in (
+    'low','medium','high','urgent'
+)
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.032203 [debug] [Thread-3 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+with all_values as (
+
+    select
+        true_route as value_field,
+        count(*) as n_records
+
+    from "warehouse"."main"."stg_env_steps"
+    group by true_route
+
+)
+
+select *
+from all_values
+where value_field not in (
+    'inbox','archive','support_team','sales_team','security_team','billing_team','trash','human_review'
+)
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.040542 [debug] [Thread-4 (]: On test.email_rl_warehouse.assert_category_balance: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.assert_category_balance"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  -- Regression guard for a real bug found and fixed in
+-- server/Email_RL_environment.py: _sample_episode() used to always drop
+-- the same standard category ("security") from every single episode, so
+-- it was never represented in any collected data (confirmed empirically:
+-- 0/300 sampled episodes). This test fails if any of the 7 standard
+-- categories drops below 5% of standard-slot rows in the WHOLE collected
+-- dataset -- loose enough to tolerate normal sampling variance (each
+-- category is expected at ~14.3%), tight enough to catch a total or
+-- near-total omission like the original bug.
+--
+-- Only evaluated once there's a reasonably sized dataset (>50 standard
+-- rows), so a handful of debug episodes doesn't produce a flaky failure.
+-- "Standard" rows exclude phishing (always mislabeled true_category=
+-- 'security' by design) and cluster/critical rows, which aren't part of
+-- the per-category sampling this test is guarding.
+--
+-- IMPORTANT: a category with ZERO occurrences never produces a row from
+-- a plain GROUP BY -- which is exactly the failure mode this test exists
+-- to catch. All 7 categories are enumerated explicitly and LEFT JOINed
+-- against the observed counts so a fully-absent category still shows up
+-- as n=0 instead of silently not appearing at all.
+
+with all_categories as (
+    select unnest(['spam', 'newsletter', 'support', 'sales', 'internal', 'billing', 'security']) as true_category
+),
+standard_rows as (
+    select true_category
+    from "warehouse"."main"."stg_env_steps"
+    where not is_phishing
+      and not is_business_critical
+      and cluster_id is null
+),
+category_counts as (
+    select
+        all_categories.true_category,
+        count(standard_rows.true_category) as n
+    from all_categories
+    left join standard_rows
+        on all_categories.true_category = standard_rows.true_category
+    group by all_categories.true_category
+),
+total as (
+    select count(*) as total_n from standard_rows
+)
+select category_counts.true_category, category_counts.n, total.total_n
+from category_counts, total
+where total.total_n > 50
+  and category_counts.n < 0.05 * total.total_n
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.086073 [debug] [Thread-2 (]: SQL status: OK in 0.044 seconds
+[0m22:52:37.088589 [debug] [Thread-3 (]: SQL status: OK in 0.044 seconds
+[0m22:52:37.088589 [debug] [Thread-1 (]: SQL status: OK in 0.052 seconds
+[0m22:52:37.104089 [debug] [Thread-2 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326: ROLLBACK
+[0m22:52:37.104089 [debug] [Thread-4 (]: SQL status: OK in 0.061 seconds
+[0m22:52:37.104089 [debug] [Thread-3 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785: ROLLBACK
+[0m22:52:37.104089 [debug] [Thread-1 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e: ROLLBACK
+[0m22:52:37.104089 [debug] [Thread-2 (]: Failed to rollback 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326'
+[0m22:52:37.121757 [debug] [Thread-4 (]: On test.email_rl_warehouse.assert_category_balance: ROLLBACK
+[0m22:52:37.123767 [debug] [Thread-3 (]: Failed to rollback 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785'
+[0m22:52:37.125776 [debug] [Thread-1 (]: Failed to rollback 'test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e'
+[0m22:52:37.127787 [debug] [Thread-2 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326: Close
+[0m22:52:37.129796 [debug] [Thread-4 (]: Failed to rollback 'test.email_rl_warehouse.assert_category_balance'
+[0m22:52:37.129796 [debug] [Thread-3 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785: Close
+[0m22:52:37.131805 [debug] [Thread-1 (]: On test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e: Close
+[0m22:52:37.135569 [info ] [Thread-2 (]: 2 of 14 PASS accepted_values_stg_env_steps_true_priority__low__medium__high__urgent  [[32mPASS[0m in 0.68s]
+[0m22:52:37.135569 [debug] [Thread-4 (]: On test.email_rl_warehouse.assert_category_balance: Close
+[0m22:52:37.139597 [info ] [Thread-3 (]: 3 of 14 PASS accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review  [[32mPASS[0m in 0.69s]
+[0m22:52:37.141608 [info ] [Thread-1 (]: 1 of 14 PASS accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security  [[32mPASS[0m in 0.70s]
+[0m22:52:37.146495 [debug] [Thread-2 (]: Finished running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326
+[0m22:52:37.146495 [info ] [Thread-4 (]: 4 of 14 PASS assert_category_balance ........................................... [[32mPASS[0m in 0.69s]
+[0m22:52:37.146495 [debug] [Thread-3 (]: Finished running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785
+[0m22:52:37.155585 [debug] [Thread-1 (]: Finished running node test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e
+[0m22:52:37.156694 [debug] [Thread-2 (]: Began running node test.email_rl_warehouse.assert_cluster_pairs
+[0m22:52:37.161803 [debug] [Thread-4 (]: Finished running node test.email_rl_warehouse.assert_category_balance
+[0m22:52:37.161803 [debug] [Thread-3 (]: Began running node test.email_rl_warehouse.assert_critical_consistency
+[0m22:52:37.165217 [debug] [Thread-1 (]: Began running node test.email_rl_warehouse.assert_phishing_consistency
+[0m22:52:37.165217 [info ] [Thread-2 (]: 5 of 14 START test assert_cluster_pairs ........................................ [RUN]
+[0m22:52:37.172102 [debug] [Thread-4 (]: Began running node test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245
+[0m22:52:37.173496 [info ] [Thread-3 (]: 6 of 14 START test assert_critical_consistency ................................. [RUN]
+[0m22:52:37.173496 [info ] [Thread-1 (]: 7 of 14 START test assert_phishing_consistency ................................. [RUN]
+[0m22:52:37.178740 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.accepted_values_stg_env_steps_true_priority__low__medium__high__urgent.506a00d326, now test.email_rl_warehouse.assert_cluster_pairs)
+[0m22:52:37.182774 [info ] [Thread-4 (]: 8 of 14 START test not_null_stg_client_steps_email_id .......................... [RUN]
+[0m22:52:37.184788 [debug] [Thread-3 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.accepted_values_stg_env_steps_true_route__inbox__archive__support_team__sales_team__security_team__billing_team__trash__human_review.13be18e785, now test.email_rl_warehouse.assert_critical_consistency)
+[0m22:52:37.186800 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.accepted_values_stg_env_steps_true_category__spam__newsletter__support__sales__internal__billing__security.7c6d71716e, now test.email_rl_warehouse.assert_phishing_consistency)
+[0m22:52:37.188782 [debug] [Thread-2 (]: Began compiling node test.email_rl_warehouse.assert_cluster_pairs
+[0m22:52:37.191499 [debug] [Thread-4 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.assert_category_balance, now test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245)
+[0m22:52:37.195210 [debug] [Thread-3 (]: Began compiling node test.email_rl_warehouse.assert_critical_consistency
+[0m22:52:37.197279 [debug] [Thread-1 (]: Began compiling node test.email_rl_warehouse.assert_phishing_consistency
+[0m22:52:37.206081 [debug] [Thread-2 (]: Writing injected SQL for node "test.email_rl_warehouse.assert_cluster_pairs"
+[0m22:52:37.209013 [debug] [Thread-4 (]: Began compiling node test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245
+[0m22:52:37.214761 [debug] [Thread-3 (]: Writing injected SQL for node "test.email_rl_warehouse.assert_critical_consistency"
+[0m22:52:37.224850 [debug] [Thread-1 (]: Writing injected SQL for node "test.email_rl_warehouse.assert_phishing_consistency"
+[0m22:52:37.260940 [debug] [Thread-4 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245"
+[0m22:52:37.262952 [debug] [Thread-2 (]: Began executing node test.email_rl_warehouse.assert_cluster_pairs
+[0m22:52:37.265169 [debug] [Thread-3 (]: Began executing node test.email_rl_warehouse.assert_critical_consistency
+[0m22:52:37.269296 [debug] [Thread-1 (]: Began executing node test.email_rl_warehouse.assert_phishing_consistency
+[0m22:52:37.272064 [debug] [Thread-4 (]: Began executing node test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245
+[0m22:52:37.279768 [debug] [Thread-2 (]: Writing runtime sql for node "test.email_rl_warehouse.assert_cluster_pairs"
+[0m22:52:37.288764 [debug] [Thread-3 (]: Writing runtime sql for node "test.email_rl_warehouse.assert_critical_consistency"
+[0m22:52:37.295196 [debug] [Thread-1 (]: Writing runtime sql for node "test.email_rl_warehouse.assert_phishing_consistency"
+[0m22:52:37.308414 [debug] [Thread-4 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245"
+[0m22:52:37.313117 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.assert_cluster_pairs"
+[0m22:52:37.315134 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.assert_critical_consistency"
+[0m22:52:37.317789 [debug] [Thread-2 (]: On test.email_rl_warehouse.assert_cluster_pairs: BEGIN
+[0m22:52:37.317789 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.assert_phishing_consistency"
+[0m22:52:37.317789 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245"
+[0m22:52:37.322959 [debug] [Thread-3 (]: On test.email_rl_warehouse.assert_critical_consistency: BEGIN
+[0m22:52:37.324272 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m22:52:37.324272 [debug] [Thread-1 (]: On test.email_rl_warehouse.assert_phishing_consistency: BEGIN
+[0m22:52:37.324272 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245: BEGIN
+[0m22:52:37.328448 [debug] [Thread-3 (]: Opening a new connection, currently in state closed
+[0m22:52:37.328448 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:52:37.330918 [debug] [Thread-2 (]: SQL status: OK in 0.007 seconds
+[0m22:52:37.330918 [debug] [Thread-4 (]: Opening a new connection, currently in state closed
+[0m22:52:37.333505 [debug] [Thread-3 (]: SQL status: OK in 0.007 seconds
+[0m22:52:37.336017 [debug] [Thread-1 (]: SQL status: OK in 0.006 seconds
+[0m22:52:37.336017 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.assert_cluster_pairs"
+[0m22:52:37.338028 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.assert_critical_consistency"
+[0m22:52:37.338028 [debug] [Thread-4 (]: SQL status: OK in 0.008 seconds
+[0m22:52:37.338028 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.assert_phishing_consistency"
+[0m22:52:37.338028 [debug] [Thread-2 (]: On test.email_rl_warehouse.assert_cluster_pairs: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.assert_cluster_pairs"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  -- Every dependency cluster is authored as exactly 2 linked emails (see
+-- _DEPENDENCY_CLUSTERS in server/Email_RL_environment.py). A dbt test
+-- passes when the query returns ZERO rows -- so this returns any
+-- (episode_id, cluster_id) pair that does NOT have exactly 2 rows.
+
+select
+    episode_id,
+    cluster_id,
+    count(*) as n_rows
+from "warehouse"."main"."stg_env_steps"
+where cluster_id is not null
+group by episode_id, cluster_id
+having count(*) > 2
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.338028 [debug] [Thread-3 (]: On test.email_rl_warehouse.assert_critical_consistency: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.assert_critical_consistency"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  -- Business-critical emails are always constructed with
+-- true_route='human_review' regardless of category (see _generate_email()
+-- in server/Email_RL_environment.py). Any row violating that is either a
+-- generator regression or a telemetry-field mixup.
+
+select *
+from "warehouse"."main"."stg_env_steps"
+where is_business_critical = true
+  and true_route != 'human_review'
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.345989 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245"
+[0m22:52:37.347346 [debug] [Thread-1 (]: On test.email_rl_warehouse.assert_phishing_consistency: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.assert_phishing_consistency"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  -- Phishing emails are always constructed with true_category='security' and
+-- true_route='security_team' (see _generate_email() in
+-- server/Email_RL_environment.py). Any row violating that is either a
+-- generator regression or a telemetry-field mixup.
+
+select *
+from "warehouse"."main"."stg_env_steps"
+where is_phishing = true
+  and (true_category != 'security' or true_route != 'security_team')
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.351056 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select email_id
+from "warehouse"."main"."stg_client_steps"
+where email_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.359650 [debug] [Thread-3 (]: SQL status: OK in 0.012 seconds
+[0m22:52:37.363532 [debug] [Thread-2 (]: SQL status: OK in 0.015 seconds
+[0m22:52:37.365203 [debug] [Thread-4 (]: SQL status: OK in 0.011 seconds
+[0m22:52:37.368094 [debug] [Thread-3 (]: On test.email_rl_warehouse.assert_critical_consistency: ROLLBACK
+[0m22:52:37.368094 [debug] [Thread-1 (]: SQL status: OK in 0.017 seconds
+[0m22:52:37.373630 [debug] [Thread-2 (]: On test.email_rl_warehouse.assert_cluster_pairs: ROLLBACK
+[0m22:52:37.373630 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245: ROLLBACK
+[0m22:52:37.373630 [debug] [Thread-3 (]: Failed to rollback 'test.email_rl_warehouse.assert_critical_consistency'
+[0m22:52:37.383335 [debug] [Thread-1 (]: On test.email_rl_warehouse.assert_phishing_consistency: ROLLBACK
+[0m22:52:37.383335 [debug] [Thread-2 (]: Failed to rollback 'test.email_rl_warehouse.assert_cluster_pairs'
+[0m22:52:37.383335 [debug] [Thread-4 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245'
+[0m22:52:37.387422 [debug] [Thread-3 (]: On test.email_rl_warehouse.assert_critical_consistency: Close
+[0m22:52:37.389838 [debug] [Thread-1 (]: Failed to rollback 'test.email_rl_warehouse.assert_phishing_consistency'
+[0m22:52:37.391039 [debug] [Thread-2 (]: On test.email_rl_warehouse.assert_cluster_pairs: Close
+[0m22:52:37.393360 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245: Close
+[0m22:52:37.393360 [info ] [Thread-3 (]: 6 of 14 PASS assert_critical_consistency ....................................... [[32mPASS[0m in 0.21s]
+[0m22:52:37.396814 [debug] [Thread-1 (]: On test.email_rl_warehouse.assert_phishing_consistency: Close
+[0m22:52:37.396814 [info ] [Thread-2 (]: 5 of 14 PASS assert_cluster_pairs .............................................. [[32mPASS[0m in 0.22s]
+[0m22:52:37.399654 [info ] [Thread-4 (]: 8 of 14 PASS not_null_stg_client_steps_email_id ................................ [[32mPASS[0m in 0.21s]
+[0m22:52:37.401665 [debug] [Thread-3 (]: Finished running node test.email_rl_warehouse.assert_critical_consistency
+[0m22:52:37.405304 [info ] [Thread-1 (]: 7 of 14 PASS assert_phishing_consistency ....................................... [[32mPASS[0m in 0.22s]
+[0m22:52:37.407664 [debug] [Thread-2 (]: Finished running node test.email_rl_warehouse.assert_cluster_pairs
+[0m22:52:37.407664 [debug] [Thread-4 (]: Finished running node test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245
+[0m22:52:37.407664 [debug] [Thread-3 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5
+[0m22:52:37.415486 [debug] [Thread-1 (]: Finished running node test.email_rl_warehouse.assert_phishing_consistency
+[0m22:52:37.417504 [debug] [Thread-2 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8
+[0m22:52:37.417504 [debug] [Thread-4 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c
+[0m22:52:37.420936 [info ] [Thread-3 (]: 9 of 14 START test not_null_stg_env_steps_email_id ............................. [RUN]
+[0m22:52:37.424071 [debug] [Thread-1 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007
+[0m22:52:37.425547 [info ] [Thread-2 (]: 10 of 14 START test not_null_stg_env_steps_episode_id .......................... [RUN]
+[0m22:52:37.427560 [info ] [Thread-4 (]: 11 of 14 START test not_null_stg_env_steps_step ................................ [RUN]
+[0m22:52:37.427560 [debug] [Thread-3 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.assert_critical_consistency, now test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5)
+[0m22:52:37.427560 [info ] [Thread-1 (]: 12 of 14 START test not_null_stg_env_steps_true_category ....................... [RUN]
+[0m22:52:37.427560 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.assert_cluster_pairs, now test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8)
+[0m22:52:37.427560 [debug] [Thread-4 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.not_null_stg_client_steps_email_id.6449511245, now test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c)
+[0m22:52:37.437917 [debug] [Thread-3 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5
+[0m22:52:37.440242 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.assert_phishing_consistency, now test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007)
+[0m22:52:37.441883 [debug] [Thread-2 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8
+[0m22:52:37.442837 [debug] [Thread-4 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c
+[0m22:52:37.460505 [debug] [Thread-3 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5"
+[0m22:52:37.460505 [debug] [Thread-1 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007
+[0m22:52:37.473508 [debug] [Thread-2 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8"
+[0m22:52:37.492466 [debug] [Thread-4 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c"
+[0m22:52:37.509365 [debug] [Thread-1 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007"
+[0m22:52:37.515662 [debug] [Thread-3 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5
+[0m22:52:37.517419 [debug] [Thread-2 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8
+[0m22:52:37.525924 [debug] [Thread-3 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5"
+[0m22:52:37.525924 [debug] [Thread-4 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c
+[0m22:52:37.525924 [debug] [Thread-2 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8"
+[0m22:52:37.525924 [debug] [Thread-1 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007
+[0m22:52:37.546245 [debug] [Thread-4 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c"
+[0m22:52:37.546245 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5"
+[0m22:52:37.546245 [debug] [Thread-1 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007"
+[0m22:52:37.557762 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8"
+[0m22:52:37.557762 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5: BEGIN
+[0m22:52:37.564158 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c"
+[0m22:52:37.568191 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8: BEGIN
+[0m22:52:37.570202 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007"
+[0m22:52:37.570202 [debug] [Thread-3 (]: Opening a new connection, currently in state closed
+[0m22:52:37.574843 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c: BEGIN
+[0m22:52:37.576855 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m22:52:37.576855 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007: BEGIN
+[0m22:52:37.576855 [debug] [Thread-3 (]: SQL status: OK in 0.008 seconds
+[0m22:52:37.582242 [debug] [Thread-4 (]: Opening a new connection, currently in state closed
+[0m22:52:37.582242 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:52:37.586305 [debug] [Thread-2 (]: SQL status: OK in 0.010 seconds
+[0m22:52:37.586305 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5"
+[0m22:52:37.589947 [debug] [Thread-4 (]: SQL status: OK in 0.008 seconds
+[0m22:52:37.593731 [debug] [Thread-1 (]: SQL status: OK in 0.008 seconds
+[0m22:52:37.593731 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8"
+[0m22:52:37.595991 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select email_id
+from "warehouse"."main"."stg_env_steps"
+where email_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.598006 [debug] [Thread-4 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c"
+[0m22:52:37.600022 [debug] [Thread-1 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007"
+[0m22:52:37.602037 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select episode_id
+from "warehouse"."main"."stg_env_steps"
+where episode_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.604050 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select step
+from "warehouse"."main"."stg_env_steps"
+where step is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.607821 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select true_category
+from "warehouse"."main"."stg_env_steps"
+where true_category is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.612365 [debug] [Thread-3 (]: SQL status: OK in 0.009 seconds
+[0m22:52:37.618412 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5: ROLLBACK
+[0m22:52:37.620430 [debug] [Thread-2 (]: SQL status: OK in 0.012 seconds
+[0m22:52:37.622973 [debug] [Thread-1 (]: SQL status: OK in 0.011 seconds
+[0m22:52:37.623483 [debug] [Thread-4 (]: SQL status: OK in 0.013 seconds
+[0m22:52:37.623483 [debug] [Thread-3 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5'
+[0m22:52:37.625494 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8: ROLLBACK
+[0m22:52:37.625494 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007: ROLLBACK
+[0m22:52:37.625494 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c: ROLLBACK
+[0m22:52:37.625494 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5: Close
+[0m22:52:37.638081 [debug] [Thread-2 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8'
+[0m22:52:37.638081 [debug] [Thread-1 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007'
+[0m22:52:37.640092 [debug] [Thread-4 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c'
+[0m22:52:37.642101 [info ] [Thread-3 (]: 9 of 14 PASS not_null_stg_env_steps_email_id ................................... [[32mPASS[0m in 0.21s]
+[0m22:52:37.642101 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8: Close
+[0m22:52:37.642101 [debug] [Thread-1 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007: Close
+[0m22:52:37.646324 [debug] [Thread-4 (]: On test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c: Close
+[0m22:52:37.646324 [debug] [Thread-3 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5
+[0m22:52:37.646324 [info ] [Thread-2 (]: 10 of 14 PASS not_null_stg_env_steps_episode_id ................................ [[32mPASS[0m in 0.22s]
+[0m22:52:37.646324 [info ] [Thread-1 (]: 12 of 14 PASS not_null_stg_env_steps_true_category ............................. [[32mPASS[0m in 0.21s]
+[0m22:52:37.651919 [info ] [Thread-4 (]: 11 of 14 PASS not_null_stg_env_steps_step ...................................... [[32mPASS[0m in 0.22s]
+[0m22:52:37.655423 [debug] [Thread-3 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0
+[0m22:52:37.657818 [debug] [Thread-2 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8
+[0m22:52:37.660037 [debug] [Thread-1 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007
+[0m22:52:37.661723 [debug] [Thread-4 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c
+[0m22:52:37.663852 [info ] [Thread-3 (]: 13 of 14 START test not_null_stg_env_steps_true_priority ....................... [RUN]
+[0m22:52:37.665864 [debug] [Thread-2 (]: Began running node test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530
+[0m22:52:37.667953 [debug] [Thread-3 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.not_null_stg_env_steps_email_id.e94a4cb3b5, now test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0)
+[0m22:52:37.672500 [info ] [Thread-2 (]: 14 of 14 START test not_null_stg_env_steps_true_route .......................... [RUN]
+[0m22:52:37.674515 [debug] [Thread-3 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0
+[0m22:52:37.676527 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly test.email_rl_warehouse.not_null_stg_env_steps_episode_id.5bc89fcad8, now test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530)
+[0m22:52:37.696752 [debug] [Thread-3 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0"
+[0m22:52:37.696752 [debug] [Thread-2 (]: Began compiling node test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530
+[0m22:52:37.718792 [debug] [Thread-2 (]: Writing injected SQL for node "test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530"
+[0m22:52:37.720114 [debug] [Thread-3 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0
+[0m22:52:37.727040 [debug] [Thread-3 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0"
+[0m22:52:37.727040 [debug] [Thread-2 (]: Began executing node test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530
+[0m22:52:37.736274 [debug] [Thread-2 (]: Writing runtime sql for node "test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530"
+[0m22:52:37.738541 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0"
+[0m22:52:37.739104 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0: BEGIN
+[0m22:52:37.741486 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530"
+[0m22:52:37.743388 [debug] [Thread-3 (]: Opening a new connection, currently in state closed
+[0m22:52:37.743388 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530: BEGIN
+[0m22:52:37.745994 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m22:52:37.745994 [debug] [Thread-3 (]: SQL status: OK in 0.004 seconds
+[0m22:52:37.745994 [debug] [Thread-2 (]: SQL status: OK in 0.003 seconds
+[0m22:52:37.745994 [debug] [Thread-3 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0"
+[0m22:52:37.751122 [debug] [Thread-2 (]: Using duckdb connection "test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530"
+[0m22:52:37.751122 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select true_priority
+from "warehouse"."main"."stg_env_steps"
+where true_priority is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.753902 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "email_rl_warehouse", "target_name": "dev", "node_id": "test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select true_route
+from "warehouse"."main"."stg_env_steps"
+where true_route is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:52:37.760837 [debug] [Thread-3 (]: SQL status: OK in 0.005 seconds
+[0m22:52:37.762346 [debug] [Thread-2 (]: SQL status: OK in 0.005 seconds
+[0m22:52:37.764648 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0: ROLLBACK
+[0m22:52:37.771743 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530: ROLLBACK
+[0m22:52:37.771743 [debug] [Thread-3 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0'
+[0m22:52:37.775840 [debug] [Thread-2 (]: Failed to rollback 'test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530'
+[0m22:52:37.777117 [debug] [Thread-3 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0: Close
+[0m22:52:37.778909 [debug] [Thread-2 (]: On test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530: Close
+[0m22:52:37.778909 [info ] [Thread-3 (]: 13 of 14 PASS not_null_stg_env_steps_true_priority ............................. [[32mPASS[0m in 0.11s]
+[0m22:52:37.783212 [info ] [Thread-2 (]: 14 of 14 PASS not_null_stg_env_steps_true_route ................................ [[32mPASS[0m in 0.11s]
+[0m22:52:37.785224 [debug] [Thread-3 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0
+[0m22:52:37.788621 [debug] [Thread-2 (]: Finished running node test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530
+[0m22:52:37.793123 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:52:37.794537 [debug] [MainThread]: On master: BEGIN
+[0m22:52:37.794537 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m22:52:37.794537 [debug] [MainThread]: SQL status: OK in 0.002 seconds
+[0m22:52:37.794537 [debug] [MainThread]: On master: COMMIT
+[0m22:52:37.800533 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:52:37.802774 [debug] [MainThread]: On master: COMMIT
+[0m22:52:37.805255 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:52:37.807493 [debug] [MainThread]: On master: Close
+[0m22:52:37.809503 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m22:52:37.811516 [debug] [MainThread]: Connection 'list_warehouse_main' was properly closed.
+[0m22:52:37.813529 [debug] [MainThread]: Connection 'test.email_rl_warehouse.not_null_stg_env_steps_true_category.158314f007' was properly closed.
+[0m22:52:37.814860 [debug] [MainThread]: Connection 'test.email_rl_warehouse.not_null_stg_env_steps_true_priority.11d9b380a0' was properly closed.
+[0m22:52:37.816877 [debug] [MainThread]: Connection 'test.email_rl_warehouse.not_null_stg_env_steps_true_route.fff2de4530' was properly closed.
+[0m22:52:37.817908 [debug] [MainThread]: Connection 'test.email_rl_warehouse.not_null_stg_env_steps_step.c634584f8c' was properly closed.
+[0m22:52:37.819690 [info ] [MainThread]: 
+[0m22:52:37.823817 [info ] [MainThread]: Finished running 14 data tests in 0 hours 0 minutes and 2.05 seconds (2.05s).
+[0m22:52:37.832208 [debug] [MainThread]: Command end result
+[0m22:52:37.948337 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\manifest.json
+[0m22:52:37.957838 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\semantic_manifest.json
+[0m22:52:37.966475 [debug] [MainThread]: Wrote artifact OsiDocument to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\osi_document.json
+[0m22:52:37.989009 [debug] [MainThread]: Wrote artifact RunExecutionResult to C:\Users\Yuvraj Singh\OneDrive\Desktop\Email_OpenEnv\Email_RL\warehouse\target\run_results.json
+[0m22:52:37.989009 [info ] [MainThread]: 
+[0m22:52:37.989009 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m22:52:37.995682 [info ] [MainThread]: 
+[0m22:52:37.997263 [info ] [MainThread]: Done. PASS=14 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=14
+[0m22:52:38.000795 [debug] [MainThread]: Command `dbt test` succeeded at 22:52:38.000795 after 6.13 seconds
+[0m22:52:38.000795 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554EC6C410>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554EC6EF10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002554EA80510>]}
+[0m22:52:38.002804 [debug] [MainThread]: Flushing usage events
+[0m22:52:39.790385 [debug] [MainThread]: An error was encountered while trying to flush usage events
