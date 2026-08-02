@@ -2,14 +2,14 @@ name: Data Quality Gate
 
 on:
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - "server/Email_RL_environment.py"
       - "models.py"
       - "quality/**"
       - ".github/workflows/data-quality.yml"
   pull_request:
-    branches: [main]
+    branches: [master]
     paths:
       - "server/Email_RL_environment.py"
       - "models.py"
