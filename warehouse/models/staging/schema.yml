@@ -28,32 +28,35 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['low', 'medium', 'high', 'urgent']
+              arguments:
+                values: ['low', 'medium', 'high', 'urgent']
       - name: true_category
         tests:
           - not_null
           - accepted_values:
-              values:
-                - spam
-                - newsletter
-                - support
-                - sales
-                - internal
-                - billing
-                - security
+              arguments:
+                values:
+                  - spam
+                  - newsletter
+                  - support
+                  - sales
+                  - internal
+                  - billing
+                  - security
       - name: true_route
         tests:
           - not_null
           - accepted_values:
-              values:
-                - inbox
-                - archive
-                - support_team
-                - sales_team
-                - security_team
-                - billing_team
-                - trash
-                - human_review
+              arguments:
+                values:
+                  - inbox
+                  - archive
+                  - support_team
+                  - sales_team
+                  - security_team
+                  - billing_team
+                  - trash
+                  - human_review
 
   - name: stg_client_steps
     description: >

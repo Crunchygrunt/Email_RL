@@ -2280,3 +2280,48 @@ alter table "warehouse"."main"."fct_confusion_matrix__dbt_tmp" rename to "fct_co
 [0m16:53:50.751196 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E937F710>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E93A0E50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000128E93A0CD0>]}
 [0m16:53:50.752195 [debug] [MainThread]: Flushing usage events
 [0m16:53:52.438610 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m18:56:10.652541 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F67EDE8D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F67FA0B90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F67EDEF90>]}
+
+
+============================== 18:56:10.668394 | 5d88dd85-a1b8-46b2-b51e-ad80734fa5c8 ==============================
+[0m18:56:10.668394 [info ] [MainThread]: Running with dbt=1.12.0
+[0m18:56:10.668394 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'maximum_seed_size_mib': '1', 'target_path': 'None', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'write_json': 'True', 'empty': 'False', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': '.', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'invocation_command': 'dbt run --profiles-dir .', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': 'C:\\Users\\Yuvraj Singh\\OneDrive\\Desktop\\Email_OpenEnv\\Email_RL\\warehouse\\logs'}
+[0m18:56:12.716564 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '5d88dd85-a1b8-46b2-b51e-ad80734fa5c8', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F65CB15D0>]}
+[0m18:56:12.897235 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '5d88dd85-a1b8-46b2-b51e-ad80734fa5c8', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F63419B90>]}
+[0m18:56:12.936689 [info ] [MainThread]: Registered adapter: duckdb=1.10.1
+[0m18:56:13.964134 [debug] [MainThread]: checksum: f0d9819fa8ee4563bd15d8de06517e98ba4ac797156a47baad28b9341f2427ea, vars: {}, profile: email_rl_warehouse, target: dev, version: 1.12.0
+[0m18:56:18.491542 [debug] [MainThread]: Partial parsing enabled: 5 files deleted, 6 files added, 2 files changed.
+[0m18:56:18.491542 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://tests\assert_critical_consistency.sql
+[0m18:56:18.504470 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://tests\assert_category_balance.sql
+[0m18:56:18.504470 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://tests\assert_phishing_consistency.sql
+[0m18:56:18.504470 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://models\marts\agg_data_quality.sql
+[0m18:56:18.507536 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://models\staging\schema.yml
+[0m18:56:18.509857 [debug] [MainThread]: Partial parsing: added file: email_rl_warehouse://tests\assert_cluster_pairs.sql
+[0m18:56:18.511261 [debug] [MainThread]: Partial parsing: deleted file: email_rl_warehouse://models\marts\agg_episode_summary.sql
+[0m18:56:18.511261 [debug] [MainThread]: Partial parsing: deleted file: email_rl_warehouse://models\staging\stg_client_steps.sql
+[0m18:56:18.513522 [debug] [MainThread]: Partial parsing: deleted file: email_rl_warehouse://models\marts\fct_reward_components.sql
+[0m18:56:18.513522 [debug] [MainThread]: Partial parsing: deleted file: email_rl_warehouse://models\marts\agg_model_leaderboard.sql
+[0m18:56:18.513522 [debug] [MainThread]: Partial parsing: deleted file: email_rl_warehouse://models\marts\fct_confusion_matrix.sql
+[0m18:56:18.516035 [debug] [MainThread]: Partial parsing: updated file: email_rl_warehouse://models\staging\stg_env_steps.sql
+[0m18:56:18.516035 [debug] [MainThread]: Partial parsing: updated file: email_rl_warehouse://models\intermediate\int_steps_joined.sql
+[0m18:56:19.813654 [warn ] [MainThread]: [[33mWARNING[0m]: Did not find matching node for patch with name 'stg_client_steps' in the 'models' section of file 'models\staging\schema.yml'
+[0m18:56:20.056095 [warn ] [MainThread]: [[33mWARNING[0m][MissingArgumentsPropertyInGenericTestDeprecation]: Deprecated
+functionality
+Found top-level arguments to test `accepted_values` defined on 'stg_env_steps'
+in package 'email_rl_warehouse' (models\staging\schema.yml). Arguments to
+generic tests should be nested under the `arguments` property.
+[0m18:56:20.056095 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'deprecation', 'label': '5d88dd85-a1b8-46b2-b51e-ad80734fa5c8', 'property_': 'warn', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F689EA450>]}
+[0m18:56:20.173445 [error] [MainThread]: [[31mERROR[0m]: Encountered an error:
+Compilation Error
+  Model 'model.email_rl_warehouse.int_steps_joined' (models\intermediate\int_steps_joined.sql) depends on a node named 'stg_client_steps' which was not found
+[0m18:56:20.173445 [warn ] [MainThread]: [[33mWARNING[0m][DeprecationsSummary]: Deprecated functionality
+Summary of encountered deprecations:
+- MissingArgumentsPropertyInGenericTestDeprecation: 3 occurrences
+To see all deprecation instances instead of just the first occurrence of each,
+run command again with the `--show-all-deprecations` flag. You may also need to
+run with `--no-partial-parse` as some deprecations are only encountered during
+parsing.
+[0m18:56:20.181033 [debug] [MainThread]: Command `dbt run` failed at 18:56:20.181033 after 9.82 seconds
+[0m18:56:20.183072 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F68002690>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F67EDE050>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017F67EDF810>]}
+[0m18:56:20.183072 [debug] [MainThread]: Flushing usage events
+[0m18:56:21.918891 [debug] [MainThread]: An error was encountered while trying to flush usage events
