@@ -48,7 +48,7 @@ STREAMS = ("env_steps", "client_steps")
 # Fields that are nested dicts in the raw JSONL and need to become a
 # compact JSON string column before they can go into Parquet.
 _JSON_STRING_FIELDS = {
-    "env_steps": ("reward_components",),
+    "env_steps": ("reward_components", "email_quality_flags"),
     "client_steps": (),
 }
 
@@ -92,6 +92,9 @@ _ENV_STEPS_SCHEMA = pa.schema([
     ("done",                 pa.bool_()),
     ("stateless_http_mode",  pa.bool_()),
     ("emails_remaining",     pa.int64()),
+    ("template_pool",        pa.string()),  # data quality gate Layer 1/3 provenance
+    ("template_idx",         pa.int64()),   # nullable -- None for cluster emails
+    ("email_quality_flags",  pa.string()),  # JSON list -- data quality gate Layer 2
     ("dt",                   pa.string()),
 ])
 
@@ -170,14 +173,20 @@ def _load_events(path: Path) -> List[Dict[str, Any]]:
 
 
 def _prepare_rows(events: List[Dict[str, Any]], dt: str, stream: str) -> List[Dict[str, Any]]:
-    """Flatten nested-dict fields to compact JSON strings; attach dt partition column."""
+    """Flatten nested-dict/list fields to compact JSON strings; attach dt partition column."""
     json_fields = _JSON_STRING_FIELDS.get(stream, ())
     rows = []
     for e in events:
         row = dict(e)
         for field in json_fields:
-            if field in row and isinstance(row[field], dict):
-                row[field] = json.dumps(row[field], sort_keys=True)
+            # BUGFIX: originally only checked isinstance(..., dict), so
+            # list-typed fields (email_quality_flags) passed straight
+            # through as a raw Python list -- pyarrow would then fail or
+            # mis-infer the column type against the pinned `pa.string()`
+            # schema above. dict (reward_components) and list
+            # (email_quality_flags) both need to become JSON strings.
+            if field in row and isinstance(row[field], (dict, list)):
+                row[field] = json.dumps(row[field], sort_keys=isinstance(row[field], dict))
         row["dt"] = dt
         rows.append(row)
     return rows

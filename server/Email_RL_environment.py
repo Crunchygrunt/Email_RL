@@ -523,11 +523,45 @@ _NAMES    = ["Alex", "Jordan", "Sam", "Morgan", "Taylor", "Casey", "Riley", "Dre
 _PRODUCTS = ["Dashboard", "API Gateway", "Analytics Suite", "CRM", "DataPipeline", "Authenticator"]
 _PLANS    = ["Starter", "Professional", "Enterprise", "Team", "Business"]
 _DAYS     = ["Monday", "Tuesday", "Wednesday", "Friday", "next Friday", "March 31", "April 15"]
-_DOMAINS  = ["acme.com", "techcorp.io", "startup.co", "enterprise.net", "company.org"]
+
+# BUGFIX #2 (see WAREHOUSE.md "Known findings"): legitimate sender domains
+# used to include "startup.co" and "enterprise.net" -- both of which end in
+# a "suspicious" TLD per _SUSPICIOUS_TLDS below. Since every email type
+# (phishing or not) drew its sender from this same pool, the
+# SENDER_TRUST_BONUS*0.5 "sender domain looks suspicious" bonus in step()
+# fired at statistically identical rates for phishing (40.4%) and
+# legitimate (40.3%) emails -- pure noise, not a real signal. Every domain
+# here now uses a TLD outside _SUSPICIOUS_TLDS, so a legitimate email can
+# never accidentally trigger that check.
+_DOMAINS  = ["acme.com", "techcorp.io", "startup.io", "enterprise.org", "company.org"]
+
+# Dedicated sender-domain pool for phishing emails only. Mirrors the
+# spoofed-domain style already used in the phishing templates' own body
+# text (e.g. "hr-portal-update.{product}-corp.xyz", "docusign-secure...xyz")
+# so the SENDER field itself now carries the same signal the body text
+# already implied, instead of being drawn from the same pool as legitimate
+# senders. Every entry deliberately ends in a TLD from _SUSPICIOUS_TLDS.
+_PHISHING_SENDER_DOMAINS = [
+    "secure-verify.xyz",
+    "account-alert.co",
+    "billing-update.net",
+    "hr-portal-verify.xyz",
+    "docusign-secure.co",
+    "it-support-verify.net",
+]
 
 
-def _fill_template(subject_tmpl: str, body_tmpl: str) -> Tuple[str, str, str]:
-    """Fill in template placeholders and generate a sender."""
+def _fill_template(
+    subject_tmpl: str,
+    body_tmpl: str,
+    domain_pool: Optional[List[str]] = None,
+) -> Tuple[str, str, str]:
+    """Fill in template placeholders and generate a sender.
+
+    domain_pool: which sender-domain pool to draw from. Defaults to the
+    legitimate _DOMAINS pool; phishing emails pass _PHISHING_SENDER_DOMAINS
+    instead (see BUGFIX #2 above).
+    """
     fills = {
         "name":    random.choice(_NAMES),
         "product": random.choice(_PRODUCTS),
@@ -538,7 +572,8 @@ def _fill_template(subject_tmpl: str, body_tmpl: str) -> Tuple[str, str, str]:
     }
     subject = subject_tmpl.format(**fills)
     body    = body_tmpl.format(**fills)
-    sender  = f"{random.choice(_NAMES).lower()}@{random.choice(_DOMAINS)}"
+    domains = domain_pool if domain_pool is not None else _DOMAINS
+    sender  = f"{random.choice(_NAMES).lower()}@{random.choice(domains)}"
     return subject, body, sender
 
 
@@ -554,19 +589,24 @@ def _generate_email(
 
     if phishing:
         tlist = _PHISHING_EMAIL_TEMPLATES
+        pool_name = "phishing"
     elif escalation:
         tlist = _ESCALATION_TEMPLATES
+        pool_name = "escalation"
     elif critical:
         tlist = _CRITICAL_EMAIL_TEMPLATES
+        pool_name = "critical"
     else:
         tlist = _EMAIL_TEMPLATES
+        pool_name = "standard"
 
     if template_idx is None:
         template_idx = random.randrange(len(tlist))
     template_idx = template_idx % len(tlist)
 
     subject_tmpl, body_tmpl, priority, category = tlist[template_idx][:4]
-    subject, body, sender = _fill_template(subject_tmpl, body_tmpl)
+    domain_pool = _PHISHING_SENDER_DOMAINS if phishing else None
+    subject, body, sender = _fill_template(subject_tmpl, body_tmpl, domain_pool=domain_pool)
 
     # Determine correct route
     if critical:
@@ -589,6 +629,11 @@ def _generate_email(
         "cluster_id":           cluster_id,
         "is_escalation":        escalation,
         "escalation_multiplier": escalation_multiplier if escalation else 1.0,
+        # Data-quality gate (Layer 1/2) provenance: which template pool and
+        # index produced this email. Not used by grading/reward at all --
+        # purely for the quality gate's reuse/diversity reporting.
+        "template_pool":        pool_name,
+        "template_idx":         template_idx,
     }
 
 
@@ -613,6 +658,10 @@ def _generate_cluster_email(
         "cluster_id":           cluster_id,
         "is_escalation":        False,
         "escalation_multiplier": 1.0,
+        # Cluster emails are identified by cluster_id itself (only 3
+        # clusters total), so template_idx isn't meaningful here.
+        "template_pool":        "cluster",
+        "template_idx":         None,
     }
 
 
@@ -754,6 +803,45 @@ class TriageGrader:
             priority_partial=priority_partial,
             category_partial=category_partial,
         )
+
+
+def _check_email_quality(email: Dict[str, Any]) -> List[str]:
+    """
+    Layer 2 of the synthetic-email data quality gate: cheap invariant
+    checks on one email actually served at runtime (mirrors the Layer 1
+    structural/statistical checks in quality/validate_synthetic_emails.py,
+    which run pre-episode on the template pool itself). Never raises --
+    fail-open, like the rest of telemetry -- just returns a list of
+    violation strings (empty if clean) that gets logged alongside the
+    step so a generator regression shows up in the data itself, not only
+    in CI.
+    """
+    flags: List[str] = []
+    priority = email.get("priority")
+    category = email.get("category")
+    route    = email.get("route")
+
+    if priority not in PRIORITIES:
+        flags.append(f"invalid_priority:{priority}")
+    if category not in CATEGORIES:
+        flags.append(f"invalid_category:{category}")
+    if route not in ROUTES:
+        flags.append(f"invalid_route:{route}")
+
+    if email.get("is_phishing"):
+        if category != "security":
+            flags.append(f"phishing_category_mismatch:{category}")
+        if route != "security_team":
+            flags.append(f"phishing_route_mismatch:{route}")
+    elif email.get("is_business_critical"):
+        if route != "human_review":
+            flags.append(f"critical_route_mismatch:{route}")
+    else:
+        expected_route = ROUTE_MAP.get(category)
+        if expected_route is not None and route != expected_route:
+            flags.append(f"route_map_mismatch:expected={expected_route},got={route}")
+
+    return flags
 
 
 # ---------------------------------------------------------------------------
@@ -976,6 +1064,7 @@ class EmailTriageEnvironment(Environment):
                 "coherence_bonus":             component_coherence_bonus,
             }
             print(">>> About to call log_env_step")
+            quality_flags = _check_email_quality(current_email)
             telemetry.event_sink.log_env_step(
                 episode_id=self._state.episode_id,
                 step=self._state.step_count,
@@ -1002,6 +1091,9 @@ class EmailTriageEnvironment(Environment):
                 done=done,
                 stateless_http_mode=self._stateless_http_mode,
                 emails_remaining=max(0, len(self._email_queue) - self._current_idx - 1),
+                template_pool=current_email.get("template_pool"),
+                template_idx=current_email.get("template_idx"),
+                email_quality_flags=quality_flags,
             )
         except Exception as _telemetry_exc:  # noqa: BLE001 -- fail open, never break a step
             import sys as _sys
@@ -1046,18 +1138,26 @@ class EmailTriageEnvironment(Environment):
         cluster = random.choice(_DEPENDENCY_CLUSTERS)
         cluster_emails = [_generate_cluster_email(entry) for entry in cluster]
 
-        # BUGFIX (see WAREHOUSE.md "Known findings"): this must remove one of
-        # the 7 standard-category emails added in step (1) above -- those
+        # BUGFIX #1 (see WAREHOUSE.md "Known findings"): this must remove one
+        # of the 7 standard-category emails added in step (1) above -- those
         # occupy indices 0..len(CATEGORIES)-1 at this point, since nothing
         # has reordered the list yet. The original `selected.pop()` removed
         # the overall LAST item instead, which by this point in the function
         # is always the phishing email just appended in step (3), not a
         # standard email -- so every episode silently ended up with 0
-        # phishing emails. Popping index len(CATEGORIES) - 1 targets the
-        # last *standard* email, matching what the comment above always said
-        # this was supposed to do.
+        # phishing emails. Popping index len(CATEGORIES) - 1 fixed that, but
+        # introduced BUGFIX #2's predecessor: CATEGORIES is a fixed-order
+        # tuple ending in "security", so a hardcoded len(CATEGORIES)-1 always
+        # dropped the same category every single episode (confirmed
+        # empirically: 0/300 sampled episodes contained a standard,
+        # non-phishing "security"-category email -- every other category
+        # appeared 300/300). Popping a RANDOM standard index instead means
+        # each of the 7 categories has an equal (6/7) chance of surviving
+        # into any given episode, matching the intent of "drop one standard
+        # email to make room for the 2-email cluster" without systematically
+        # erasing one category's legitimate representation.
         if len(selected) >= len(CATEGORIES):
-            selected.pop(len(CATEGORIES) - 1)
+            selected.pop(random.randrange(len(CATEGORIES)))
         selected.extend(cluster_emails)
 
         # Trim or pad to EPISODE_LENGTH

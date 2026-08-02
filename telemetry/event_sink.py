@@ -34,7 +34,7 @@ import sys
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 # Root of the raw landing zone. Overridable via env var so tests / the
 # compaction script / custom deployments don't need to touch code.
@@ -102,6 +102,9 @@ def log_env_step(
     done: bool,
     stateless_http_mode: bool,
     emails_remaining: int,
+    template_pool: Optional[str] = None,
+    template_idx: Optional[int] = None,
+    email_quality_flags: Optional[List[str]] = None,
 ) -> None:
     """
     Log one EmailTriageEnvironment.step() call.
@@ -110,9 +113,17 @@ def log_env_step(
     returned -- same process, before the HTTP boundary, so every reward
     component is available as a local variable and nothing needs to
     round-trip over the wire.
+
+    template_pool / template_idx: which synthetic-email template pool and
+    index generated this email (Layer 1/3 of the data quality gate use
+    this for reuse/diversity reporting; not used by grading at all).
+    email_quality_flags: Layer 2 of the data quality gate -- cheap runtime
+    invariant violations on this specific email (empty list if clean).
+    Optional/defaulted so this stays backward compatible with any caller
+    that hasn't been updated yet.
     """
     print(">>> log_env_step called")
-    
+
     event = {
         "event_type": "env_step",
         "logged_at": datetime.now(timezone.utc).isoformat(),
@@ -141,6 +152,9 @@ def log_env_step(
         "done": done,
         "stateless_http_mode": stateless_http_mode,
         "emails_remaining": emails_remaining,
+        "template_pool": template_pool,
+        "template_idx": template_idx,
+        "email_quality_flags": email_quality_flags if email_quality_flags is not None else [],
     }
     print(">>> Writing env step")
     _write_event("env_steps", event)

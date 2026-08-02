@@ -1,0 +1,64 @@
+version: 2
+
+# Layer 3 of the synthetic-email data quality gate: generic dbt tests on
+# the staging layer. See:
+#   - quality/validate_synthetic_emails.py for Layer 1 (source template
+#     pool, pre-episode, run standalone / in CI)
+#   - email_quality_flags on stg_env_steps for Layer 2 (per-email runtime
+#     invariant checks, logged from inside step())
+# This layer catches anything that slips past 1 and 2 -- e.g. data
+# compacted from an older run predating a generator fix, or a future
+# schema change that breaks an assumption these tests encode explicitly.
+#
+# Run with: dbt test --profiles-dir . (from warehouse/)
+
+models:
+  - name: stg_env_steps
+    description: >
+      Thin select off the env_steps Parquet lake (server-side telemetry
+      from EmailTriageEnvironment.step()).
+    columns:
+      - name: episode_id
+        tests: [not_null]
+      - name: email_id
+        tests: [not_null]
+      - name: step
+        tests: [not_null]
+      - name: true_priority
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['low', 'medium', 'high', 'urgent']
+      - name: true_category
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - spam
+                - newsletter
+                - support
+                - sales
+                - internal
+                - billing
+                - security
+      - name: true_route
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - inbox
+                - archive
+                - support_team
+                - sales_team
+                - security_team
+                - billing_team
+                - trash
+                - human_review
+
+  - name: stg_client_steps
+    description: >
+      Thin select off the client_steps Parquet lake (client-side telemetry
+      from run_episodes.py).
+    columns:
+      - name: email_id
+        tests: [not_null]
