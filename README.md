@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📬 Email Triage Arena
+# 📬 ATLAS - AI Telemetry & Learning Analytics Suite
 
 ### An RL environment where LLM agents learn to sort chaos — every decision logged, warehoused, and served up as a live leaderboard.
 
