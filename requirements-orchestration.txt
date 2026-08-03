@@ -1,0 +1,6 @@
+# Orchestration layer only -- kept separate from server/requirements.txt and
+# requirements-warehouse.txt, same convention as the rest of the project.
+prefect>=3.0,<4
+duckdb>=1.0
+pyyaml>=6.0
+

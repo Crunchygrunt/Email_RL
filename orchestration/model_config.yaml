@@ -1,0 +1,14 @@
+models:
+  # - name: llama-3.3-70b-versatile
+  - name: llama-3.1-8b-instant
+    tasks: [spam-detection, priority-classification, full-triage, critical-escalation]
+    episodes: 4
+  - name: llama-3.1-8b-instant
+    tasks: [action-orchestrator, threat-assessment]
+    episodes: 4
+
+# Add more entries to compare additional models -- run_episodes.py itself
+# needs no changes; each model here becomes one MODEL_NAME-scoped
+# subprocess call. Verify current model names/availability at
+# console.groq.com/docs/models before adding a third; Groq's free-tier
+# lineup changes over time and this wasn't re-checked this session.
