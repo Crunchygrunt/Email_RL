@@ -57,13 +57,17 @@ below.
 
 ## 🏗️ Architecture
 
-Two halves, one pipeline: the **top half** is the RL environment itself —
-an LLM agent making triage decisions against a reactive, adversarial
-inbox. The **bottom half** is what turns every one of those decisions into
-a queryable dataset — the part that makes this a data engineering project
-as much as an AI one. The dashed arrows in the middle are the seam: two
-telemetry hooks, one on each side of the WebSocket boundary, joined later
-by `email_id`.
+Three layers, one pipeline. The **top layer** is the RL environment
+itself — an LLM agent making triage decisions against a reactive,
+adversarial inbox. The **middle layer** is what turns every one of those
+decisions into a queryable dataset — the part that makes this a data
+engineering project as much as an AI one. The dashed arrows between them
+are the seam: two telemetry hooks, one on each side of the WebSocket
+boundary, joined later by `email_id`. The **bottom layer** is what keeps
+the other two honest on a schedule: a Prefect flow, triggered weekly by
+GitHub Actions, that drives an evaluation run through the top layer,
+rebuilds the warehouse in the middle layer, and pushes the results to
+this README and the live dashboard — no one at a keyboard required.
 
 <p align="center">
   <img src="docs/assets/architecture.svg" alt="Architecture diagram: AI/RL environment (LLM agent, run_episodes.py, EmailTriageEnvironment) on top, feeding through telemetry hooks into a DuckDB + dbt data warehouse below, orchestrated end to end by a scheduled Prefect pipeline" width="900">
