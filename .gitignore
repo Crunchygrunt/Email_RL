@@ -54,4 +54,3 @@ docker-compose.override.yml
 .venv/
 uv.lock
 
-*.duckdb

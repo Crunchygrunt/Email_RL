@@ -73,6 +73,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: automated evaluation run [skip ci]"
-          file_pattern: "README.md docs/assets/last_evaluated_badge.json"
+          file_pattern: "README.md docs/assets/last_evaluated_badge.json warehouse/warehouse.duckdb"
 
           
