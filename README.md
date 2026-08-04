@@ -12,6 +12,10 @@
   <img alt="dbt-duckdb" src="https://img.shields.io/badge/warehouse-dbt%20%2B%20DuckDB-FF694B?style=flat-square&logo=dbt&logoColor=white">
   <img alt="LLM agnostic" src="https://img.shields.io/badge/LLM-provider--agnostic-8957e5?style=flat-square">
   <img alt="OpenEnv" src="https://img.shields.io/badge/built%20on-OpenEnv-0d1117?style=flat-square">
+  <br/>
+  <a href="https://emailrl-snpxvguw9b5sfwtvcdnjnp.streamlit.app/">
+    <img alt="Live Dashboard" src="https://img.shields.io/badge/dashboard-live%20on%20Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white">
+  </a>
 </p>
 
 <img src="docs/assets/terminal-demo.svg" alt="Animated terminal demo: running an evaluation episode, compacting telemetry, and building the dbt warehouse" width="820">
@@ -19,6 +23,35 @@
 <sub>↑ live-looping demo, built from a real run of this repo — not a mockup</sub>
 
 </div>
+
+---
+
+ATLAS is a data engineering project at its core: a warehouse and
+evaluation pipeline built around an LLM agent's decisions, not just a
+place to log them. Most AI telemetry and observability tools — LangSmith,
+Langfuse, Helicone, and similar — are built for live request tracing:
+searching and inspecting individual production calls. ATLAS solves a
+different problem: turning agent decisions into a structured, testable
+evaluation dataset. Every decision is dbt-modeled through staging →
+intermediate → mart layers, checked against a three-layer data quality
+gate that validates the eval data itself, and rolled into a leaderboard
+that a scheduled CI job regenerates automatically — no hand-updated
+tables, no manually re-run notebooks. All of it runs on free, self-hosted,
+open-source tooling (DuckDB, dbt, Parquet, Prefect), with no vendor
+account required and no data ever leaving the repo.
+
+## 🌐 Explore It
+
+**→ Live dashboard:** [emailrl-snpxvguw9b5sfwtvcdnjnp.streamlit.app](https://emailrl-snpxvguw9b5sfwtvcdnjnp.streamlit.app/) —
+no install, no API key. Leaderboard, confusion matrices, reward
+diagnostics, data quality, and episode-level traces, all reading from the
+warehouse produced by the latest scheduled run.
+
+**→ Run it yourself:** clone the repo, bring your own OpenAI-compatible
+LLM key (Groq's free tier works, no card required), and either walk
+through the pipeline step by step or run the whole thing with one
+command — see **⚙️ Getting Started** and **🚀 Application Lifecycle**
+below.
 
 ---
 
@@ -66,10 +99,11 @@ mart *and* re-runs the Layer 3 data quality tests) → query
 "last evaluated" badge.
 
 `.github/workflows/eval-pipeline.yml` runs it weekly on GitHub Actions'
-free cron scheduling (public repos), and commits the regenerated README
-and badge straight back to the repo — so the table below reflects an
-actual scheduled run, not a snapshot from whenever someone last
-remembered to update it by hand.
+free cron scheduling (public repos), and commits the regenerated README,
+badge, and `warehouse.duckdb` straight back to the repo — which is also
+what pushes a fresh redeploy of the live Streamlit dashboard above. The
+table below reflects an actual scheduled run, not a snapshot from
+whenever someone last remembered to update it by hand.
 
 ---
 
@@ -98,7 +132,9 @@ _Data quality violation rate across all logged steps: 0.0%._
 > real multi-model comparison — no code changes needed, just config. The
 > table between the two `BASELINE_SCORES` markers above is exactly what
 > `orchestration/pipeline_flow.py` rewrites on every run; don't hand-edit
-> between them, it'll just get overwritten.
+> between them, it'll just get overwritten. Want the fuller picture —
+> confusion matrices, reward-shaping diagnostics, per-episode traces?
+> That's the [live dashboard](https://emailrl-snpxvguw9b5sfwtvcdnjnp.streamlit.app/), not this table.
 
 ---
 
@@ -142,14 +178,22 @@ EMAIL_RL_SERVER_URL=http://localhost:8000
 
 ### Usage Instructions
 
+Two ways to run this: by hand, one step at a time, or as a single
+orchestrated command. Both need the environment server running first.
+
 ```bash
 # 0 — validate the synthetic email generator (fast, no server needed)
 python quality/validate_synthetic_emails.py
 
 # 1 — start the environment server
 uvicorn server.app:app --host 0.0.0.0 --port 8000
+```
 
-# 2 — in a second terminal: run a batch of graded episodes
+**Option A — manual, step by step** (in a second terminal, server from
+step 1 already running):
+
+```bash
+# 2 — run a batch of graded episodes
 python run_episodes.py --episodes 4
 
 # 3 — compact raw telemetry into the Parquet lake
@@ -165,19 +209,27 @@ dbt test --profiles-dir .
 python -c "import duckdb; print(duckdb.connect('warehouse.duckdb').sql('select * from agg_model_leaderboard').df())"
 ```
 
-> Steps 2–5 above are exactly what `orchestration/pipeline_flow.py`
-> automates end to end for every model in `orchestration/model_config.yaml`
-> — episodes → compaction → `dbt build` (run + test) → leaderboard query
-> → this README's Baseline Scores table. Run it directly instead of the
-> manual sequence (with the server from step 1 already running):
->
-> ```bash
-> python orchestration/pipeline_flow.py
-> ```
->
-> This is also exactly what runs on GitHub Actions' weekly schedule
-> (`.github/workflows/eval-pipeline.yml`) to keep the table above current
-> — see the 🤖 Automated Evaluation Pipeline section above.
+**Option B — one command** (does exactly steps 2–5 above, for every model
+in `orchestration/model_config.yaml`, then rewrites this README's
+Baseline Scores table):
+
+```bash
+python orchestration/pipeline_flow.py
+```
+
+This is also exactly what runs on GitHub Actions' weekly schedule
+(`.github/workflows/eval-pipeline.yml`) — no local terminal required for
+that path at all; see 🤖 Automated Evaluation Pipeline above. Either way,
+once `warehouse.duckdb` exists, you can browse the results without
+re-running anything:
+
+```bash
+streamlit run dashboard/app.py
+```
+
+— or skip local setup entirely and use the
+[live dashboard](https://emailrl-snpxvguw9b5sfwtvcdnjnp.streamlit.app/),
+which stays in sync with the scheduled runs automatically.
 
 ### Core Features
 
@@ -207,6 +259,10 @@ python -c "import duckdb; print(duckdb.connect('warehouse.duckdb').sql('select *
   via GitHub Actions, that regenerates the Baseline Scores table end to
   end: evaluate → compact → rebuild the warehouse → re-test → publish, no
   server and no manual leaderboard upkeep
+- 📈 **Live, self-updating dashboard** — a Streamlit app reading the
+  warehouse directly (leaderboard, confusion matrices, reward-component
+  diagnostics, data quality, per-episode traces), redeployed automatically
+  whenever the scheduled pipeline commits fresh data
 - 🛡️ **Built-in resilience** — automatic retry/backoff on rate limits and
   dropped connections, so a long evaluation run survives the real world
 
@@ -222,6 +278,7 @@ python -c "import duckdb; print(duckdb.connect('warehouse.duckdb').sql('select *
   <img alt="Groq" src="https://img.shields.io/badge/-Groq-F55036?style=flat-square">
   <img alt="Prefect" src="https://img.shields.io/badge/orchestration-Prefect-070E10?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/-GitHub%20Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white">
+  <img alt="Streamlit" src="https://img.shields.io/badge/-Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white">
 </p>
 
 | Layer | Tooling |
@@ -233,8 +290,45 @@ python -c "import duckdb; print(duckdb.connect('warehouse.duckdb').sql('select *
 | Storage | Apache Parquet, partitioned by date |
 | Warehouse | DuckDB + `dbt-duckdb` |
 | Data quality | Custom generator validator (Layer 1) + dbt tests (Layer 3) |
+| Dashboard | Streamlit, reading the warehouse directly, hosted free on Streamlit Community Cloud |
 | CI/CD | GitHub Actions |
 | Orchestration | Prefect (flow/task orchestration, no server required) + GitHub Actions cron (free scheduling, public repos) |
+
+---
+
+## 🔮 Roadmap & Future Improvements
+
+While this project currently implements a zero-dependency local lakehouse stack (JSONL → Parquet → DuckDB + dbt), the pipeline is designed to evolve into a full-scale enterprise observability and evaluation platform.
+
+### 🛡️ 1. OpenTelemetry & OpenLLMetry Integration
+
+* **Standardized Tracing:** Adopt OpenTelemetry (OTel) GenAI semantic conventions across the WebSocket transport to attach `Trace ID` and `Span ID` headers, providing distributed flame graphs across agent decision cycles.
+* **Automated Operational Metrics:** Integrate `traceloop-sdk` (OpenLLMetry) to auto-instrument LLM client invocations, capturing prompt/completion token usage, API latency, and real-time cost estimation without manual logging.
+* **Dual-Path Telemetry Architecture:** Route real-time traces to an OTel Collector for live APM monitoring (e.g., Langfuse, Jaeger, or Datadog) while maintaining bulk event streaming to Parquet/DuckDB for batch evaluation and leaderboards.
+
+```
+              ┌───────────────┐
+              │ LLM Agent /   │
+              │ Environment   │
+              └───────┬───────┘
+                      │
+      ┌───────────────┴───────────────┐
+      ▼                               ▼
+(OpenLLMetry SDK)               (JSONL Event Hooks)
+      │                               │
+      ▼                               ▼
+[ OTel Collector ]            [ Parquet Compaction ]
+      │                               │
+      ▼                               ▼
+[ Real-time APM ]             [ DuckDB + dbt Warehouse ]
+(Langfuse / Jaeger)           (Batch Leaderboards & Quality)
+```
+
+### ⚡ 2. Scale & Infrastructure Evolution
+
+* **Streaming Engine Upgrade:** Replace local append-only JSONL event sinks with an **Apache Kafka** or **AWS SQS** message queue to handle high-throughput concurrent agent evaluation runs.
+* **Cloud Warehouse Migration:** Port dbt models from DuckDB to **Snowflake** or **ClickHouse** to support multi-terabyte evaluation datasets and real-time analytical dashboards.
+* **Orchestration & Containerization:** Package the complete environment server, database, and orchestration layer into Docker/Kubernetes manifests, so evaluation workers can scale horizontally instead of running one model at a time on a single GitHub Actions runner.
 
 ---
 
