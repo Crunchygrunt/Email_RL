@@ -1,7 +1,7 @@
 # Streamlit dashboard only -- kept separate from server/, warehouse/, and
 # orchestration/ requirements files, same convention as the rest of the project.
 streamlit>=1.60
-duckdb>=1.0
+duckdb==1.4.0
 pandas>=2.0
 plotly>=6.0
 
