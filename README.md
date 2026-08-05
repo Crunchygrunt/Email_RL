@@ -120,13 +120,16 @@ whenever someone last remembered to update it by hand.
 <!-- BASELINE_SCORES_START -->
 | Task | Model | N | Avg reward | Perfect-match | Priority acc. | Category acc. | Route acc. | Phishing catch |
 |---|---|---|---|---|---|---|---|---|
-| action-orchestrator | llama-3.1-8b-instant | 40 | 1.0% | 15.0% | 47.5% | 70.0% | 42.5% | 0.0% |
+| action-orchestrator | llama-3.1-8b-instant | 83 | 1.0% | 14.5% | 43.4% | 68.7% | 41.0% | 14.3% |
 | critical-escalation | llama-3.1-8b-instant | 40 | 99.0% | 22.5% | 30.0% | 65.0% | 70.0% | 0.0% |
+| critical-escalation | llama-3.3-70b-versatile | 40 | 52.4% | 27.5% | 52.5% | 65.0% | 52.5% | 0.0% |
 | full-triage | llama-3.1-8b-instant | 40 | 49.8% | 25.0% | 45.0% | 72.5% | 52.5% | 100.0% |
+| full-triage | llama-3.3-70b-versatile | 40 | 60.0% | 30.0% | 50.0% | 87.5% | 72.5% | 66.7% |
 | priority-classification | llama-3.1-8b-instant | 40 | 57.3% | 32.5% | 57.5% | 62.5% | 55.0% | 0.0% |
+| priority-classification | llama-3.3-70b-versatile | 40 | 59.8% | 40.0% | 60.0% | 87.5% | 67.5% | 75.0% |
 | spam-detection | llama-3.1-8b-instant | 40 | 96.5% | 15.0% | 25.0% | 70.0% | 60.0% | 75.0% |
-| threat-assessment | llama-3.1-8b-instant | 40 | 12.6% | 0.0% | 12.5% | 70.0% | 27.5% | 33.3% |
-
+| spam-detection | llama-3.3-70b-versatile | 40 | 94.1% | 35.0% | 50.0% | 75.0% | 60.0% | 66.7% |
+| threat-assessment | llama-3.1-8b-instant | 80 | 12.4% | 1.2% | 21.2% | 65.0% | 23.8% | 14.3% |
 _Data quality violation rate across all logged steps: 0.0%._
 <!-- BASELINE_SCORES_END -->
 
